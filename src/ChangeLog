@@ -1,3 +1,8 @@
+2005-01-24  Vin Shelton  <acs@xemacs.org>
+
+	* sheap.c (more_static_core): Reformatted printf string so
+	gcc-3.3.3 will compile this on Cygwin.
+
 2004-02-22  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* console.c (function_key_map): Reference `key-binding'.
