@@ -1,3 +1,7 @@
+2004-12-04  Vin Shelton  <acs@xemacs.org>
+
+	* depend: Regenerated.
+
 2004-10-07  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* regex.c (re_match_2_internal): Map internal to external
