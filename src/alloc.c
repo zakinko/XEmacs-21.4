@@ -3387,6 +3387,7 @@ garbage_collect_1 (void)
   /***** Now we actually start the garbage collection. */
 
   gc_in_progress = 1;
+  inhibit_non_essential_printing_operations = 1;
 
   gc_generation_number[0]++;
 
@@ -3511,6 +3512,7 @@ garbage_collect_1 (void)
     gc_cons_threshold = 10000;
 #endif
 
+  inhibit_non_essential_printing_operations = 0;
   gc_in_progress = 0;
 
   run_post_gc_actions ();

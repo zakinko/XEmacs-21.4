@@ -685,6 +685,27 @@ microsoft website.
 * Problems with running XEmacs
 ==============================
 ** General
+
+*** XEmacs crashes mysteriously.
+
+Check whether XEmacs was configured --use-union-type.  Many compilers
+are known to treat union types incompatibly with proper functioning of
+the Lisp_Object type.  (Whether this is a compiler bug or nonstandard-
+conforming code in XEmacs is a moot point.)  Especially with
+--with-mule, --pdump, and/or non-null --error-checking, this is known
+to produce an unreliable build with many versions of MS VC++ and GCC,
+and similar problems are likely to occur with other compilers.
+
+Symptoms are similar to garbage collection and other "wild pointer"
+bugs, ie, stack-smashing and other hard-to-debug crashes in unrelated
+code.  Try reconfiguring and building without --use-union-type.
+
+--use-union-type _is_ useful to get improved _static_ type checking of
+Lisp objects.  It is theoretically possible that it might help with
+aliasing bugs under optimization and improve runtime stability, but in
+practice exactly the opposite seems to be true.  If you don't work on
+XEmacs C code directly, then avoid --use-union-type entirely for now.
+
 *** XEmacs crashes mysteriously in regexp-intensive applications (eg, Gnus)
 
 The regexp implementation used in XEmacs uses alloca by default for

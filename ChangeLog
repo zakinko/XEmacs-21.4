@@ -1,3 +1,10 @@
+2003-01-02  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* configure.in (Generate Installation): 
+	* configure.usage (--use-union-type): 
+	* PROBLEMS (XEmacs crashes mysteriously):
+	Deprecate --use-union-type for production builds.
+
 2002-12-16  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* PROBLEMS (Running): Document general regex.c/alloca crash.

@@ -24,15 +24,21 @@ ChangeLogs, or use CVS diff to view the patches.
 
 to 21.4.11 "Native Windows TTY Support"
 
+-- (**) More menubar options for browse-url -- Ville Skyttä
 -- Fix: Can't find dumpfile of symlinked xemacs -- Vin Shelton
 -- Fix: Deadlock in Xt timers -- Stephen Turnbull
--- Fix: mmap crash in build -- Wolfram Gloger
+-- Fix: mmap crash (glibc 2.3.x) in build -- Wolfram Gloger
 -- Fix: Restore layout patch -- Andy Piper
+-- Fix: Minor bugs -- Ben Wing
 -- New: Berkeley db 4.1 support -- Greg Allen
--- Update: menubar for browse-url -- Ville Skyttä
+-- New: Dynamic initialization of auto-mode-alist -- Ville Skyttä
+-- New: Print memory check results in crash -- Ben Wing
 -- Build: Default pdump on for Linux -- Stephen Turnbull
--- Docs: Examples, corrections, and oxymorons -- Katsumi Yamaoka, John Paul Wallington, Stephen Turnbull, Giacomo Boffi, Ville Skyttä, Ilya Golubev, Andy Piper
+-- Build: Native Windows utilities build right -- Ben Wing
+-- Build: Mule regexp tests -- Daiki Ueno, Stephen Turnbull
+-- Docs: regex/alloca PROBLEM -- Stephen Turnbull
 -- Docs: Lesstif PROBLEM -- Frank McIngvale
+-- Docs: Examples, corrections, and oxymorons -- Katsumi Yamaoka, John Paul Wallington, Stephen Turnbull, Giacomo Boffi, Ville Skyttä, Ilya Golubev, Andy Piper, Ben Wing
 
 to 21.4.10 "Military Intelligence"
 

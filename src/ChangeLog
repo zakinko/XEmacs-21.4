@@ -1,3 +1,39 @@
+2002-12-14  Ben Wing  <ben@xemacs.org>
+
+	* callint.c: Declaration error.
+	* dumper.c (pdump):
+	* dumper.c (pdump_load): Warning fix.
+	* process.c: GCPRO error.
+	* glyphs.c (unmap_subwindow):
+	* glyphs.c (map_subwindow): Parenthesizing errors with ! and &&.
+	* event-stream.c (maybe_kbd_translate): Wrong argument to
+	character_to_event().
+
+	* alloc.c (garbage_collect_1):
+	* emacs.c:
+	* emacs.c (debug_can_access_memory):
+	* emacs.c (fatal_error_signal):
+	* emacs.c (mswindows_handle_hardware_exceptions):
+	* emacs.c (main_1):
+	* emacs.c (main):
+	* emacs.c (assert_failed):
+	* emacs.c (syms_of_emacs):
+	* lisp.h:
+	* print.c:
+	* print.c (std_handle_out_va):
+	* print.c (write_string_to_stdio_stream):
+	* print.c (write_fmt_string):
+	* print.c (printing_badness):
+	* print.c (printing_major_badness):
+	* print.c (print_internal):
+	* print.c (debug_print_no_newline):
+	* print.c (debug_backtrace):
+	Be more defensive in handling bad values when printing.  Add code
+	from trunk involving inhibit_non_essential_printing_operations.
+	When going down or in debug_print(), don't do external conversion
+	and such and try really, really hard when printing to avoid core
+	dumping.  Add force-debugging-signal, debug_break().
+
 2002-12-12  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* dumper.c (pdump_load): Include sysdep.h; retry with truename.
