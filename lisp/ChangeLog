@@ -1,3 +1,7 @@
+2003-09-19  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* win32-native.el (grep-null-device): This XEmacs has null-device.
+
 2003-09-06  Mike Sperber  <mike@xemacs.org>
 
 	* bytecomp.el (byte-compile-defvar-or-defconst): Actually
