@@ -319,7 +319,9 @@ gtk_xemacs_paint (GtkWidget *widget, GdkRectangle *area)
 {
     GtkXEmacs *x = GTK_XEMACS (widget);
     struct frame *f = GTK_XEMACS_FRAME (x);
-    gtk_redraw_exposed_area (f, area->x, area->y, area->width, area->height);
+
+    if (GTK_WIDGET_DRAWABLE (widget))
+      gtk_redraw_exposed_area (f, area->x, area->y, area->width, area->height);
 }
 
 static void
@@ -335,30 +337,33 @@ gtk_xemacs_draw (GtkWidget *widget, GdkRectangle *area)
        gtk_fixed_paint() directly, which clears the background window,
        which causes A LOT of flashing. */
 
-    gtk_xemacs_paint (widget, area);
-
-    children = fixed->children;
-
-    while (children)
+    if (GTK_WIDGET_DRAWABLE (widget))
       {
-	child = children->data;
-	children = children->next;
-	/* #### This is what causes the scrollbar flickering!
-	   Evidently the scrollbars pretty much take care of drawing
-	   themselves in most cases.  Then we come along and tell them
-	   to redraw again!
+	gtk_xemacs_paint (widget, area);
 
-	   But if we just leave it out, then they do not get drawn
-	   correctly the first time!
+	children = fixed->children;
 
-	   Scrollbar flickering has been greatly helped by the
-	   optimizations in scrollbar-gtk.c /
-	   gtk_update_scrollbar_instance_status (), so this is not that
-	   big a deal anymore.
-	*/
-	if (gtk_widget_intersect (child->widget, area, &child_area))
+	while (children)
 	  {
-	    gtk_widget_draw (child->widget, &child_area);
+	    child = children->data;
+	    children = children->next;
+	    /* #### This is what causes the scrollbar flickering!
+	       Evidently the scrollbars pretty much take care of drawing
+	       themselves in most cases.  Then we come along and tell them
+	       to redraw again!
+	       
+	       But if we just leave it out, then they do not get drawn
+	       correctly the first time!
+
+	       Scrollbar flickering has been greatly helped by the
+	       optimizations in scrollbar-gtk.c /
+	       gtk_update_scrollbar_instance_status (), so this is not that
+	       big a deal anymore.
+	    */
+	    if (gtk_widget_intersect (child->widget, area, &child_area))
+	      {
+		gtk_widget_draw (child->widget, &child_area);
+	      }
 	  }
       }
 }
@@ -370,14 +375,19 @@ gtk_xemacs_expose (GtkWidget *widget, GdkEventExpose *event)
     struct frame *f = GTK_XEMACS_FRAME (x);
     GdkRectangle *a = &event->area;
 
-    /* This takes care of drawing the scrollbars, etc */
-    parent_class->expose_event (widget, event);
+  if (GTK_WIDGET_DRAWABLE (widget))
+    {
+      /* This takes care of drawing the scrollbars, etc */
+      parent_class->expose_event (widget, event);
 
-    /* Now draw the actual frame data */
-    if (!check_for_ignored_expose (f, a->x, a->y, a->width, a->height) &&
-	!find_matching_subwindow (f, a->x, a->y, a->width, a->height))
-      gtk_redraw_exposed_area (f, a->x, a->y, a->width, a->height);
-    return (TRUE);
+      /* Now draw the actual frame data */
+      if (!check_for_ignored_expose (f, a->x, a->y, a->width, a->height) &&
+	  !find_matching_subwindow (f, a->x, a->y, a->width, a->height))
+	gtk_redraw_exposed_area (f, a->x, a->y, a->width, a->height);
+      return (TRUE);
+    }
+
+  return FALSE;
 }
 
 Lisp_Object

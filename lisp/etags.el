@@ -242,25 +242,44 @@ the current buffer."
 	  (if (stringp expression)
 	      (push expression result)
 	    (error "Expression in tag-table-alist evaluated to non-string")))))
-    (setq result
-	  (mapcar
-	   (lambda (name)
-	     (when (file-directory-p name)
-	       (setq name (concat (file-name-as-directory name) "TAGS")))
-	     (and (file-readable-p name)
-		  ;; get-tag-table-buffer has side-effects
-		  (symbol-value-in-buffer 'buffer-file-name
-					  (get-tag-table-buffer name))))
-	   result))
+    (setq result (buffer-tag-table-list-load result))
     (setq result (delq nil result))
     ;; If no TAGS file has been found, ask the user explicitly.
     ;; #### tags-file-name is *evil*.
     (or result tags-file-name
 	(call-interactively 'visit-tags-table))
     (when tags-file-name
-      (setq result (nconc result (list tags-file-name))))
+      (setq result (nconc result (buffer-tag-table-list-load (list tags-file-name)))))
     (or result (error "Buffer has no associated tag tables"))
     (delete-duplicates (nreverse result) :test 'equal)))
+
+(defun buffer-tag-table-list-load (list &optional used-buffers)
+  "Load all tag buffers in LIST. Include directives inside the tag
+Buffers result in a recursive call off this function. The USED-BUFFERS
+parameter is just for internal use and prevents infinite inclusion
+loops. The return value is a list of loaded buffers with the order
+from LIST preserved.  The tag files loaded with the include directive
+are inserted into the returned list before their parents."
+  (let (result)
+    (and list 
+         (mapc 
+          #'(lambda (name)
+              (when (file-directory-p name)
+                (setq name (concat (file-name-as-directory name) "TAGS")))
+              (and 
+               (file-readable-p name)
+               (save-excursion
+                 (set-buffer (get-tag-table-buffer name))
+                 (when (not (member buffer-file-name used-buffers)) 
+                   (add-to-list 'used-buffers buffer-file-name)
+                   (let ((include-files (tag-table-include-files)))
+                     (when include-files 
+                       (setq result (nconc result
+                                           (buffer-tag-table-list-load
+                                            include-files used-buffers)))))
+                   (add-to-list 'result buffer-file-name t)))))
+          list))
+    result))
 
 ;;;###autoload
 (defun visit-tags-table (file)
@@ -405,12 +424,12 @@ File name returned is relative to tag table file's directory."
   ;; New include syntax
   ;;   filename,include
   ;; tacked on to the end of a tag file means use filename as a
-  ;; tag file before giving up.  The filenames are expanded to problems with
-  ;; relative paths being used in the wrong directory.
+  ;; tag file before giving up.  The filenames are expanded to avoid 
+  ;; problems with relative paths being used in the wrong directory.
   (let ((files nil))
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "\f\n\\(.*\\),include$" nil t)
+      (while (re-search-forward tags-include-pattern nil t)
 	(push (expand-file-name (match-string 1)) files)))
     files))
 
@@ -522,7 +541,9 @@ this buffer uses."
   (concat "\\s-*(\\s-*def\\sw*\\s-*(?\\s-*\\(\\(\\sw\\|\\s_\\|:\\)+\\))?\\s-*"
 	  tags-explicit-name-pattern))
 (defconst tags-file-pattern "^\f\n\\(.+\\),[0-9]+\n")
-(defconst tags-include-pattern "^\f\n\\(.+\\),include\n")
+(defconst tags-include-pattern "^\f\n\\(.+\\),include\n"
+  "Holds the pattern for finding the include directive in tagfiles.")
+
 
 (defun add-to-tag-completion-table-exuberant-ctags ()
   "Sucks the current buffer (a TAGS table) into the completion-table.
@@ -614,12 +635,10 @@ work with xemacs etags."
 	(and name2 (intern-tag-symbol name2))
 	(and name3 (intern-tag-symbol name3))
 	(forward-line 1)))
-    ;; Skip over the include entries at the bottom of the file.  They should
-    ;; really be loaded.
+    ;; Skip over the include entries at the bottom of the file.
     (while (looking-at tags-include-pattern)
       (goto-char (match-end 0))
       (setq filename (file-name-sans-versions (match-string 1)))
-;      #### Recursively load included TAGS files here.
       (forward-line 1))
     (or (eobp) (error "Bad TAGS file")))
   (message "Adding %s to tags completion table...done" buffer-file-name))
@@ -765,8 +784,7 @@ If it returns non-nil, this file needs processing by evalling
 			       (goto-char (match-beginning 0))
 			       (not (looking-at exact-tagname)))))
 		       (throw 'found t))))
-	      (setq tag-tables
-		    (nconc (tag-table-include-files) (cdr tag-tables)))))
+	      (setq tag-tables (cdr tag-tables))))
 	  (if (and (not exact) (eq tag-table-currently-matching-exact t))
 	      (setq tag-table-currently-matching-exact nil)
 	    (setq tag-table-currently-matching-exact 'neither)))

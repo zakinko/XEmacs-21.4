@@ -1,3 +1,11 @@
+2004-08-12  "Johann 'Myrkraverk' Oskarsson" <myrkraverk@users.sourceforge.net>
+
+	* config.guess: Detect PlayStation 2.
+
+2004-08-10  Jerry James  <james@xemacs.org>
+
+	* etc/SERVICE: Update to latest version from www.gnu.org.
+
 2004-07-06  Steve Youngs  <steve@youngs.au.com>
 
 	* etc/NEWS: Document the major user visible changes to PUI.
