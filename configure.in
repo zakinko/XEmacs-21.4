@@ -2736,22 +2736,29 @@ if test "$with_x11" = "yes"; then
   XE_APPEND(lwlib, MAKE_SUBDIR)
   XE_APPEND(lwlib, SRC_SUBDIR_DEPS)
 
-  dnl Try to find Motif/CDE/Tooltalk dirs
-  dnl These take precedence over other X libs/includes, so PRE-pend
-  for lib_dir in "/usr/dt/lib" "/usr/lib/Motif2.1" "/usr/lib/Motif1.2" "/usr/lib/Motif1.1"; do
-    inc_dir=`echo $lib_dir | sed -e 's/lib/include/'`
-    if test -d "$lib_dir" -a -d "$inc_dir"; then
-      case "$x_libraries" in *"$lib_dir"* ) ;; *)
-        x_libraries="$lib_dir $x_libraries"
-        XE_PREPEND(-L${lib_dir}, X_LIBS) ;;
-      esac
-      case "$x_includes" in "$inc_dir"* ) ;; *)
-        x_includes="$inc_dir $x_includes"
-        XE_PREPEND(-I${inc_dir}, X_CFLAGS) ;;
-      esac
-      break; dnl only need ONE Motif implementation!
-      fi
-  done
+
+  dnl Look for Motif, but only if not found in $x_includes and $x_libraries
+  AC_CHECK_HEADER(Xm/Xm.h, [AC_CHECK_LIB(Xm, XmStringFree, got_motif=yes)])
+
+  if test "$got_motif" != "yes"; then
+    dnl Try to find Motif/CDE/Tooltalk dirs
+    dnl These take precedence over other X libs/includes, so PRE-pend
+    for lib_dir in "/usr/dt/lib" "/usr/lib/Motif2.1" \
+                   "/usr/lib/Motif1.2" "/usr/lib/Motif1.1"; do
+      inc_dir=`echo $lib_dir | sed -e 's/lib/include/'`
+      if test -d "$lib_dir" -a -d "$inc_dir"; then
+	case "$x_libraries" in *"$lib_dir"* ) ;; *)
+	  x_libraries="$lib_dir $x_libraries"
+	  XE_PREPEND(-L${lib_dir}, X_LIBS) ;;
+	esac
+	case "$x_includes" in "$inc_dir"* ) ;; *)
+	  x_includes="$inc_dir $x_includes"
+	  XE_PREPEND(-I${inc_dir}, X_CFLAGS) ;;
+	esac
+	break; dnl only need ONE Motif implementation!
+	fi
+    done
+  fi
 
   dnl Contrib X libs/includes do NOT take precedence, so AP-pend
   for rel in "X11R6" "X11R5" "X11R4"; do
@@ -4373,6 +4380,20 @@ dnl Check for Berkeley DB.
 if test "$with_database_berkdb" != "no"; then
   AC_MSG_CHECKING(for Berkeley db.h)
   for header in "db/db.h" "db.h"; do
+    case "$opsys" in
+        *freebsd*)
+    AC_TRY_COMPILE([
+#include <stdlib.h>
+#if !(defined __GLIBC__ && __GLIBC_MINOR__ >= 1)
+#ifdef HAVE_INTTYPES_H
+#define __BIT_TYPES_DEFINED__
+#include <inttypes.h>
+#endif
+#endif
+#include <$header>
+],[], db_h_file="$header"; break)
+        ;;
+        *)
     AC_TRY_COMPILE([
 #include <stdlib.h>
 #if !(defined __GLIBC__ && __GLIBC_MINOR__ >= 1)
@@ -4389,6 +4410,8 @@ typedef uint64_t u_int64_t;
 #endif
 #include <$header>
 ],[], db_h_file="$header"; break)
+        ;;
+        esac
   done
   if test -z "$db_h_file"
   then AC_MSG_RESULT(no); with_database_berkdb=no

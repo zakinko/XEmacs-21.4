@@ -1,3 +1,18 @@
+2003-03-02  Vin Shelton  <acs@xemacs.org>
+
+	* etc/BETA: synced up with 21.5.  Original patch from
+	Chris Palmer  <chris@nodewarrior.org>.
+
+2003-03-02  Robert Pluim  <rpluim@bigfoot.com>
+
+	* configure.in : Don't use the u_int8_t etc typedefs on FreeBSD
+	when detecting Berkeley DB, as they conflict with <sys/types.h>.
+
+2003-02-01  Martin Buchholz  <martin@xemacs.org>
+
+	* configure.in: Don't look for Motif if it's already present in
+	$x_includes and $x_libraries.
+
 2003-02-23  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* configure.in: Fix darwin regexp for pdump.
