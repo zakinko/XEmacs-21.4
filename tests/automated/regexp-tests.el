@@ -442,5 +442,10 @@ baaaa
   (Assert (string= text2 (match-string 0 text2)))
   (Assert (string= "a" (match-string 1 text2)))
   (Assert (null (match-string 2 text2)))
+
+  ;; Test Arnaud Giersch's shy group fix
+  (Assert (progn (string-match "\\(a\\)" "a")  
+		 (string-match "\\(?:a\\)" "a")  
+		 (not (match-beginning 1))))
 )
 

@@ -1,3 +1,8 @@
+2005-02-01  Vin Shelton  <acs@xemacs.org>
+
+	* automated/regexp-tests.el: Added an additional shy groups test
+	authored by Arnaud Giersch <arnaud.giersch@free.fr>
+
 2005-01-14  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* automated/mule-tests.el (file-system character conversion):
