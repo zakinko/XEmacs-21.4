@@ -1,3 +1,7 @@
+2002-11-02  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.10 "Military Intelligence" is released.
+
 2002-10-17  Raymond Toy  <toy@rtp.ericsson.se>
 
 	* nas.c: Update for NAS 1.6 and later, from Jon Trulson.  Was
