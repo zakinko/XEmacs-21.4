@@ -1,3 +1,19 @@
+2003-08-04  Michael Toomim <toomim@OCF.Berkeley.EDU>
+
+	* byte-optimize.el: Fix infinite loop in bytecode optimizer.  See:
+	http://list-archive.xemacs.org/xemacs-beta/200306/msg00157.html
+	http://list-archive.xemacs.org/xemacs-beta/200307/msg00005.html
+
+2003-06-18  Nickolay Pakoulin  <npak@ispras.ru>
+
+	* cl-macs.el (cl-transform-lambda): Place doc on Common Lisp
+	lambda list after the original doc.  Care about
+	#'(lambda () "SingleString") 
+	(cl-upcase-arg): 
+	(cl-function-arglist):
+	Care about &cl-defs and &cl-quote in lambda list, dotted lists and
+	circular data structures in lambda list specification
+
 2003-06-11  Adrian Aichner  <adrian@xemacs.org>
 
 	* font-lock.el (lisp-font-lock-keywords-1): Only NAME, not NAME(

@@ -1,3 +1,7 @@
+2003-06-30  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* xemacs-faq.texi (Q3.2.2): Fix typo.
+
 2003-06-17  Vin Shelton  <acs@xemacs.org>
 
 	* xemacs-faq.texi: Sync up with latest version from 21.5.
