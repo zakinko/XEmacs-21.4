@@ -1,3 +1,26 @@
+2004-08-13  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* lispref/positions.texi (Text Lines): makeinfo doesn't like Note:.
+
+2004-03-31  Stephen J. Turnbull  <turnbull@sk.tsukuba.ac.jp>
+
+	* xemacs/help.texi (Misc Help): Info-goto-emacs-key-command-node
+	to function index.  Document Info-goto-emacs-command-node.
+
+2004-06-29  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* internals/internals.texi (Modules for Other Aspects of the Lisp
+	Interpreter and Object System): Add description of Sextword syntax
+	class (now obsolete).
+
+2004-06-20  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* internals/internals.texi (Techniques for XEmacs Developers): Be
+	specific when discussing optimization.
+	(Techniques for XEmacs Developers): Fragments that are meaningless
+	by themselves or contain placeholders should be @samp, not @code.
+	(Modules for Regression Testing): Add tag-tests.el to list.
+
 2004-07-05  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* xemacs-faq.texi (Q3.10.2): Mention that `pending-delete' is in
