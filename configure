@@ -9629,8 +9629,8 @@ rm -f conftest*
 fi 
 
 case "$opsys" in
-  *linux* )  lucid_prefers_motif = "no"  ;;
-  * )        lucid_prefers_motif = "yes" ;;
+  *linux* )  lucid_prefers_motif="no"  ;;
+  * )        lucid_prefers_motif="yes" ;;
 esac
 
 case "$with_menubars" in "" | "yes" | "athena" )
