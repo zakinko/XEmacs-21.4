@@ -2487,6 +2487,14 @@ AC_CHECK_SIZEOF(long)
 AC_CHECK_SIZEOF(long long)
 AC_CHECK_SIZEOF(void *)
 
+dnl Cygwin from 1003022 has intptr_t, uintptr_t in <cygwin/types.h>
+case $opsys in
+  cygwin* ) AC_EGREP_HEADER([typedef.*intptr_t;], [cygwin/types.h],
+                            [AC_MSG_RESULT(yes)
+                             AC_DEFINE(INTPTR_T_IN_CYGWIN_TYPES_H,1)],
+                            [AC_MSG_RESULT(no)]) ;;
+esac
+
 dnl check for long file names
 AC_SYS_LONG_FILE_NAMES
 
