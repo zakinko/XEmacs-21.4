@@ -1,3 +1,18 @@
+2003-02-25  Andrew Begel  <abegel@cs.berkeley.edu>
+
+	* Added .dylib as an acceptable shared library file extension
+	* to support MacOSX.
+
+2003-02-01  Martin Buchholz  <martin@xemacs.org>
+
+	* EmacsFrameP.h (EmacsFramePart):
+	Kludge to allow compiling with Motif1, but linking with Motif2.
+
+2003-01-28  Martin Buchholz  <martin@xemacs.org>
+
+	* config.h.in (_ALL_SOURCE): Guard against multiple definition.
+
+
 2003-02-23  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* config.h.in (DLSYM_NEEDS_UNDERSCORE): Define on darwin.
