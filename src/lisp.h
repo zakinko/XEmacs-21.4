@@ -243,11 +243,12 @@ template<typename T> struct alignment_trick { char c; T member; };
    time the assert checks take is measurable so let's not include them
    in production binaries. */
 
-#ifdef USE_ASSERTIONS
 /* Highly dubious kludge */
 /*   (thanks, Jamie, I feel better now -- ben) */
-void assert_failed (const char *, int, const char *);
 # define ABORT() (assert_failed (__FILE__, __LINE__, "ABORT()"))
+void assert_failed (const char *, int, const char *);
+
+#ifdef USE_ASSERTIONS
 # define assert(x) ((x) ? (void) 0 : assert_failed (__FILE__, __LINE__, #x))
 #else
 # ifdef DEBUG_XEMACS

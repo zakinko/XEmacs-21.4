@@ -3356,7 +3356,6 @@ Non-nil return value means XEmacs is running without interactive terminal.
    in one session without having to recompile. */
 /* #define ASSERTIONS_DONT_ABORT */
 
-#ifdef USE_ASSERTIONS
 /* This highly dubious kludge ... shut up Jamie, I'm tired of your slagging. */
 
 static int in_assert_failed;
@@ -3429,7 +3428,6 @@ assert_failed (const char *file, int line, const char *expr)
   inhibit_non_essential_printing_operations = 0;
   in_assert_failed = 0;
 }
-#endif /* USE_ASSERTIONS */
 
 #ifdef QUANTIFY
 DEFUN ("quantify-start-recording-data", Fquantify_start_recording_data,
