@@ -167,6 +167,23 @@ place.
 You should also look in your OS's section, as it may not be Motif's
 fault.
 
+*** XEmacs visibly repaints itty-bitty rectangles very slowly.
+
+This should only be visible on a slow X connection (ISDN, maybe T1).
+
+At least some versions of Motif apparently do not implement
+XtExposeCompressMaximal properly, so it is disabled.  If you wish to
+experiment, you can remove the #ifdef LWLIB_NEEDS_MOTIF at line 238
+(or so) of src/EmacsFrame.c, leaving only the line
+
+    /* compress_exposure	*/	XtExposeCompressMaximal | XtExposeNoRegion,
+
+and recompile.  This enables exposure compression, giving a 10:1 or
+better speedup for some users.  However, on some Motif platforms (Red
+Hat Linux 9.0 and Solaris 2.8, at least), this causes XEmacs to hang
+while displaying the progress bar (eg, in font-lock).  A workaround
+for that problem is to setq `progress-feedback-use-echo-area' to `t'.
+
 *** XEmacs crashes on exit (#1).
 
 The backtrace is something like:

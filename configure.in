@@ -4981,6 +4981,13 @@ if test "$with_x11" = "yes"; then
     echo "    - Handling WM_COMMAND properly."
   fi
 fi
+if test "$need_motif" = "yes" ; then
+  echo "  Compiling in support for Motif."
+  echo "  *WARNING*  Many versions of Motif are buggy, requiring workarounds."
+  echo "             You are likely to experience slow redisplay."
+  echo "             You may need to install vendor patches to Motif."
+  echo "             See PROBLEMS for more information."
+fi
 if test "$need_athena" = "yes"; then
   echo "  Compiling in support for the Athena widget set:"
   echo "    - Athena headers location:                    $athena_h_path"

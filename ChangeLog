@@ -1,3 +1,9 @@
+2003-07-29  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* PROBLEMS (Motif): Explain why Motif loses XtExposeCompressMaximal.
+
+	* configure.in (Installation): Bitch bitterly about Motif.
+
 2003-06-17  Vin Shelton  <acs@xemacs.org>
 
 	* PROBLEMS: Sync up with latest version from 21.5
