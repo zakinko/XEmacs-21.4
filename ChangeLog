@@ -1,3 +1,7 @@
+2004-02-10  Vin Shelton  <acs@xemacs.org>
+
+	* etc/OXYMORONS: Added Jumbo Shrimp for 21.4.17.
+
 2004-02-03  Vin Shelton  <acs@xemacs.org>
 
 	* configure.in (XE_COMPUTE_RUNPATH): lucid_prefers_motif is a

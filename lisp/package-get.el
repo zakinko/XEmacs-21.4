@@ -576,6 +576,10 @@ Unless FORCE-CURRENT is non-nil never try to update the database."
 	      (package-get-maybe-save-index db-file)))
       (kill-buffer buf))))
 
+;; This is here because the `process-error' datum doesn't exist in
+;; 21.4. --SY.
+(define-error 'process-error "Process error")
+
 ;;;###autoload
 (defun package-get-update-base-from-buffer (&optional buf)
   "Update the package-get database with entries from BUFFER.
