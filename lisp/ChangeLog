@@ -1,3 +1,15 @@
+2003-02-14  Ben Wing  <ben@xemacs.org>
+
+	* byte-optimize.el:
+	* byte-optimize.el (byte-compile-inline-expand):
+	* byte-optimize.el (byte-compile-unfold-lambda):
+	* byte-optimize.el (byte-optimize-form-code-walker):
+	* byte-optimize.el (byte-optimize-form):
+	* byte-optimize.el (byte-decompile-bytecode-1):
+	* byte-optimize.el (byte-optimize-lapcode):
+	Review carefully and sync up to 20.7 except for areas as noted.
+	Fixes problem with JDE compilation.
+
 2003-02-05  Ben Wing  <ben@xemacs.org>
 
 	* simple.el:

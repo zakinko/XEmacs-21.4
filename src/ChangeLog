@@ -1,3 +1,20 @@
+2003-03-03  Robert Pluim  <rpluim@bigfoot.com>
+
+	* database.c: Don't use the u_int8_t etc typedefs on FreeBSD,
+	  they conflict with <sys/types.h>.
+
+2003-02-14  Martin Buchholz  <martin@xemacs.org>
+
+	* database.c: Berkeley DB wants __STDC__ to be defined.
+
+2003-02-13  Martin Buchholz  <martin@xemacs.org>
+
+	* EmacsFrame.c: Use symbolic name `NotUseful' in lieu of `0'.
+
+2003-02-01  Martin Buchholz  <martin@xemacs.org>
+
+	* process-unix.c (unix_send_process): Fix C++ compile error.
+
 2003-02-25  Andrew Begel  <abegel@cs.berkeley.edu>
 
 	* Added .dylib as an acceptable shared library file extension
