@@ -1,5 +1,9 @@
 2001-04-19  Stephen J. Turnbull  <stephen@xemacs.org>
 
+	* XEmacs 21.4.1 "Copyleft" is released.
+
+2001-04-19  Stephen J. Turnbull  <stephen@xemacs.org>
+
 	* x-compose.el (xlib-input-method-bug-workaround):
 	(alias-colon-to-double-quote):
 	Force sort in map-keymap to work around rehash bug.
