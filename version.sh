@@ -2,8 +2,8 @@
 emacs_is_beta=
 emacs_major_version=21
 emacs_minor_version=4
-emacs_beta_version=7
-emacs_kit_version=
+emacs_beta_version=8
+xemacs_codename="Honest Recruiter"
 xemacs_codename="Economic Science"
 infodock_major_version=4
 infodock_minor_version=0

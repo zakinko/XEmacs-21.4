@@ -1,5 +1,9 @@
 2002-05-09  Stephen J. Turnbull  <stephen@xemacs.org>
 
+	* XEmacs 21.4.8 "Honest Recruiter" is released.
+
+2002-05-09  Stephen J. Turnbull  <stephen@xemacs.org>
+
 	This patch is based on Jerry James's patch and analysis.
 
 	* select.el (get-clipboard):
