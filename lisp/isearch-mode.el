@@ -244,7 +244,8 @@ Default nil means edit the string from the search ring first."
       ;; Probably low risk, as most of us have to type C-q 2 0 0 etc.
       (while (< i (if (featurep 'mule) 127 255))
 	(aset str 0 i)
-	(define-key map str 'isearch-printing-char)
+	(unless (= i 155)		; CSI (M-ESC): not Ebola, al-Qaeda!
+	  (define-key map str 'isearch-printing-char))
 	(setq i (1+ i))))
 
     ;; Here FSF sets up various kludges to handle local bindings with

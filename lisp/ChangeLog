@@ -1,3 +1,7 @@
+2003-01-08  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* isearch-mode.el (isearch-mode-map): Don't bind CSI.
+
 2003-01-07  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* isearch-mode.el (isearch-mode-map): GR (and C1) is printable.
