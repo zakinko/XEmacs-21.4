@@ -685,6 +685,20 @@ microsoft website.
 * Problems with running XEmacs
 ==============================
 ** General
+*** XEmacs crashes mysteriously in regexp-intensive applications (eg, Gnus)
+
+The regexp implementation used in XEmacs uses alloca by default for
+efficiency.  alloca provides no reliable way to check for out of
+memory (in this case, stack).  Normally not a problem, except for
+systems with very small default stack allocations, and applications
+that use multi-line regular expressions (ie, explicitly including ?\n)
+in moderately large files (> 100kB or so).
+
+You may get relief by increasing the amount of stack space allocated
+to your XEmacs process (a system-dependent operation, ask your
+administrator or local experts for help), or by recompiling the regexp
+module regex.c with REGEX_MALLOC defined, relinking, and redumping.
+
 *** At startup I get a warning on stderr about missing charsets:
 
     Warning: Missing charsets in String to FontSet conversion
