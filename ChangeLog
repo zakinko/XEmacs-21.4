@@ -1,3 +1,7 @@
+2003-01-13  Ilya Golubev  <golubev@xemacs.org>
+
+	* etc/photos/golubev.png, etc/photos/golubevm.png: New.
+
 2003-01-05  Rick Rankin  <rick_rankin@yahoo.com>
 
         * configure.in: Add -lkernel32 to the list of system libraries 
