@@ -1,3 +1,8 @@
+2003-11-19  Vin Shelton  <acs@xemacs.org>
+
+	* configure.usage (--with-widgets): widgets now defaults to
+	--with-widgets=no.  Patch inspired by Jim Schumacher.
+
 2003-10-25  Norbert Koch  <viteno@xemacs.org>
 
 	* etc/PACKAGES (riece): New package.
