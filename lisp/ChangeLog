@@ -1,5 +1,22 @@
 2004-04-21  Sven Grundmann  <sven@hellerhof.de>
 
+	* etags.el:
+	* etags.el (tags-exuberant-ctags-optimization-p): Enable optimization
+	only for use with exuberant ctags. This will also enable building of 
+	completion tables with exuberant ctags. This will not work with
+	xemacs ctags. 
+	* etags.el (get-tag-table-buffer): New function for creating of
+	completion table is used if tags-exuberant-ctags-optimization-p ist t
+	* etags.el (tags-explicit-name-pattern): Hold the name pattern for
+	finding the tag names. New.
+	* etags.el (add-to-tag-completion-table-exuberant-ctags): Defun for
+	building tag completion table with exuberant ctags. New.
+	* etags.el (find-tag-internal): Improve exact tag matching for tags
+	with name fields. Before the patch return types of functions or
+	function parameters (with exuberant ctags) were found as matches.
+
+2004-04-21  Sven Grundmann  <sven@hellerhof.de>
+
 	* list-mode.el (display-completion-list): Fixed completion list was
 	taking the width of the frame and not of the window for displaying
 	the selection methods.
