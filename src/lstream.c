@@ -284,7 +284,7 @@ Lstream_delete (Lstream *lstr)
 	}
     }
 
-  abort ();
+  ABORT ();
 }
 
 #define Lstream_internal_error(reason, lstr) \
@@ -1484,7 +1484,7 @@ make_lisp_buffer_stream_1 (struct buffer *buf, Bufpos start, Bufpos end,
 
   /* Make sure the luser didn't pass "w" in. */
   if (!strcmp (mode, "w"))
-    abort ();
+    ABORT ();
 
   if (flags & LSTR_IGNORE_ACCESSIBLE)
     {

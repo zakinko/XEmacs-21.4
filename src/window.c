@@ -492,7 +492,7 @@ real_window (struct window_mirror *mir, int no_abort)
   Lisp_Object retval = real_window_internal (mir->frame->root_window,
 					     mir->frame->root_mirror, mir);
   if (NILP (retval) && !no_abort)
-    abort ();
+    ABORT ();
 
   return retval;
 }
@@ -554,7 +554,7 @@ window_display_lines (struct window *w, int which)
     update_frame_window_mirror (XFRAME (w->frame));
   t = find_window_mirror (w);
   if (!t)
-    abort ();
+    ABORT ();
 
   if (which == CURRENT_DISP)
     return t->current_display_lines;
@@ -564,7 +564,7 @@ window_display_lines (struct window *w, int which)
     /* The CMOTION_DISP display lines are global. */
     return cmotion_display_lines;
   else
-    abort ();
+    ABORT ();
 
   return 0;	/* shut up compiler */
 }
@@ -578,7 +578,7 @@ window_display_buffer (struct window *w)
     update_frame_window_mirror (XFRAME (w->frame));
   t = find_window_mirror (w);
   if (!t)
-    abort ();
+    ABORT ();
 
   return t->buffer;
 }
@@ -592,7 +592,7 @@ set_window_display_buffer (struct window *w, struct buffer *b)
     update_frame_window_mirror (XFRAME (w->frame));
   t = find_window_mirror (w);
   if (!t)
-    abort ();
+    ABORT ();
 
   t->buffer = b;
 }
@@ -923,7 +923,7 @@ window_modeline_height (struct window *w)
 		modeline_height = (Dynarr_atp (dla, 0)->ascent +
 				   Dynarr_atp (dla, 0)->descent);
 	      else
-		/* This should be an abort except I'm not yet 100%
+		/* This should be an ABORT except I'm not yet 100%
                    confident that it won't ever get hit (though I
                    haven't been able to trigger it).  It is extremely
                    unlikely to cause any noticeable problem and even if
@@ -1809,7 +1809,7 @@ unshow_buffer (struct window *w)
   Lisp_Object buf = w->buffer;
 
   if (XBUFFER (buf) != XMARKER (w->pointm[CURRENT_DISP])->buffer)
-    abort ();
+    ABORT ();
 
   /* FSF disables this check, so I'll do it too.  I hope it won't
      break things.  --ben */
@@ -2639,14 +2639,14 @@ window_loop (enum window_loop type,
 	     I feel no shame about putting this piece of shit in. */
 	  if (++lose_lose >= 500)
 	    {
-	      /* Call to abort() added by Darryl Okahata (16 Nov. 2001),
+	      /* Call to ABORT() added by Darryl Okahata (16 Nov. 2001),
 	         at Ben's request, to catch any remaining bugs.
 
-		 If you find that XEmacs is aborting here, and you
+		 If you find that XEmacs is ABORTing here, and you
 		 need to be up and running ASAP, it should be safe to
-		 comment out the following abort(), as long as you
+		 comment out the following ABORT(), as long as you
 		 leave the "break;" alone.  */
-	      abort();
+	      ABORT();
 	      break;	/* <--- KEEP THIS HERE!  Do not delete!  */
 	    }
 
@@ -2797,7 +2797,7 @@ window_loop (enum window_loop type,
 		}
 
 	      default:
-		abort ();
+		ABORT ();
 	      }
 
 	  if (EQ (w, last_window))
@@ -2895,7 +2895,7 @@ Any other non-nil value means search all devices.
   w = window_loop (GET_LRU_WINDOW, Qnil, 0, which_frames, 1, which_devices);
 
   /* At this point we damn well better have found something. */
-  if (NILP (w)) abort ();
+  if (NILP (w)) ABORT ();
 #endif
 
   return w;
@@ -3800,7 +3800,7 @@ returned.
   XFRAME (p->frame)->mirror_dirty = 1;
   /* do this last (after the window is completely initialized and
      the mirror-dirty flag is set) so that specifier recomputation
-     caused as a result of this will work properly and not abort. */
+     caused as a result of this will work properly and not ABORT. */
   Fset_window_buffer (new, o->buffer, Qt);
   return new;
 }
@@ -5730,7 +5730,7 @@ by `current-window-configuration' (which see).
   if (FRAME_LIVE_P (f))
     {
       /* Do this before calling recompute_all_cached_specifiers_in_window()
-	 so that things like redisplay_redraw_cursor() won't abort due
+	 so that things like redisplay_redraw_cursor() won't ABORT due
 	 to no window mirror present. */
       f->mirror_dirty = 1;
 
@@ -5798,7 +5798,7 @@ saved_window_index (Lisp_Object window, struct window_config *config, int lim)
       if (EQ (SAVED_WINDOW_N (config, j)->window, window))
 	return j;
     }
-  abort ();
+  ABORT ();
   return 0;	/* suppress compiler warning */
 }
 

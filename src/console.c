@@ -1465,7 +1465,7 @@ buffer's local map, and the minor mode keymaps and text property keymaps.
   if ((XINT (console_local_flags.slot) != -2 &&			\
          XINT (console_local_flags.slot) != -3)			\
       != !(NILP (XCONSOLE (Vconsole_local_symbols)->slot)))	\
-  abort ()
+  ABORT ()
 #include "conslots.h"
 #undef MARKED_SLOT
 }

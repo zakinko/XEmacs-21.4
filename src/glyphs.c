@@ -711,7 +711,7 @@ get_image_instantiator_governing_domain (Lisp_Object instantiator,
   else if (governing_domain == GOVERNING_DOMAIN_DEVICE)
     domain = DOMAIN_DEVICE (domain);
   else
-    abort ();
+    ABORT ();
 
   return domain;
 }
@@ -1032,7 +1032,7 @@ print_image_instance (Lisp_Object obj, Lisp_Object printcharfun,
       break;
 
     default:
-      abort ();
+      ABORT ();
     }
 
   MAYBE_DEVMETH (DOMAIN_XDEVICE (ii->domain), print_image_instance,
@@ -1155,7 +1155,7 @@ image_instance_equal (Lisp_Object obj1, Lisp_Object obj2, int depth)
       break;
 
     default:
-      abort ();
+      ABORT ();
     }
 
   return DEVMETH_OR_GIVEN (DOMAIN_XDEVICE (i1->domain),
@@ -1234,7 +1234,7 @@ image_instance_hash (Lisp_Object obj, int depth)
       break;
 
     default:
-      abort ();
+      ABORT ();
     }
 
   return HASH2 (hash, DEVMETH_OR_GIVEN
@@ -1322,7 +1322,7 @@ encode_image_instance_type (enum image_instance_type type)
     case IMAGE_SUBWINDOW:    return Qsubwindow;
     case IMAGE_WIDGET:    return Qwidget;
     default:
-      abort ();
+      ABORT ();
     }
 
   return Qnil; /* not reached */
@@ -1460,7 +1460,7 @@ make_image_instance_1 (Lisp_Object data, Lisp_Object domain,
     signal_simple_error ("Image instances not allowed here", data);
   image_validate (data);
   domain = decode_domain (domain);
-  /* instantiate_image_instantiator() will abort if given an
+  /* instantiate_image_instantiator() will ABORT if given an
      image instance ... */
   dest_mask = decode_image_instance_type_list (dest_types);
   data = normalize_image_instantiator (data,
@@ -2212,7 +2212,7 @@ inherit_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
 		     int dest_mask, Lisp_Object domain)
 {
   /* handled specially in image_instantiate */
-  abort ();
+  ABORT ();
 }
 
 
@@ -3235,7 +3235,7 @@ image_instantiate (Lisp_Object specifier, Lisp_Object matchspec,
 		      Qunbound);
 	}
       else
-	abort ();	/* We're not allowed anything else currently. */
+	ABORT ();	/* We're not allowed anything else currently. */
 
       /* If we don't have an instance at this point then create
          one. */
@@ -3313,7 +3313,7 @@ image_instantiate (Lisp_Object specifier, Lisp_Object matchspec,
       RETURN_UNGCPRO (instance);
     }
 
-  abort ();
+  ABORT ();
   return Qnil; /* not reached */
 }
 
@@ -3710,7 +3710,7 @@ allocate_glyph (enum glyph_type type,
 	| IMAGE_COLOR_PIXMAP_MASK;
       break;
     default:
-      abort ();
+      ABORT ();
     }
 
   /* I think Fmake_specifier can GC.  I think set_specifier_fallback can GC. */
@@ -3835,7 +3835,7 @@ The return value will be one of 'buffer, 'pointer, or 'icon.
   CHECK_GLYPH (glyph);
   switch (XGLYPH_TYPE (glyph))
     {
-    default: abort ();
+    default: ABORT ();
     case GLYPH_BUFFER:  return Qbuffer;
     case GLYPH_POINTER: return Qpointer;
     case GLYPH_ICON:    return Qicon;
@@ -4523,7 +4523,7 @@ redisplay_subwindow (Lisp_Object subwindow)
   /* The update method is allowed to call eval.  Since it is quite
      common for this function to get called from somewhere in
      redisplay we need to make sure that quits are ignored.  Otherwise
-     Fsignal will abort. */
+     Fsignal will ABORT. */
   specbind (Qinhibit_quit, Qt);
 
   ERROR_CHECK_IMAGE_INSTANCE (subwindow);
@@ -4886,7 +4886,7 @@ display_table_entry (Emchar ch, Lisp_Object face_table,
 	    continue;
 	}
       else
-	abort ();
+	ABORT ();
     }
 }
 

@@ -247,11 +247,11 @@ template<typename T> struct alignment_trick { char c; T member; };
 /* Highly dubious kludge */
 /*   (thanks, Jamie, I feel better now -- ben) */
 void assert_failed (const char *, int, const char *);
-# define abort() (assert_failed (__FILE__, __LINE__, "abort()"))
+# define ABORT() (assert_failed (__FILE__, __LINE__, "ABORT()"))
 # define assert(x) ((x) ? (void) 0 : assert_failed (__FILE__, __LINE__, #x))
 #else
 # ifdef DEBUG_XEMACS
-#  define assert(x) ((x) ? (void) 0 : (void) abort ())
+#  define assert(x) ((x) ? (void) 0 : (void) ABORT ())
 # else
 #  define assert(x)
 # endif
@@ -879,7 +879,7 @@ do {									\
 
 /* For a list that's known to be in valid list format, where we may
    be deleting the current element out of the list --
-   will abort() if the list is not in valid format */
+   will ABORT() if the list is not in valid format */
 #define LIST_LOOP_DELETING(consvar, nextconsvar, list)		\
   for (consvar = list;						\
        !NILP (consvar) ? (nextconsvar = XCDR (consvar), 1) :0;	\
@@ -1410,7 +1410,7 @@ DECLARE_LRECORD (marker, Lisp_Marker);
 #define CONCHECK_MARKER(x) CONCHECK_RECORD (x, marker)
 
 /* The second check was looking for GCed markers still in use */
-/* if (INTP (XMARKER (x)->lheader.next.v)) abort (); */
+/* if (INTP (XMARKER (x)->lheader.next.v)) ABORT (); */
 
 #define marker_next(m) ((m)->next)
 #define marker_prev(m) ((m)->prev)

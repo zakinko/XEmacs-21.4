@@ -364,7 +364,7 @@ gtk_scrollbar_loop (enum gtk_scrollbar_loop type, Lisp_Object window,
 		}
 	      break;
 	    default:
-	      abort ();
+	      ABORT ();
 	    }
 	}
 
@@ -438,7 +438,7 @@ scrollbar_cb (GtkAdjustment *adj, gpointer user_data)
       event_data = Fcons (win, make_int ((int)adj->value));
       break;
     default:
-      abort();
+      ABORT();
     }
 
   signal_special_gtk_user_event (frame, event_type, event_data);
@@ -462,13 +462,13 @@ gtk_scrollbar_pointer_changed_in_window (struct window *w)
 void
 gtk_update_frame_scrollbars (struct frame *f)
 {
-  /* Consider this code to be "in_display" so that we abort() if Fsignal()
+  /* Consider this code to be "in_display" so that we ABORT() if Fsignal()
      gets called. */
   in_display++;
   gtk_scrollbar_loop (GTK_UPDATE_FRAME_SCROLLBARS, f->root_window, f->root_mirror,
 		      0, (GdkWindow *) NULL);
   in_display--;
-  if (in_display < 0) abort ();
+  if (in_display < 0) ABORT ();
 }
 
 #ifdef MEMORY_USAGE_STATS

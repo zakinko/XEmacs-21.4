@@ -1021,7 +1021,7 @@ menu_descriptor_to_widget_1 (Lisp_Object descr, GtkAccelGroup* accel_group)
   else
     {
       return (NULL);
-      /* abort (); ???? */
+      /* ABORT (); ???? */
     }
 }
 

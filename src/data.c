@@ -1769,7 +1769,7 @@ finish_marking_weak_lists (void)
 	      break;
 
 	    default:
-	      abort ();
+	      ABORT ();
 	    }
 
 	  if (need_to_mark_elem && ! marked_p (elem))
@@ -1925,7 +1925,7 @@ encode_weak_list_type (enum weak_list_type type)
     case WEAK_LIST_VALUE_ASSOC: return Qvalue_assoc;
     case WEAK_LIST_FULL_ASSOC:  return Qfull_assoc;
     default:
-      abort ();
+      ABORT ();
     }
 
   return Qnil; /* not reached */

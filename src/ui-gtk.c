@@ -1156,7 +1156,7 @@ Lisp_Object build_gtk_boxed (void *obj, GtkType t)
   emacs_gtk_boxed_data *data = NULL;
 
   if (GTK_FUNDAMENTAL_TYPE (t) != GTK_TYPE_BOXED)
-    abort();
+    ABORT();
 
   data = allocate_emacs_gtk_boxed_data ();
   data->object = obj;
@@ -1421,13 +1421,13 @@ void describe_gtk_arg (GtkArg *arg)
       /* structured types */
     case GTK_TYPE_SIGNAL:
     case GTK_TYPE_ARGS: /* This we can do as a list of values */
-      abort();
+      ABORT();
     case GTK_TYPE_CALLBACK:
       stderr_out ("callback fn: ...\n");
       break;
     case GTK_TYPE_C_CALLBACK:
     case GTK_TYPE_FOREIGN:
-      abort();
+      ABORT();
 
       /* base type of the object system */
     case GTK_TYPE_OBJECT:
@@ -1438,7 +1438,7 @@ void describe_gtk_arg (GtkArg *arg)
       break;
 
     default:
-      abort();
+      ABORT();
     }
 }
 
@@ -1518,7 +1518,7 @@ Lisp_Object gtk_type_to_lisp (GtkArg *arg)
 	    }
 	}
       stderr_out ("Do not know how to convert `%s' to lisp!\n", gtk_type_name (arg->type));
-      abort ();
+      ABORT ();
     }
   /* This is chuck reminding GCC to... SHUT UP! */
   return (Qnil);
@@ -1571,7 +1571,7 @@ int lisp_to_gtk_type (Lisp_Object obj, GtkArg *arg)
       break;
     case GTK_TYPE_LONG:
     case GTK_TYPE_ULONG:
-      abort();
+      ABORT();
     case GTK_TYPE_FLOAT:
       CHECK_INT_OR_FLOAT (obj);
       GTK_VALUE_FLOAT(*arg) = extract_float (obj);
@@ -1789,7 +1789,7 @@ int lisp_to_gtk_type (Lisp_Object obj, GtkArg *arg)
       else
 	{
 	  stderr_out ("Do not know how to convert `%s' from lisp!\n", gtk_type_name (arg->type));
-	  abort();
+	  ABORT();
 	}
       break;
     }
@@ -1850,7 +1850,7 @@ int lisp_to_gtk_ret_type (Lisp_Object obj, GtkArg *arg)
       break;
     case GTK_TYPE_LONG:
     case GTK_TYPE_ULONG:
-      abort();
+      ABORT();
     case GTK_TYPE_FLOAT:
       CHECK_INT_OR_FLOAT (obj);
       *(GTK_RETLOC_FLOAT(*arg)) = extract_float (obj);
@@ -2068,7 +2068,7 @@ int lisp_to_gtk_ret_type (Lisp_Object obj, GtkArg *arg)
       else
 	{
 	  stderr_out ("Do not know how to convert `%s' from lisp!\n", gtk_type_name (arg->type));
-	  abort();
+	  ABORT();
 	}
       break;
     }
@@ -2143,7 +2143,7 @@ lisp_to_flag (Lisp_Object obj, GtkType t)
     }
   else
     {
-      /* abort ()? */
+      /* ABORT ()? */
     }
   return (val);
 }

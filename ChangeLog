@@ -1,3 +1,25 @@
+2005-01-29  Ben Wing  <ben@xemacs.org>
+
+	* configure.in (AC_INIT_NOTICE):
+	* configure.in (XE_COMPUTE_RUNPATH):
+	Copy LDAP fixes from 21.5.
+
+	Port Marcus Crestani's patches of 2004-11-12:
+
+	* Makefile.in.in (install-arch-dep): Fix installation for Cygwin.
+	* configure:
+	* configure.in: Make pdump default for Cygwin.
+
+2005-01-30  Malcolm Purvis  <malcolmp@xemacs.org>
+
+	* Makefile.in.in (dump-elc): Depend on ${PROGNAME} to fix parallel
+	builds.
+
+2004-11-22  Adrian Aichner  <adrian@xemacs.org>
+
+	* etc/TUTORIAL: Typo fixes, courtesy of Andreas Eder
+	<Andreas.Eder@gmx.net>.
+
 2004-05-20  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* configure.in (HAVE_GPM): Die if GPM requested but not found.

@@ -1084,7 +1084,7 @@ search_command (Lisp_Object string, Lisp_Object limit, Lisp_Object noerror,
       if (!EQ (noerror, Qt))
 	{
 	  if (lim < BUF_BEGV (buf) || lim > BUF_ZV (buf))
-	    abort ();
+	    ABORT ();
 	  BUF_SET_PT (buf, lim);
 	  return Qnil;
 #if 0 /* This would be clean, but maybe programs depend on
@@ -1097,7 +1097,7 @@ search_command (Lisp_Object string, Lisp_Object limit, Lisp_Object noerror,
     }
 
   if (np < BUF_BEGV (buf) || np > BUF_ZV (buf))
-    abort ();
+    ABORT ();
 
   BUF_SET_PT (buf, np);
 
@@ -2837,7 +2837,7 @@ to hold all the values, and if INTEGERS is non-nil, no consing is done.
 	    }
 	  else
 	    /* last_thing_searched must always be Qt, a buffer, or Qnil.  */
-	    abort ();
+	    ABORT ();
 
 	  len = i;
 	}

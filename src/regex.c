@@ -119,6 +119,8 @@ complex_vars_of_regex (void)
 
 #else  /* not emacs */
 
+#define ABORT abort
+
 /* If we are not linking with Emacs proper,
    we can't use the relocating allocator
    even if config.h says that we can.  */
@@ -3923,7 +3925,7 @@ re_compile_fastmap (struct re_pattern_buffer *bufp)
 
 
 	default:
-          abort (); /* We have listed all the cases.  */
+          ABORT (); /* We have listed all the cases.  */
         } /* switch *p++ */
 
       /* Getting here means we have found the possible starting
@@ -5886,7 +5888,7 @@ re_match_2_internal (struct re_pattern_buffer *bufp, re_char *string1,
 #endif /* emacs */
 
         default:
-          abort ();
+          ABORT ();
 	}
       continue;  /* Successfully executed one pattern command; keep going.  */
 
@@ -6506,7 +6508,7 @@ regerror (int errcode, const regex_t *preg, char *errbuf,
        to this routine.  If we are given anything else, or if other regex
        code generates an invalid error code, then the program has a bug.
        Dump core so we can fix it.  */
-    abort ();
+    ABORT ();
 
   msg = gettext (re_error_msgid[errcode]);
 

@@ -1,3 +1,8 @@
+2005-01-29  Ben Wing  <ben@xemacs.org>
+
+	* shadow.el (find-emacs-lisp-shadows):
+	Add custom-defines to list of ignored files.
+
 2005-01-17  Adrian Aichner  <adrian@xemacs.org>
 
 	* simple.el (shifted-motion-keys-select-region): Fix statement

@@ -1089,7 +1089,7 @@ gtk_set_frame_pointer (struct frame *f)
     }
   else
     {
-      /* abort()? */
+      /* ABORT()? */
       stderr_out ("POINTER_IMAGE_INSTANCEP (f->pointer) failed!\n");
     }
 }
@@ -1399,7 +1399,7 @@ gtk_update_frame_external_traits (struct frame* frm, Lisp_Object name)
      }
    }
   else
-   abort ();
+   ABORT ();
 
 #ifdef HAVE_TOOLBARS
   /* Setting the background clears the entire frame area

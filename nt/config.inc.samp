@@ -18,10 +18,9 @@ HAVE_MS_WINDOWS=1
 HAVE_X_WINDOWS=0
 X11_DIR=
 
-# GTK support. Do NOT set this to 1; as of xemacs-21.2-b44
-# gtk-xemacs is not supported on MSWindows (mingw or msvc).
-# Yes, we know that gtk has been ported to native MSWindows
-# but XEmacs is not yet ready to use that port.
+# GTK support. Do NOT set this to 1; gtk-xemacs is not supported on
+# MSWindows (mingw or msvc).  Yes, we know that gtk has been ported to
+# native MSWindows but XEmacs is not yet ready to use that port.
 HAVE_GTK=0
 GTK_DIR=
 
@@ -64,13 +63,13 @@ JPEG_DIR=$(OPTIONAL_LIBRARY_DIR)\jpeg-6b
 # Set this to enable TIFF support (not very important), and specify the
 # directory containing tiff.  Get the latest version from
 # ftp://ftp.uu.net/graphics/tiff/.
-HAVE_TIFF=0
+HAVE_TIFF=1
 TIFF_DIR=$(OPTIONAL_LIBRARY_DIR)\tiff-v3.5.7
 
 # Set this to enable XFace support (not very important), and specify the
 # directory containing compface.  Get the library from
-# http://ftp.xemacs.org/aux/compface-1.5.tar.gz.
-HAVE_XFACE=0
+# http://ftp.xemacs.org/aux/compface-1.5-1.tar.gz.
+HAVE_XFACE=1
 COMPFACE_DIR=$(OPTIONAL_LIBRARY_DIR)\compface-1.5.1
 
 ############################################################################

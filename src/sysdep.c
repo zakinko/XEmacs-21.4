@@ -30,23 +30,6 @@ Boston, MA 02111-1307, USA.  */
 #define DONT_ENCAPSULATE
 
 #include <config.h>
-
-#ifdef WIN32_NATIVE
-#ifdef MINGW
-#include <../mingw/process.h>
-#else
-/* <process.h> should not conflict with "process.h", as per ANSI definition.
-   This is not true with visual c though. The trick below works with
-   VC4.2b, 5.0 and 6.0. It assumes that VC is installed in a kind of
-   standard way, so include path ends with /include.
-
-   Unfortunately, this must go before lisp.h, since process.h defines abort()
-   which will conflict with the macro defined in lisp.h
-*/
-#include <../include/process.h>
-#endif /* MINGW */
-#endif /* WIN32_NATIVE */
-
 #include "lisp.h"
 
 /* ------------------------------- */
@@ -93,6 +76,19 @@ Boston, MA 02111-1307, USA.  */
 #include "ntheap.h"
 #include "nt.h"
 #endif
+
+#ifdef WIN32_NATIVE
+#ifdef MINGW
+#include <../mingw/process.h>
+#else
+/* <process.h> should not conflict with "process.h", as per ANSI definition.
+   This is not true with visual c though. The trick below works with
+   VC4.2b, 5.0 and 6.0. It assumes that VC is installed in a kind of
+   standard way, so include path ends with /include.
+*/
+#include <../include/process.h>
+#endif /* MINGW */
+#endif /* WIN32_NATIVE */
 
 /* ------------------------------- */
 /*         TTY definitions         */
@@ -975,7 +971,7 @@ init_baud_rate (struct device *d)
 
     sg.sg_ospeed = B9600;
     if (ioctl (input_fd, TIOCGETP, &sg) < 0)
-      abort ();
+      ABORT ();
     DEVICE_TTY_DATA (d)->ospeed = sg.sg_ospeed;
 #endif
   }
