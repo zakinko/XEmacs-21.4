@@ -1,3 +1,7 @@
+2004-07-06  Steve Youngs  <steve@youngs.au.com>
+
+	* etc/NEWS: Document the major user visible changes to PUI.
+
 2003-07-21  Malcolm Purvis  <malcolmpurvis@optushome.com.au>
 
 	* etc/gtkrc: New file.  This is the GTK equivalent of the

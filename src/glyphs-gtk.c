@@ -63,6 +63,8 @@ Boston, MA 02111-1307, USA.  */
 #include "insdel.h"
 #include "opaque.h"
 #include "faces.h"
+#include "elhash.h"
+#include "events.h"
 
 #include "imgproc.h"
 
@@ -77,6 +79,11 @@ Boston, MA 02111-1307, USA.  */
 #ifdef FILE_CODING
 #include "file-coding.h"
 #endif
+
+extern void enqueue_gtk_dispatch_event (Lisp_Object event);
+
+/* Widget callback hash table callback slot. */
+#define WIDGET_GLYPH_SLOT 0
 
 #if INTBITS == 32
 # define FOUR_BYTE_TYPE unsigned int
@@ -2021,6 +2028,7 @@ gtk_map_subwindow (Lisp_Image_Instance *p, int x, int y,
       struct frame *f = XFRAME (IMAGE_INSTANCE_FRAME (p));
       GtkWidget *wid = IMAGE_INSTANCE_GTK_CLIPWIDGET (p);
       GtkAllocation a;
+      int moving;
 
       if (!wid) return;
 
@@ -2029,37 +2037,57 @@ gtk_map_subwindow (Lisp_Image_Instance *p, int x, int y,
       a.width = dga->width;
       a.height = dga->height;
 
+      /* Is the widget cganging position? */
+      moving = (a.x != wid->allocation.x) ||
+	(a.y != wid->allocation.y);
+
       if ((a.width  != wid->allocation.width)  ||
-	  (a.height != wid->allocation.height))
+	  (a.height != wid->allocation.height) ||
+	  moving)
 	{
 	  gtk_widget_size_allocate (IMAGE_INSTANCE_GTK_CLIPWIDGET (p), &a);
 	}
 
-      /* #### FIXME DAMMIT */
-      if ((wid->allocation.x != -dga->xoffset) ||
-	  (wid->allocation.y != -dga->yoffset))
+      if (moving)
 	{
 	  guint32 old_flags = GTK_WIDGET_FLAGS (FRAME_GTK_TEXT_WIDGET (f));
 
-	  /* Fucking GtkFixed widget queues a resize when you add a widget.
+	  /* GtkFixed widget queues a resize when you add a widget.
 	  ** But only if it is visible.
 	  ** losers.
 	  */
 	  GTK_WIDGET_FLAGS(FRAME_GTK_TEXT_WIDGET (f)) &= ~GTK_VISIBLE;
+
 	  if (IMAGE_INSTANCE_GTK_ALREADY_PUT(p))
 	    {
 	      gtk_fixed_move (GTK_FIXED (FRAME_GTK_TEXT_WIDGET (f)),
 			      wid,
-			      -dga->xoffset, -dga->yoffset);
+			      a.x, a.y);
 	    }
 	  else
 	    {
 	      IMAGE_INSTANCE_GTK_ALREADY_PUT(p) = TRUE;
 	      gtk_fixed_put (GTK_FIXED (FRAME_GTK_TEXT_WIDGET (f)),
 			     wid,
-			     -dga->xoffset, -dga->yoffset);
+			     a.x, a.y);
 	    }
+
 	  GTK_WIDGET_FLAGS(FRAME_GTK_TEXT_WIDGET (f)) = old_flags;
+	}
+      else
+	{
+	  if (IMAGE_INSTANCE_GTK_ALREADY_PUT(p))
+	    {
+	      /* Do nothing... */
+	    }
+	  else
+	    {
+	      /* Must make sure we have put the image at least once! */
+	      IMAGE_INSTANCE_GTK_ALREADY_PUT(p) = TRUE;
+	      gtk_fixed_put (GTK_FIXED (FRAME_GTK_TEXT_WIDGET (f)),
+			     wid,
+			     a.x, a.y);
+	    }
 	}
 
       if (!IMAGE_INSTANCE_SUBWINDOW_DISPLAYEDP (p))
@@ -2151,11 +2179,19 @@ gtk_redisplay_widget (Lisp_Image_Instance *p)
       ||
       IMAGE_INSTANCE_TEXT_CHANGED (p))
     {
+      GtkRequisition r;
+      GtkAllocation a = IMAGE_INSTANCE_GTK_CLIPWIDGET (p)->allocation;
+
       assert (IMAGE_INSTANCE_GTK_WIDGET_ID (p) &&
 	      IMAGE_INSTANCE_GTK_CLIPWIDGET (p)) ;
 
-      /* #### Resize the widget! */
-      /* gtk_widget_size_allocate () */
+      a.width = r.width = IMAGE_INSTANCE_WIDTH (p);
+      a.height = r.height = IMAGE_INSTANCE_HEIGHT (p);
+
+      /* Force the widget's preferred and actual size to what we say it shall
+	 be. */
+      gtk_widget_size_request (IMAGE_INSTANCE_GTK_CLIPWIDGET (p), &r);
+      gtk_widget_size_allocate (IMAGE_INSTANCE_GTK_CLIPWIDGET (p), &a);
     }
 
   /* Adjust offsets within the frame. */
@@ -2314,6 +2350,10 @@ gtk_widget_instantiate_1 (Lisp_Object image_instance, Lisp_Object instantiator,
   */
   IMAGE_INSTANCE_GTK_CLIPWIDGET (ii) = w;
 
+  /* The current theme may produce a widget of a different size that what we
+     expect so force reconsideration of the widget's size. */
+  IMAGE_INSTANCE_LAYOUT_CHANGED (ii) = 1;
+
   return (Qt);
 }
 
@@ -2362,8 +2402,44 @@ FAKE_GTK_WIDGET_INSTANTIATOR(button);
 FAKE_GTK_WIDGET_INSTANTIATOR(progress_gauge);
 FAKE_GTK_WIDGET_INSTANTIATOR(edit_field);
 FAKE_GTK_WIDGET_INSTANTIATOR(combo_box);
-FAKE_GTK_WIDGET_INSTANTIATOR(tab_control);
 FAKE_GTK_WIDGET_INSTANTIATOR(label);
+/* Note: tab_control has a custom instantiator (see below) */
+
+/*
+  Ask the widget to return it's preferred size.  This device method must
+  defined for all widgets that also have format specific version of
+  query_geometry defined in glyphs-widget.c.  This is because those format
+  specific versions return sizes that are appropriate for the X widgets.  For
+  GTK, the size of a widget can change at runtime due to the user changing
+  their theme.
+
+  This method can be called before the widget is instantiated.  This is
+  because instantiate_image_instantiator() is tying to be helpful to other
+  toolkits and supply sane geometry values to them.  This is not appropriate
+  for GTK and can be ignored.
+
+  This method can be used by all widgets.
+*/
+static void
+gtk_widget_query_geometry (Lisp_Object image_instance,
+			   int* width, int* height,
+			   enum image_instance_geometry disp, Lisp_Object domain)
+{
+  Lisp_Image_Instance *p = XIMAGE_INSTANCE (image_instance);
+
+  if (p->data != NULL)
+    {
+      GtkWidget *w = IMAGE_INSTANCE_GTK_CLIPWIDGET (p);
+      GtkRequisition r;
+
+      gtk_widget_size_request(w, &r);
+      *height= r.height;
+      *width = r.width;
+    }
+}
+
+
+/* Button functions. */
 
 /* Update a button's clicked state. */
 static void
@@ -2406,6 +2482,9 @@ gtk_button_property (Lisp_Object image_instance, Lisp_Object prop)
   return Qunbound;
 }
 
+
+/* Progress gauge functions. */
+
 /* set the properties of a progress gauge */
 static void
 gtk_progress_gauge_redisplay (Lisp_Object image_instance)
@@ -2425,6 +2504,198 @@ gtk_progress_gauge_redisplay (Lisp_Object image_instance)
     }
 }
 
+
+/* Tab Control functions. */
+
+/*
+  Register a widget's callbacks with the frame's hashtable.  The hashtable is
+  weak so deregistration is handled automatically.  Tab controls have per-tab
+  callback list functions and the GTK callback architecture is not
+  sufficiently flexible to deal with this.  Instead, the functions are
+  registered here and the id is passed through the callback loop.
+ */
+static int
+gtk_register_gui_item (Lisp_Object image_instance, Lisp_Object gui,
+		       Lisp_Object domain)
+{
+  struct frame *f = XFRAME(DOMAIN_FRAME(domain));
+  int id = gui_item_id_hash(FRAME_GTK_WIDGET_CALLBACK_HASH_TABLE(f),
+			    gui, WIDGET_GLYPH_SLOT);
+
+  Fputhash(make_int(id), image_instance,
+	   FRAME_GTK_WIDGET_INSTANCE_HASH_TABLE (f));
+  Fputhash(make_int(id), XGUI_ITEM (gui)->callback,
+	   FRAME_GTK_WIDGET_CALLBACK_HASH_TABLE (f));
+  Fputhash(make_int(id), XGUI_ITEM (gui)->callback_ex,
+	   FRAME_GTK_WIDGET_CALLBACK_EX_HASH_TABLE (f));
+  return id;
+}
+
+/*
+  Append the given item as a tab to the notebook. Callbacks, etc are all
+  setup.
+ */
+static void
+gtk_add_tab_item(Lisp_Object image_instance,
+		 GtkNotebook* nb, Lisp_Object item,
+		 Lisp_Object domain, int i)
+{
+  Lisp_Object name;
+  int hash_id = 0;
+  char *c_name = NULL;
+  GtkWidget* box;
+
+  if (GUI_ITEMP (item))
+    {
+      Lisp_Gui_Item *pgui = XGUI_ITEM (item);
+
+      if (!STRINGP (pgui->name))
+	pgui->name = Feval (pgui->name);
+
+      CHECK_STRING (pgui->name);
+
+      hash_id = gtk_register_gui_item (image_instance, item, domain);
+      name = pgui->name;
+    }
+  else
+    {
+      CHECK_STRING (item);
+      name = item;
+    }
+
+  TO_EXTERNAL_FORMAT (LISP_STRING, name,
+		      C_STRING_ALLOCA, c_name,
+		      Qctext);
+
+  /* Dummy widget that the notbook wants to display when a tab is selected. */
+  box = gtk_vbox_new (FALSE, 3);
+
+  /*
+    Store the per-tab callback data id in the tab.  The callback functions
+    themselves could have been stored in the widget but this avoids having to
+    worry about the garbage collector running between here and the callback
+    function.
+  */
+  gtk_object_set_data(GTK_OBJECT(box), GTK_DATA_TAB_HASHCODE_IDENTIFIER,
+		      (gpointer) hash_id);
+
+  gtk_notebook_append_page (nb, box, gtk_label_new (c_name));
+}
+
+/* Signal handler for the switch-page signal. */
+static void gtk_tab_control_callback(GtkNotebook *notebook,
+				     GtkNotebookPage *page,
+				     gint page_num,
+				     gpointer user_data)
+{
+  /*
+    This callback is called for every selection, not just user selection.
+    We're only interested in user selection, which occurs outside of
+    redisplay.
+  */
+
+  if (!in_display)
+    {
+      Lisp_Object image_instance, callback, callback_ex;
+      Lisp_Object frame, event;
+      int update_subwindows_p = 0;
+      struct frame *f = gtk_widget_to_frame(GTK_WIDGET(notebook));
+      int id;
+
+      if (!f)
+	return;
+      frame = wrap_frame (f);
+
+      id             = (int) gtk_object_get_data(GTK_OBJECT(page->child),
+						 GTK_DATA_TAB_HASHCODE_IDENTIFIER);
+      image_instance = Fgethash(make_int(id),
+				FRAME_GTK_WIDGET_INSTANCE_HASH_TABLE(f), Qnil);
+      callback       = Fgethash(make_int(id),
+				FRAME_GTK_WIDGET_CALLBACK_HASH_TABLE(f), Qnil);
+      callback_ex    = Fgethash(make_int(id),
+				FRAME_GTK_WIDGET_CALLBACK_EX_HASH_TABLE(f), Qnil);
+      update_subwindows_p = 1;
+
+      /* It is possible for a widget action to cause it to get out of
+	 sync with its instantiator. Thus it is necessary to signal
+	 this possibility. */
+      if (IMAGE_INSTANCEP (image_instance))
+	XIMAGE_INSTANCE_WIDGET_ACTION_OCCURRED (image_instance) = 1;
+      
+      if (!NILP (callback_ex) && !UNBOUNDP (callback_ex))
+	{
+	  event = Fmake_event (Qnil, Qnil);
+
+	  XEVENT (event)->event_type = misc_user_event;
+	  XEVENT (event)->channel = frame;
+	  XEVENT (event)->event.eval.function = Qeval;
+	  XEVENT (event)->event.eval.object =
+	    list4 (Qfuncall, callback_ex, image_instance, event);
+	}
+      else if (NILP (callback) || UNBOUNDP (callback))
+	event = Qnil;
+      else
+	{
+	  Lisp_Object fn, arg;
+
+	  event = Fmake_event (Qnil, Qnil);
+
+	  get_gui_callback (callback, &fn, &arg);
+	  XEVENT (event)->event_type = misc_user_event;
+	  XEVENT (event)->channel = frame;
+	  XEVENT (event)->event.eval.function = fn;
+	  XEVENT (event)->event.eval.object = arg;
+	}
+
+      if (!NILP (event))
+	enqueue_gtk_dispatch_event (event);
+
+      /* The result of this evaluation could cause other instances to change so
+	 enqueue an update callback to check this. */
+      if (update_subwindows_p && !NILP (event))
+	enqueue_magic_eval_event (update_widget_instances, frame);
+    }
+}
+
+/* Create a tab_control widget.  The special handling of the individual tabs
+   means that the normal instantiation code cannot be used. */
+static void
+gtk_tab_control_instantiate (Lisp_Object image_instance,
+			     Lisp_Object instantiator,
+			     Lisp_Object pointer_fg,
+			     Lisp_Object pointer_bg,
+			     int dest_mask, Lisp_Object domain)
+{
+  Lisp_Object rest;
+  Lisp_Image_Instance *ii = XIMAGE_INSTANCE (image_instance);
+  int i = 0;
+  int selected = 0;
+  GtkNotebook *nb;
+
+  /* The normal instantiation is still needed. */
+  gtk_widget_instantiate (image_instance, instantiator, pointer_fg,
+			  pointer_bg, dest_mask, domain);
+
+  nb = GTK_NOTEBOOK (IMAGE_INSTANCE_GTK_CLIPWIDGET (ii));
+
+  /* Add items to the tab, find the current selection */
+  LIST_LOOP (rest, XCDR (IMAGE_INSTANCE_WIDGET_ITEMS (ii)))
+    {
+      gtk_add_tab_item (image_instance, nb, XCAR (rest), domain, i);
+
+      if (gui_item_selected_p (XCAR (rest)))
+	selected = i;
+
+      i++;
+    }
+
+  gtk_notebook_set_page(nb, selected);
+
+  /* Call per-tab lisp callback when a tab is pressed. */
+  gtk_signal_connect (GTK_OBJECT (nb), "switch-page",
+		      GTK_SIGNAL_FUNC (gtk_tab_control_callback), NULL);
+}
+
 /* Set the properties of a tab control */
 static void
 gtk_tab_control_redisplay (Lisp_Object image_instance)
@@ -2441,6 +2712,7 @@ gtk_tab_control_redisplay (Lisp_Object image_instance)
 	 one. */
       if (tab_control_order_only_changed (image_instance))
 	{
+	  int i = 0;
 	  Lisp_Object rest, selected =
 	    gui_item_list_find_selected
 	    (NILP (IMAGE_INSTANCE_WIDGET_PENDING_ITEMS (ii)) ?
@@ -2454,9 +2726,6 @@ gtk_tab_control_redisplay (Lisp_Object image_instance)
 		  Lisp_Object old_selected =gui_item_list_find_selected
 		    (XCDR (IMAGE_INSTANCE_WIDGET_ITEMS (ii)));
 
-		  /* Need to focus on the widget... */
-		  stderr_out ("Hey, change the tab-focus you boob...\n");
-
 		  /* Pick up the new selected item. */
 		  XGUI_ITEM (old_selected)->selected =
 		    XGUI_ITEM (XCAR (rest))->selected;
@@ -2465,8 +2734,14 @@ gtk_tab_control_redisplay (Lisp_Object image_instance)
 		  /* We're not actually changing the items anymore. */
 		  IMAGE_INSTANCE_WIDGET_ITEMS_CHANGED (ii) = 0;
 		  IMAGE_INSTANCE_WIDGET_PENDING_ITEMS (ii) = Qnil;
+
+		  gtk_notebook_set_page(GTK_NOTEBOOK (IMAGE_INSTANCE_GTK_CLIPWIDGET (ii)),
+					i);
+
 		  break;
 		}
+
+	      i++;
 	    }
 	}
       else
@@ -2475,33 +2750,23 @@ gtk_tab_control_redisplay (Lisp_Object image_instance)
 	  GtkNotebook *nb = GTK_NOTEBOOK (IMAGE_INSTANCE_GTK_CLIPWIDGET (ii));
 	  guint num_pages = g_list_length (nb->children);
 	  Lisp_Object rest;
+	  int i;
 
+	  /* Why is there no API to remove everything from a notebook? */
 	  if (num_pages >= 0)
 	    {
-	      int i;
 	      for (i = num_pages; i >= 0; --i)
 		{
 		  gtk_notebook_remove_page (nb, i);
 		}
 	    }
 
-	  LIST_LOOP (rest, XCDR (IMAGE_INSTANCE_WIDGET_ITEMS (ii)))
+	  i = 0;
+
+	  LIST_LOOP (rest, XCDR (IMAGE_INSTANCE_WIDGET_PENDING_ITEMS (ii)))
 	    {
-	      Lisp_Gui_Item *pgui = XGUI_ITEM (XCAR (rest));
-	      char *c_name = NULL;
-
-	      if (!STRINGP (pgui->name))
-		pgui->name = Feval (pgui->name);
-
-	      CHECK_STRING (pgui->name);
-
-	      TO_EXTERNAL_FORMAT (LISP_STRING, pgui->name,
-				  C_STRING_ALLOCA, c_name,
-				  Qctext);
-
-	      gtk_notebook_append_page (nb,
-					gtk_vbox_new (FALSE, 3),
-					gtk_label_new (c_name));
+	      gtk_add_tab_item(image_instance, nb, XCAR(rest),
+			       IMAGE_INSTANCE_FRAME(ii), i);
 	    }
 
 	  /* Show all the new widgets we just added... */
@@ -2598,14 +2863,17 @@ image_instantiator_format_create_glyphs_gtk (void)
   IIFORMAT_HAS_DEVMETHOD (gtk, button, property);
   IIFORMAT_HAS_DEVMETHOD (gtk, button, instantiate);
   IIFORMAT_HAS_DEVMETHOD (gtk, button, redisplay);
+  IIFORMAT_HAS_SHARED_DEVMETHOD (gtk, button, query_geometry, widget);
   /* general widget methods. */
   INITIALIZE_DEVICE_IIFORMAT (gtk, widget);
   IIFORMAT_HAS_DEVMETHOD (gtk, widget, property);
+  IIFORMAT_HAS_DEVMETHOD (gtk, widget, query_geometry);
 
   /* progress gauge */
   INITIALIZE_DEVICE_IIFORMAT (gtk, progress_gauge);
   IIFORMAT_HAS_DEVMETHOD (gtk, progress_gauge, redisplay);
   IIFORMAT_HAS_DEVMETHOD (gtk, progress_gauge, instantiate);
+  IIFORMAT_HAS_SHARED_DEVMETHOD (gtk, progress_gauge, query_geometry, widget);
   /* text field */
   INITIALIZE_DEVICE_IIFORMAT (gtk, edit_field);
   IIFORMAT_HAS_DEVMETHOD (gtk, edit_field, instantiate);
@@ -2616,6 +2884,7 @@ image_instantiator_format_create_glyphs_gtk (void)
   INITIALIZE_DEVICE_IIFORMAT (gtk, tab_control);
   IIFORMAT_HAS_DEVMETHOD (gtk, tab_control, instantiate);
   IIFORMAT_HAS_DEVMETHOD (gtk, tab_control, redisplay);
+  IIFORMAT_HAS_SHARED_DEVMETHOD (gtk, tab_control, query_geometry, widget);
   /* label */
   INITIALIZE_DEVICE_IIFORMAT (gtk, label);
   IIFORMAT_HAS_DEVMETHOD (gtk, label, instantiate);

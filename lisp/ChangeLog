@@ -1,3 +1,16 @@
+2004-07-02  Malcolm Purvis  <malcolmp@xemacs.org>
+
+	* widgets-gtk.el (gtk-widget-instantiate-notebook-internal):
+	Loading items into the notebook is now done by C code.
+	* widgets-gtk.el (gtk-widget-instantiate-internal):
+	Style no longer changed.
+
+2004-06-28  Nix  <nix@esperi.org.uk>
+
+	* cmdloop.el (truncate-command-history-for-gc): Delay
+        execution of all things that look up variable bindings,
+        via `enqueue-eval-event'.
+
 2004-06-24  Vin Shelton  <acs@xemacs.org>
 
 	* package-get.el (package-get-require-signed-base-updates):

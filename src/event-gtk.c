@@ -92,7 +92,7 @@ static int last_quit_check_signal_tick_count;
 Lisp_Object Qkey_mapping;
 Lisp_Object Qsans_modifiers;
 
-static void enqueue_gtk_dispatch_event (Lisp_Object event);
+void enqueue_gtk_dispatch_event (Lisp_Object event);
 
 #define IS_MODIFIER_KEY(keysym)  \
   ((((keysym) >= GDK_Shift_L) && ((keysym) <= GDK_Hyper_R)) \
@@ -1094,7 +1094,7 @@ dragndrop_dropped (GtkWidget *widget,
 
 static Lisp_Object dispatch_event_queue, dispatch_event_queue_tail;
 
-static void
+void
 enqueue_gtk_dispatch_event (Lisp_Object event)
 {
   enqueue_event (event, &dispatch_event_queue, &dispatch_event_queue_tail);
