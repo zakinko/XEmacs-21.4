@@ -1,3 +1,7 @@
+2004-01-30  Glynn Clements  <glynn.clements@virgin.net>
+
+	* device-x.c (x_error_handler): Don't call stderr_out
+
 2003-11-07  Katsumi Yamaoka <yamaoka@jpl.org>
 
 	* buffer.c (other-buffer): Clarify documentation of order of
