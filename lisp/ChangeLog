@@ -4,11 +4,6 @@
 
 	* custom-load.el: Regenerated.
 
-2004-10-28  Stephen J. Turnbull  <stephen@xemacs.org>
-
-	* code-process.el (call-process-region): Fix region deletion bug.
-	Report by Katsumi Yamaoka <b9yvfcyuscf.fsf@jpl.org>.
-
 2004-09-15  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	Fix bug: apropos errors if a defalias refers to an undefined
