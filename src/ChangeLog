@@ -1,3 +1,7 @@
+2003-07-29  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* EmacsFrame.c (emacsFrameClassRec): Motif groks not XtCompress*.
+
 2003-03-24  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* database.c (Fopen_database): Don't use DB_AUTO_COMMIT.
