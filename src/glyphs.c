@@ -1989,9 +1989,6 @@ image_instance_layout (Lisp_Object image_instance,
   if (yoffset != IMAGE_UNCHANGED_GEOMETRY)
     XIMAGE_INSTANCE_YOFFSET (image_instance) = yoffset;
 
-  assert (XIMAGE_INSTANCE_YOFFSET (image_instance) >= 0
-	  && XIMAGE_INSTANCE_XOFFSET (image_instance) >= 0);
-
   /* If geometry is unspecified then get some reasonable values for it. */
   if (width == IMAGE_UNSPECIFIED_GEOMETRY
       ||

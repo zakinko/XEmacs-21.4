@@ -1843,7 +1843,7 @@ static register_info_type *reg_info_dummy;
 /* Make the register vectors big enough for NUM_REGS registers,
    but don't make them smaller.  */
 
-static
+static void
 regex_grow_registers (int num_regs)
 {
   if (num_regs > regs_allocated_size)
