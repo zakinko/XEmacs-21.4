@@ -218,3 +218,6 @@
 2000-11-12  Andy Piper  <andy@xemacs.org>
 
 	* all: port from cygwin setup.
+
+%%% $Id: ChangeLog,v 1.2.2.3 2001/04/18 00:16:22 andyp Exp $
+$Revision: 1.2.2.3 $
