@@ -1,3 +1,14 @@
+2004-01-27  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* specifier.el (Copyright):
+	Update.
+	(make-specifier-and-init):
+	(map-specifier):
+	(canonicalize-inst-pair):
+	(canonicalize-spec-list):
+	(set-specifier):
+	Synch docstrings to 21.5 where appropriate.
+
 2004-01-25  Steve Youngs  <sryoungs@bigpond.net.au>
 
 	* package-get.el (package-get-list-packages-where): New.  A
