@@ -1,3 +1,10 @@
+2003-03-20  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* config.h.in (INTPTR_T_IN_CYGWIN_TYPES_H): 
+	* lisp.h (<inttypes.h>):
+	Cygwin defines these types in <cygwin/types.h>.  Don't duplicate
+	the definition.
+
 2003-03-15  Martin Buchholz  <martin@xemacs.org>
 
 	* dumper.c (pdump_load): Pdump'ed XEmacs can't find its .dmp file.

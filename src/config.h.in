@@ -820,6 +820,8 @@ on various systems. */
 #undef SIZEOF_LONG_LONG
 #undef SIZEOF_VOID_P
 
+#undef INTPTR_T_IN_CYGWIN_TYPES_H
+
 #ifndef BITS_PER_CHAR
 #define BITS_PER_CHAR 8
 #endif
