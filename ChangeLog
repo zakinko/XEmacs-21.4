@@ -1,5 +1,13 @@
 2002-05-04  Stephen J. Turnbull  <stephen@xemacs.org>
 
+	* etc/sample.init.el: Fix comment typo about resize-minibuffer.
+
+	* etc/sample.init.el: Add description of initialization process,
+	the custom.el file, and code to load custom.el early instead of
+	late.
+
+2002-05-04  Stephen J. Turnbull  <stephen@xemacs.org>
+
 	* PROBLEMS (General): Decribe failed AUTH with EFS.
 
 2002-04-22  Hrvoje Niksic  <hniksic@xemacs.org>
