@@ -344,7 +344,7 @@ uintptr_t bss_end = 0;
 #endif
 
 /* Number of bytes of writable memory we can expect to be able to get */
-unsigned int lim_data;
+unsigned long lim_data;
 
 /* WARNING!
 
