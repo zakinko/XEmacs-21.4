@@ -1,3 +1,14 @@
+2003-09-06  Mike Sperber  <mike@xemacs.org>
+
+	* bytecomp.el (byte-compile-defvar-or-defconst): Actually
+	implement the specified semantics for `defvar.'
+
+2003-09-07  Adrian Aichner  <adrian@xemacs.org>
+
+	* window-xemacs.el (display-buffer): Fix for `shrink-to-fit' by
+	Klaus Berndl, calling `shrink-window-if-larger-than-buffer' when
+	displaying buffer in question.
+
 2003-09-03  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.14 is released

@@ -1811,10 +1811,14 @@ x_layout_widgets (Widget w, XtPointer client_data, XtPointer call_data)
 #endif
 
   /* finally the text area */
-  XtConfigureWidget (text, text_x, text_y,
-		     width - 2*textbord,
-		     height - text_y - 2*textbord,
-		     textbord);
+  {
+    Dimension nw = width - 2*textbord;
+    Dimension nh = height - text_y - 2*textbord;
+
+    if (nh != f->pixheight || nw != f->pixwidth)
+      MARK_FRAME_SIZE_SLIPPED (f);
+    XtConfigureWidget (text, text_x, text_y, nw, nh, textbord);
+  }
 }
 
 static void

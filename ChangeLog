@@ -1,3 +1,14 @@
+2003-09-12  Rodney Sparapani <rsparapa@mcw.edu>
+
+	* PROBLEMS: Propose bash as an alternative to buggy Solaris
+	/bin/sh.
+
+2003-09-10  Martin Buchholz  <martin@xemacs.org>
+
+	* configure.in: XEmacs failed to build on Solaris9.
+	Solaris9 comes with /usr/demo/SOUND, but no headers or libraries
+	therein.
+
 2003-09-03  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.14 is released

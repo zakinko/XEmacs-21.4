@@ -1,3 +1,29 @@
+2003-09-12  Yoshiki Hayashi  <yoshiki@xemacs.org>
+
+	* regex.c (TRANSLATE_EXTENDED_UNSAFE): Remove.
+	(re_search_2): Match the first byte of Bufbyte, not Emchar.
+	(re_match_2_internal): Use TRANSLATE instead of
+	TRANSLATE_EXTENDED_UNSAFE.  The latter was a hack to bypass
+	non-ASCII char case conversion.
+
+2003-09-08  Mike Sperber  <mike@xemacs.org>
+
+	* symbols.c (Fvariable_binding_locus): Add, as per suggestion from
+	RMS at: http://article.gmane.org/gmane.emacs.pretest.bugs/1010
+
+2003-06-14  Ilya N. Golubev  <gin@mo.msk.ru>
+
+       * .gdbinit (pobj): fix printing of symbol name.
+
+2003-08-01  Ilya N. Golubev  <gin@mo.msk.ru>
+
+	* frame-x.c (x_layout_widgets): When resizing is about to cause
+	frame size slip, mark it for redisplay.
+
+2003-08-18  Jerry James  <james@xemacs.org>
+
+	* opaque.h: Remove unused (X)OPAQUE_MARKFUN definitions.
+
 2003-09-03  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.14 is released

@@ -269,7 +269,7 @@ The output file's name is made by appending `c' to the end of FILENAME."
 	   (message "Unexpected error %S while executing byte-compiled code." error-info)
 	   (message "Test suite execution aborted." error-info)
 	   )))
-      (princ "\nSUMMARY:\n")
+      (princ (format "\nSUMMARY for %s:\n" filename))
       (princ (format "\t%5d passes\n" passes))
       (princ (format "\t%5d assertion failures\n" assertion-failures))
       (princ (format "\t%5d errors that should have been generated, but weren't\n" no-error-failures))
@@ -285,14 +285,14 @@ The output file's name is made by appending `c' to the end of FILENAME."
 	     (basename (file-name-nondirectory filename))
 	     (summary-msg
 	      (if (> total 0)
-		  (format "%s: %d of %d (%d%%) tests successful."
+		  (format "%s: %d of %d tests successful (%d%%)."
 			  basename passes total (/ (* 100 passes) total))
 		(format "%s: No tests run" basename)))
 	     (reasons ""))
 	(maphash (lambda (key value)
 		   (setq reasons
 			 (concat reasons
-				 (format "\n    %d tests skipped because %s"
+				 (format "\n    %d tests skipped because %s."
 					 value key))))
 		 skipped-test-reasons)
 	(when (> (length reasons) 1)
@@ -309,7 +309,9 @@ The output file's name is made by appending `c' to the end of FILENAME."
       (fmakunbound 'Check-Error-Message)
       (fmakunbound 'Ignore-Ebola)
       (fmakunbound 'Int-to-Marker)
-      )))
+      (and noninteractive
+	   (message "%s" (buffer-substring-no-properties
+			  nil nil "*Test-Log*"))))))
 
 (defvar test-harness-results-point-max nil)
 (defmacro displaying-emacs-test-results (&rest body)
@@ -388,7 +390,6 @@ For example, invoke \"xemacs -batch -f batch-test-emacs tests/*.el\""
 		  (setq error t))))
 	(or (batch-test-emacs-1 file)
 	    (setq error t))))
-    ;;(message "%s" (buffer-string nil nil "*Test-Log*"))
     (message "Done")
     (kill-emacs (if error 1 0))))
 

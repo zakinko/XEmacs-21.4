@@ -1591,13 +1591,6 @@ static unsigned char reg_unset_dummy;
    when we use a character as a subscript we must make it unsigned.  */
 #define TRANSLATE(d) (TRANSLATE_P (translate) ? RE_TRANSLATE (d) : (d))
 
-#ifdef MULE
-
-#define TRANSLATE_EXTENDED_UNSAFE(emch) \
-  (TRANSLATE_P (translate) && emch < 0x80 ? RE_TRANSLATE (emch) : (emch))
-
-#endif
-
 /* Macros for outputting the compiled pattern into `buffer'.  */
 
 /* If the buffer isn't allocated when it comes in, use this.  */
@@ -4114,10 +4107,12 @@ re_search_2 (struct re_pattern_buffer *bufp, const char *str1,
 		  {
 #ifdef MULE
 		    Emchar buf_ch;
+		    Bufbyte str[MAX_EMCHAR_LEN];
 
 		    buf_ch = charptr_emchar (d);
 		    buf_ch = RE_TRANSLATE (buf_ch);
-		    if (buf_ch >= 0200 || fastmap[(unsigned char) buf_ch])
+		    set_charptr_emchar (str, buf_ch);
+		    if (buf_ch >= 0200 || fastmap[(unsigned char) *str])
 		      break;
 #else
 		    if (fastmap[(unsigned char)RE_TRANSLATE (*d)])
@@ -4865,7 +4860,7 @@ re_match_2_internal (struct re_pattern_buffer *bufp, re_char *string1,
 
 	    REGEX_PREFETCH ();
 	    c = charptr_emchar ((const Bufbyte *) d);
-	    c = TRANSLATE_EXTENDED_UNSAFE (c); /* The character to match.  */
+	    c = TRANSLATE (c); /* The character to match.  */
 
 	    if (EQ (Qt, unified_range_table_lookup (p, c, Qnil)))
 	      not_p = !not_p;
