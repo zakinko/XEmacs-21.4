@@ -1,3 +1,8 @@
+2003-11-06  Adrian Aichner  <adrian@xemacs.org>
+
+	* minitar.c: Sync with Xemacs 21.5 version to fix package
+	installation in native Windows XEmacs.
+
 2003-09-03  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.14 is released
