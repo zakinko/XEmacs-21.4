@@ -1,3 +1,12 @@
+2003-08-15  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* configure.in (line 3593): Default widgets OFF for Athena/Motif.
+
+2003-08-15  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* configure.in (regex_malloc):  New option.
+	configure.usage (--use-regex-malloc):  Document it.
+
 2003-08-14  Andrew Begel  <abegel@CS.Berkeley.EDU>
 
 	* configure.in: Add code to detect Darwin/MacOSX dynamic linking

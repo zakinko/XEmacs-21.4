@@ -237,7 +237,8 @@ Memory allocation options:
                         it in the standard C library.
 --with-system-malloc    (Bool) Use the system malloc, instead of GNU malloc.
 --with-debug-malloc     (Bool) Use the debugging malloc package.
-
+--use-regex-malloc=no   (Bool) Use malloc (not alloca) for regex fail stack.
+                        Setting this to 'yes' allows unpreventable crashes.
 
 Debugging options:
 

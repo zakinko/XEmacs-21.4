@@ -359,6 +359,7 @@ with_msw=''
 rel_alloc='default'
 with_system_malloc='default'
 with_dlmalloc='default'
+use_regex_malloc='yes'
 dnl ESD is associated with crashes and lockups due to incorrect signal use.
 with_esd_sound='no'
 native_sound_lib=''
@@ -516,9 +517,10 @@ while test $# != 0; do
 	pdump		| \
 	debug		| \
 	use_assertions	| \
+	use_regex_malloc | \
 	memory_usage_stats | \
 	with_clash_detection | \
-	with_modules | \
+	with_modules    | \
 	quick_build )
 	  dnl Make sure the value given was either "yes" or "no".
 	  case "$val" in
@@ -3582,11 +3584,14 @@ esac
 case "$with_scrollbars" in "" | "yes" )
   with_scrollbars="lucid" ;;
 esac
-case "$with_widgets" in "" | "yes" | "lucid")
-  if   test "$have_motif" = "yes"; then with_widgets="motif"
-  elif test "$have_xaw"   = "yes"; then with_widgets="athena"
-  else with_widgets=no
-  fi ;;
+case "$with_widgets" in
+  "yes" | "lucid")
+    if   test "$have_motif" = "yes"; then with_widgets="motif"
+    elif test "$have_xaw"   = "yes"; then with_widgets="athena"
+    else with_widgets=no
+    fi ;;
+  "" )
+    with_widgets=no ;;
 esac
 
 all_widgets="$with_menubars $with_scrollbars $with_dialogs $with_toolbars $with_widgets"
@@ -4903,6 +4908,7 @@ test "$with_pop"           = "yes" && AC_DEFINE(MAIL_USE_POP)
 test "$with_kerberos"      = "yes" && AC_DEFINE(KERBEROS)
 test "$with_hesiod"        = "yes" && AC_DEFINE(HESIOD)
 test "$use_union_type"     = "yes" && AC_DEFINE(USE_UNION_TYPE)
+test "$use_regex_malloc"   = "yes" && AC_DEFINE(REGEX_MALLOC)
 test "$pdump"              = "yes" && AC_DEFINE(PDUMP)
 test "$with_ipv6_cname"    = "yes" && AC_DEFINE(IPV6_CANONICALIZE)
 
@@ -5134,6 +5140,13 @@ if test "$use_union_type" = yes; then
   echo "  Union type has been implicated in hard-to-debug runtime crashes."
   echo "  Do NOT use this build of XEmacs for ordinary work.  See PROBLEMS."
   echo "  WARNING: ---------------------------------------------------------"
+fi
+if test "$use_regex_malloc" = no; then
+  echo "  WARNING: -----------------------------------------------------------"
+  echo "  Using alloca to allocate the failure stack."
+  echo "  It may be impossible to detect stack exhaustion, and you will crash."
+  echo "  Do NOT use this build of XEmacs for ordinary work."
+  echo "  WARNING: -----------------------------------------------------------"
 fi
 test "$pdump" = yes && echo "  Using the new portable dumper."
 test "$debug" = yes && echo "  Compiling in support for extra debugging code."
