@@ -50,9 +50,8 @@ to 21.4.9 "Informed Management"
 -- Fix: freeze on virtual desktop switch (MS Windows) -- Rick Rankin
 -- Fix: glyph handling, especially baselines -- Andy Piper, Nix
 -- Fix: handle popup dialogs correlcty (MS Windows) -- Andy Piper
--- Fix: make completion-base-size refer to completion list buffer value
 -- Fix: mousewheel handling (MS Windows) -- Andy Piper
--- Fix: short file name handling (MS Windows) -- Andy Piper, Perter Arius
+-- Fix: short file name handling (MS Windows) -- Andy Piper, Peter Arius
 -- Fix: shrink to fit windows work -- Jerry James
 -- Fix: toolbar doesn't update if gutters move bug -- Andy Piper
 -- Fix: uneven horizontal window splits -- Jerry James
@@ -63,9 +62,9 @@ to 21.4.9 "Informed Management"
 -- Improve: revert-buffer omits expensive operations if no change -- Andy Piper
 -- Improve: change registry key to XEmacs (MS Windows) -- Andy Piper
 -- Improve: 2d arg of split-string-by-char is required -- Brian A Palmer
--- Improve: printer handling on MS (native and Cygwin) --Andy Piper
+-- Improve: printer handling on MS (native and Cygwin) -- Andy Piper
 -- Fix: (Build) allow disabling Internet sockets in gnuserv -- Gregory Steuck
--- Fix: (Build) unsigned-signed compare warnings --Stephen Turnbull
+-- Fix: (Build) unsigned-signed compare warnings -- Stephen Turnbull
 -- Fix: (Build/Cygwin) X + Windows build gets widgets -- Andy Piper
 -- Fix: (Build/Unix) configure --usage -- Jerry James
 -- Fix: (Build/Unix) protect linker args for PPC -- Malcolm Purvis
@@ -84,7 +83,7 @@ to 21.4.9 "Informed Management"
 -- Docs: docstring typo fixes -- John Paul Wallington, Stephen Turnbull,
    Ville Skyttä, Andy Piper, Jerry James, Adrian Aichner
 -- Docs: new FAQs: Killing is slow, Q2.0.15 -- Stephen Turnbull, Adrian Aichner
--- Docs: new PROBLEMS --Stephen Turnbull
+-- Docs: new PROBLEMS -- Stephen Turnbull
 
 to XEmacs 21.4.8 "Honest Recruiter"
 
