@@ -1,5 +1,9 @@
 2001-05-17  Stephen J. Turnbull  <stephen@xemacs.org>
 
+	* XEmacs 21.4.3 "Academic Rigor" is released.
+
+2001-05-17  Stephen J. Turnbull  <stephen@xemacs.org>
+
 	* regex.c: Define DECLARE_NOTHING when "lisp.h" is not included.
 
 2001-05-08  Yoshiki Hayashi  <yoshiki@xemacs.org>
