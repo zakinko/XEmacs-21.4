@@ -109,7 +109,6 @@ Lisp_Object Vskip_chars_range_table;
 
 static void set_search_regs (struct buffer *buf, Bufpos beg, Charcount len);
 static void clear_unused_search_regs (struct re_registers *regp, int no_sub);
-/* #### according to comment in 21.5, unnecessary */
 static void save_search_regs (void);
 static Bufpos simple_search (struct buffer *buf, Bufbyte *base_pat,
 			     Bytecount len, Bytind pos, Bytind lim,
@@ -2880,11 +2879,8 @@ LIST should have been created by calling `match-data' previously.
   int num_regs;
   int length;
 
-#if 0
-  /* #### according to 21.5 comment, unnecessary */
   if (running_asynch_code)
     save_search_regs ();
-#endif
 
   CONCHECK_LIST (list);
 
@@ -2947,7 +2943,6 @@ LIST should have been created by calling `match-data' previously.
   return Qnil;
 }
 
-/* #### according to 21.5 comment, unnecessary */
 /* If non-zero the match data have been saved in saved_search_regs
    during the execution of a sentinel or filter. */
 static int search_regs_saved;
@@ -2971,8 +2966,6 @@ save_search_regs (void)
     }
 }
 
-/* #### according to 21.5 comment, unnecessary
-   prototype in lisp.h, all calls in process.c */
 /* Called upon exit from filters and sentinels. */
 void
 restore_match_data (void)

@@ -1,3 +1,7 @@
+2004-06-09  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* search.c: Reenable an ansync semaphore.  Remove bogus comments.
+
 2004-06-11  David Kastrup  <dak@gnu.org>
 
 	* search.c (match_limit): Don't flag an error if match-data
