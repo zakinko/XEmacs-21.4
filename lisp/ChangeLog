@@ -1,3 +1,30 @@
+2004-06-07  Jerry James  <james@xemacs.org>
+
+	* derived.el: Synch with Emacs 21.3.
+	* subr.el (with-local-quit): New, from Emacs 21.3.
+	* subr.el (delayed-mode-hooks): New variable, from Emacs 21.3.
+	* subr.el (run-mode-hooks): New function, from Emacs 21.3.
+	* subr.el (delay-mode-hooks): New macro, from Emacs 21.3.
+
+2004-06-16  Jerry James  <james@xemacs.org>
+
+	* cl.el (cl-set-substring): Increment start by the length of the
+	string, not the string itself.
+
+2004-05-19  Malcolm Purvis  <malcolmp@xemacs.org>
+
+	* etags.el (tag-table-include-files): Expand included TAGS file
+	paths to avoid problems with relative paths.  Thanks to Peter
+	Chubb <peterc@gelato.unsw.edu.au>.
+	* etags.el (tags-include-pattern): New.
+	* etags.el (add-to-tag-completion-table): Parse and ignore
+	trailing include lines.
+
+2004-06-21  Adrian Aichner  <adrian@xemacs.org>
+
+	* package-ui.el (pui-help-echo): Fix false cvs conflict by
+	avoiding line solely composed of equal signs.
+
 2004-06-10  Adrian Aichner  <adrian@xemacs.org>
 
 	* cus-edit.el (alloc): Typo fix.

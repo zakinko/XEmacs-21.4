@@ -405,12 +405,13 @@ File name returned is relative to tag table file's directory."
   ;; New include syntax
   ;;   filename,include
   ;; tacked on to the end of a tag file means use filename as a
-  ;; tag file before giving up.
+  ;; tag file before giving up.  The filenames are expanded to problems with
+  ;; relative paths being used in the wrong directory.
   (let ((files nil))
     (save-excursion
       (goto-char (point-min))
       (while (re-search-forward "\f\n\\(.*\\),include$" nil t)
-	(push (match-string 1) files)))
+	(push (expand-file-name (match-string 1)) files)))
     files))
 
 (defun tag-table-files (tag-table)
@@ -521,6 +522,7 @@ this buffer uses."
   (concat "\\s-*(\\s-*def\\sw*\\s-*(?\\s-*\\(\\(\\sw\\|\\s_\\|:\\)+\\))?\\s-*"
 	  tags-explicit-name-pattern))
 (defconst tags-file-pattern "^\f\n\\(.+\\),[0-9]+\n")
+(defconst tags-include-pattern "^\f\n\\(.+\\),include\n")
 
 (defun add-to-tag-completion-table-exuberant-ctags ()
   "Sucks the current buffer (a TAGS table) into the completion-table.
@@ -540,7 +542,6 @@ work with xemacs etags."
   (message "Adding %s to tags completion table...done" buffer-file-name))
 
 
-;; #### Should make it work with the `include' directive!
 (defun add-to-tag-completion-table ()
   "Sucks the current buffer (a TAGS table) into the completion-table."
   (message "Adding %s to tags completion table..." buffer-file-name)
@@ -613,6 +614,13 @@ work with xemacs etags."
 	(and name2 (intern-tag-symbol name2))
 	(and name3 (intern-tag-symbol name3))
 	(forward-line 1)))
+    ;; Skip over the include entries at the bottom of the file.  They should
+    ;; really be loaded.
+    (while (looking-at tags-include-pattern)
+      (goto-char (match-end 0))
+      (setq filename (file-name-sans-versions (match-string 1)))
+;      #### Recursively load included TAGS files here.
+      (forward-line 1))
     (or (eobp) (error "Bad TAGS file")))
   (message "Adding %s to tags completion table...done" buffer-file-name))
 

@@ -25,7 +25,7 @@
 ;; Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 ;; 02111-1307, USA.
 
-;;; Synched up with: FSF 19.34.
+;;; Synched up with: FSF 19.34.  Some things synched up with later versions.
 
 ;;; Commentary:
 
@@ -534,6 +534,43 @@ See also `with-temp-file' and `with-output-to-string'."
 	     ,@forms)
 	 (and (buffer-name ,temp-buffer)
 	      (kill-buffer ,temp-buffer))))))
+
+;; BEGIN FSF 21.3 SYNCH
+(defmacro with-local-quit (&rest body)
+  "Execute BODY with `inhibit-quit' temporarily bound to nil."
+  `(condition-case nil
+    (let ((inhibit-quit nil))
+      ,@body)
+    (quit (setq quit-flag t))))
+
+(defvar delay-mode-hooks nil
+  "If non-nil, `run-mode-hooks' should delay running the hooks.")
+(defvar delayed-mode-hooks nil
+  "List of delayed mode hooks waiting to be run.")
+(make-variable-buffer-local 'delayed-mode-hooks)
+(put 'delay-mode-hooks 'permanent-local t)
+
+(defun run-mode-hooks (&rest hooks)
+  "Run mode hooks `delayed-mode-hooks' and HOOKS, or delay HOOKS.
+Execution is delayed if `delay-mode-hooks' is non-nil.
+Major mode functions should use this."
+  (if delay-mode-hooks
+      ;; Delaying case.
+      (dolist (hook hooks)
+	(push hook delayed-mode-hooks))
+    ;; Normal case, just run the hook as before plus any delayed hooks.
+    (setq hooks (nconc (nreverse delayed-mode-hooks) hooks))
+    (setq delayed-mode-hooks nil)
+    (apply 'run-hooks hooks)))
+
+(defmacro delay-mode-hooks (&rest body)
+  "Execute BODY, but delay any `run-mode-hooks'.
+Only affects hooks run in the current buffer."
+  `(progn
+    (make-local-variable 'delay-mode-hooks)
+    (let ((delay-mode-hooks t))
+      ,@body)))
+;; END FSF 21.3 SYNCH
 
 ;; Moved from mule-coding.el.
 (defmacro with-string-as-buffer-contents (str &rest body)
