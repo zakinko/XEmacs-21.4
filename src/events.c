@@ -1483,11 +1483,10 @@ See also `current-event-timestamp'.
   /* This junk is so that timestamps don't get to be negative, but contain
      as many bits as this particular emacs will allow.
    */
-  return make_int (((1L << (VALBITS - 1)) - 1) &
-		      XEVENT (event)->timestamp);
+  return make_int (EMACS_INT_MAX & XEVENT (event)->timestamp);
 }
 
-#define TIMESTAMP_HALFSPACE (1L << (VALBITS - 2))
+#define TIMESTAMP_HALFSPACE (1L << (INT_VALBITS - 2))
 
 DEFUN ("event-timestamp<", Fevent_timestamp_lessp, 2, 2, 0, /*
 Return true if timestamp TIME1 is earlier than timestamp TIME2.

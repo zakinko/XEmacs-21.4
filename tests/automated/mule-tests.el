@@ -233,7 +233,7 @@ the Assert macro checks for correctness."
   ;; Test strings waxing and waning across the 8k BIG_STRING limit (see alloc.c)
   ;;---------------------------------------------------------------
   (defun charset-char-string (charset)
-    (let (lo hi string n)
+    (let (lo hi string n (gc-cons-threshold most-positive-fixnum))
       (if (= (charset-chars charset) 94)
 	  (setq lo 33 hi 126)
 	(setq lo 32 hi 127))
@@ -245,6 +245,7 @@ the Assert macro checks for correctness."
 	      (progn
 		(aset string n (make-char charset j))
 		(incf n)))
+	    (garbage-collect)
 	    string)
 	(progn
 	  (setq string (make-string (* (1+ (- hi lo)) (1+ (- hi lo))) ??))
@@ -254,6 +255,7 @@ the Assert macro checks for correctness."
 	      (progn
 		(aset string n (make-char charset j k))
 		(incf n))))
+	  (garbage-collect)
 	  string))))
 
   ;; The following two used to crash xemacs!

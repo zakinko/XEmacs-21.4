@@ -1,3 +1,23 @@
+2004-04-18  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* menubar-items.el (default-menubar): Options are saved to custom.el.
+
+2004-02-23  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* isearch-mode.el (isearch-abort): Preserve successful search target.
+
+2004-03-27  Adrian Aichner  <adrian@xemacs.org>
+
+	* gnuserv.el: Sync with 21.5 version, inspired by bugreport and
+	(make-variable-buffer-local 'gnuserv-minor-mode) patch by Robert
+	Bihlmeyer.
+	* gnuserv.el (gnuserv-mode-line-string): New.
+	* gnuserv.el (gnuserv-minor-mode): Make it buffer-local, not
+	gnuserv-mode.
+	* gnuserv.el (make-x-device-with-gtk-fallback): New.
+	* gnuserv.el (gnuserv-edit-files): Use
+	make-x-device-with-gtk-fallback.
+
 2004-03-23  Malcolm Purvis  <malcolmpurvis@optushome.com.au>
 	* gtk-widgets.el: New import: gtk-accel-group-new.
 	* dialog-gtk.el:

@@ -143,7 +143,7 @@ extern void seed_random (long arg);
 DEFUN ("random", Frandom, 0, 1, 0, /*
 Return a pseudo-random number.
 All integers representable in Lisp are equally likely.
-  On most systems, this is 28 bits' worth.
+  On most systems, this is 31 bits' worth.
 With positive integer argument N, return random number in interval [0,N).
 With argument t, set the random number seed from the current time and pid.
 */
@@ -163,7 +163,7 @@ With argument t, set the random number seed from the current time and pid.
 	 it's possible to get a quotient larger than limit; discarding
 	 these values eliminates the bias that would otherwise appear
 	 when using a large limit.  */
-      denominator = ((unsigned long)1 << VALBITS) / XINT (limit);
+      denominator = ((unsigned long)1 << INT_VALBITS) / XINT (limit);
       do
 	val = get_random () / denominator;
       while (val >= XINT (limit));
