@@ -1,3 +1,7 @@
+2004-12-05  Vin Shelton <acs@xemacs.org>
+
+	* XEmacs 21.4.16 is released
+
 2004-04-23  Jerry James  <james@xemacs.org>
 
 	* xlwradio.c (RadioExpose): Do not blindly copy one GC over

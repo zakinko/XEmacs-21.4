@@ -1,3 +1,7 @@
+2004-12-05  Vin Shelton <acs@xemacs.org>
+
+	* XEmacs 21.4.16 is released
+
 2004-02-02  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.15 is released
@@ -370,6 +374,6 @@
 
 	* all: port from cygwin setup.
 
-%%% $Id: ChangeLog,v 1.2.2.24 2004/02/03 03:02:14 vins Exp $
-$Revision: 1.2.2.24 $
+%%% $Id: ChangeLog,v 1.2.2.25 2004/12/06 01:08:24 vins Exp $
+$Revision: 1.2.2.25 $
 
