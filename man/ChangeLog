@@ -1,3 +1,9 @@
+2004-11-21  Malcolm Purvis  <malcolmp@xemacs.org>
+
+	* Makefile (RECURSIVE_MAKE): Removed.
+	* Makefile (RECURSIVE_MAKE_ARGS): New.  The new method for
+	handling parallel builds.
+
 2004-12-15  Ville Skyttä  <scop@xemacs.org>
 
 	* lispref/help.texi: Document 3rd arg to `make-obsolete'.

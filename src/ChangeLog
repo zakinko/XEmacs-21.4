@@ -1,3 +1,15 @@
+2005-01-10  Steve Youngs  <steve@sxemacs.org>
+
+	From Andrey Slusar <anrays@gmail.com>:
+
+	* unexelf.c: define `Elfw(type)' for FreeBSD alpha and amd64.
+
+2004-11-21  Malcolm Purvis  <malcolmp@xemacs.org>
+
+	* Makefile (RECURSIVE_MAKE): Removed.
+	* Makefile (RECURSIVE_MAKE_ARGS): New.  The new method for
+	handling parallel builds.
+
 2004-09-08  Malcolm Purvis  <malcolmp@xemacs.org>
 
 	* Makefile.in.in: Enable support for parallel builds.
