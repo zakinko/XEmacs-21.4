@@ -16056,12 +16056,108 @@ else echo "  Not using any machine description file"
 fi
 
 echo "  Compiler:                          $CC $CFLAGS"
+case "$CC" in
+  gcc*)	echo "  Compiler version:                  `$CC --version | head -1`"
+        echo "  Compiler specs file:               `$CC -v 2>&1 | sed 's/.* \([^ ]\)/\1/' | head -1`"
+	;;
+  *) case "$canonical" in
+	*-*-aix*   ) 
+          	  realcc=`which $CC`
+	  	  if test -L $realcc ; then
+	    ccdir=`dirname $realcc`
+	    ccprog=`/bin/ls -l $realcc | sed 's/.* \([^ ]\)/\1/'`
+	    	    case $ccprog in
+		*/*) realcc=$ccprog;;
+		*) realcc=$ccdir/$ccprog;;
+	    esac
+	  fi
+	  lpp=`lslpp -wqc $realcc | cut -f2 -d:`
+	  if test ! -z "$lpp" ; then
+	    lppstr=`lslpp -Lqc $lpp`
+	    lpplev=`echo "$lppstr" | cut -f3 -d:`
+	    lppdesc=`echo "$lppstr" | cut -f8 -d:`
+	  fi
+	  if test ! -z "$lpplev" ; then
+	    echo "  Compiler version:                  $lpp $lpplev - $lppdesc"
+	  else
+	    echo "  Compiler version:                  (unknown version)"
+	  fi
+	;;
+	
+	*-*-solaris*)
+	  ccvers=`$CC -V 2>&1 | head -1`
+	  if test ! -z "$ccvers" ; then
+	    echo "  Compiler version:                  $ccvers"
+	  fi
+	;;
+
+	alpha*-dec-osf*)
+	  ccvers=`$CC -V | tr '\n' ' '`
+	  if test ! -z "$ccvers" ; then
+	    echo "  Compiler version:                  $ccvers"
+	  fi
+	;;
+
+	mips-sgi-irix*)
+	  ccvers=`$CC -version`
+	  if test ! -z "$ccvers" ; then
+	    echo "  Compiler version:                  $ccvers"
+	  fi
+	;;
+
+		i[3-9]86-pc-linux)
+	  ccvers=`$CC -V 2>&1 | sed -n 's@^Intel.*Version @@'p`
+	  if test ! -z "$ccvers" ; then
+	    echo "  Compiler version:                  $ccvers"
+	  fi
+	;;
+	  
+	*) echo "  Compiler version:                  $CC on $canonical";;
+  esac
+esac
+
 echo "  Relocating allocator for buffers:  $rel_alloc"
 echo "  GNU version of malloc:             ${GNU_MALLOC}${GNU_MALLOC_reason}"
 case "$ld_switch_site" in
   *nocombreloc*) echo "  Linking with \`-z nocombreloc'.
     - Consider configuring with --pdump." ;;
 esac
+
+case "$canonical" in
+	*-*-linux*) 
+	  if test -f /etc/redhat-release ; then
+	    echo "  libc:                              `rpm -q glibc`";
+          else
+	    echo "Need to guess glibc1/2/etc here";
+          fi
+	;;
+
+	*-*-aix*) 
+	  echo "  libc:                              bos.rte.libc `lslpp -Lqc bos.rte.libc | cut -f3 -d:`" 
+	;;
+
+	*-*-solaris*)
+	  libc=`pkginfo -l SUNWcsl | grep VERSION: | awk '{print $2}'`
+	  echo "  libc:                              SUNWcsl $libc"
+
+	;;
+
+	mips-sgi-irix*)
+	  echo "  IRIX version:                      `uname -sRm`'"
+	;;
+	  
+
+	alpha*-dec-osf*)
+		  (cd /usr/.smdb.;
+		libc=` grep -h libc.so *.inv | awk '$9 == "f" {print $12}' | tr '\n' ','`
+		echo "  libc:                              $libc"
+		
+	  )
+	;;
+
+	*) echo "  libc:                              system-provided libc on $canonical" ;;
+esac
+
 
 echo "
 Window System:"

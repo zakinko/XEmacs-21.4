@@ -1,3 +1,17 @@
+2003-10-25  Norbert Koch  <viteno@xemacs.org>
+
+	* etc/PACKAGES (riece): New package.
+	* etc/PACKAGES (liece): Mark as deprecated.
+
+2003-10-26  Vin Shelton  <acs@xemacs.org>
+
+	* configure.in: Add Intel C++ compiler detection to compiler
+	version reporting.
+
+2003-10-16  Valdis Kletnieks <valdis.kletnieks@vt.edu>
+	* configure.in: record additional info about compiler and libc
+	versions, to assist in debugging.
+
 2003-08-28  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* configure.in (line 3573):
