@@ -1,3 +1,9 @@
+2004-04-23  Jerry James  <james@xemacs.org>
+
+	* xlwradio.c (RadioExpose): Do not blindly copy one GC over
+	another.  It messes up the ref counts and is wrong for radio
+	buttons in any case.
+
 2004-02-02  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.15 is released
