@@ -94,10 +94,23 @@ Lisp_Object Qsans_modifiers;
 
 void enqueue_gtk_dispatch_event (Lisp_Object event);
 
+/*
+ * Identify if the keysym is a modifier.  This implementation mirrors x.org's
+ * IsModifierKey(), but for GDK keysyms.
+ */
+#ifdef GDK_ISO_Lock
+#define IS_MODIFIER_KEY(keysym)  \
+  ((((keysym) >= GDK_Shift_L) && ((keysym) <= GDK_Hyper_R)) \
+   || (((keysym) >= GDK_ISO_Lock) && \
+       ((keysym) <= GDK_ISO_Last_Group_Lock)) \
+   || ((keysym) == GDK_Mode_switch) \
+   || ((keysym) == GDK_Num_Lock))
+#else
 #define IS_MODIFIER_KEY(keysym)  \
   ((((keysym) >= GDK_Shift_L) && ((keysym) <= GDK_Hyper_R)) \
    || ((keysym) == GDK_Mode_switch) \
    || ((keysym) == GDK_Num_Lock))
+#endif
 
 
 
