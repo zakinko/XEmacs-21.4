@@ -1,3 +1,7 @@
+2004-02-02  Vin Shelton <acs@xemacs.org>
+
+	* XEmacs 21.4.15 is released
+
 2004-01-30  Glynn Clements  <glynn.clements@virgin.net>
 
 	* device-x.c (x_error_handler): Don't call stderr_out
