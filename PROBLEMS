@@ -847,6 +847,19 @@ using the default Cygwin shell. (See above.)
 ==============================
 ** General
 
+*** XEmacs consistently crashes in a particular strange place.
+
+One known case is on Red Hat Linux, compiled with GCC, attempting to
+render PNG images.  The problem is that XEmacs code is not compliant
+with ANSI rules about aliasing.  Adding -fno-strict-aliasing to CFLAGS
+may help (or the equivalent for your compiler).  (Some versions of
+XEmacs may already do this automatically, but if you specify CFLAGS or
+--cflags yourself, you will have to add this flag by hand.)
+
+If you diagnose this bug for some other symptoms or systems, please
+let us know (if you can send mail from the affected system, use M-x
+report-xemacs-bug) so we can update this entry.
+
 *** Changes made to .el files do not take effect.
 
 You may have forgotten to recompile them into .elc files.  Then the

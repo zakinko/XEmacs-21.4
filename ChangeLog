@@ -1,3 +1,12 @@
+2003-08-12  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* configure.usage (GUI component): Improve lucid option doc.
+
+2003-08-12  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* configure.in (CFLAGS): Add -fno-strict-aliasing for GCC.
+	* PROBLEMS (Running): Strict aliasing crashes.
+
 2003-08-04  Norbert Koch  <viteno@xemacs.org>
             Stephen J. Turnbull <stephen@xemacs.org>
 
