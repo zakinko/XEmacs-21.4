@@ -1,3 +1,19 @@
+2004-03-08  Lutz Euler  <lutz.euler@freenet.de>
+
+	* lstream.c (Lstream_pseudo_close): Fix test for LSTREAM_FL_IS_OPEN.
+
+2004-02-19  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* glyphs.c (process_image_string_instantiator):
+	(Fset_console_type_image_conversion_list):
+	Stop GCC from warning about shadowing of `exp'.
+
+	* redisplay-x.c (x_output_string): Fix unsigned lossage.
+
+2004-02-19  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* regex.c (re_match_2_internal): Shut up GCC about syn1, syn2.
+
 2004-02-03  Vin Shelton  <acs@xemacs.org>
 
 	* glyphs.c (image_instance_layout): Remove pointless assertion.
