@@ -1,3 +1,10 @@
+2003-03-15  Martin Buchholz  <martin@xemacs.org>
+
+	* dumper.c (pdump_load): Pdump'ed XEmacs can't find its .dmp file.
+	Scenario: Prepend ~/bin to PATH; then `mkdir ~/bin/xemacs'
+	Result: "temacs can only be run in -batch mode."
+	Fix: Check xemacs executable candidate for directory-ness.
+
 2003-03-03  Robert Pluim  <rpluim@bigfoot.com>
 
 	* database.c: Don't use the u_int8_t etc typedefs on FreeBSD,
