@@ -1,3 +1,28 @@
+2004-06-10  Adrian Aichner  <adrian@xemacs.org>
+
+	* cus-edit.el (alloc): Typo fix.
+	* cus-edit.el (custom-browse-visibility): Ditto.
+	* cus-edit.el (custom-variable-value-create): Ditto.
+	* cus-edit.el (custom-variable-pre-reset-standard): Ditto.
+	* cus-edit.el (custom-save-variables): Bind print-length and
+	print-level to nil to avoid value abbreviation.
+	* cus-edit.el (custom-save-face-internal): Ditto.
+	* cus-edit.el (custom-save-faces): Save in sorted order.
+	* cus-edit.el (custom-save-resets): Bind print-length and
+	print-level to nil to avoid value abbreviation.
+	* cus-edit.el (custom-save-loaded-themes): Ditto.
+
+2004-06-09  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* subr.el (split-string-default-separators): New.
+	(split-string): Synch to 21.5/GNU Emacs version.  *New semantics*,
+	see comment in source.
+
+2004-01-29  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* mule/japanese.el (paragraph-start, paragraph-separate):
+	Remove anchor to BOL.
+
 2004-04-30  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* cl.el (gensym, gentemp): Improve docstrings.

@@ -2757,9 +2757,9 @@ match_limit (Lisp_Object num, int beginningp)
 
   CHECK_INT (num);
   n = XINT (num);
-  if (n < 0 || n >= search_regs.num_regs)
+  if (n < 0 || search_regs.num_regs <= 0)
     args_out_of_range (num, make_int (search_regs.num_regs));
-  if (search_regs.num_regs == 0 ||
+  if (n >= search_regs.num_regs ||
       search_regs.start[n] < 0)
     return Qnil;
   return make_int (beginningp ? search_regs.start[n] : search_regs.end[n]);

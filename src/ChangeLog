@@ -1,3 +1,9 @@
+2004-06-11  David Kastrup  <dak@gnu.org>
+
+	* search.c (match_limit): Don't flag an error if match-data
+	exceeding the allocated search_regs.num_regs gets requested, just
+	return Qnil.
+
 2003-07-21  Malcolm Purvis  <malcolmpurvis@optushome.com.au>
 
 	* glyphs-gtk.c (gtk_xpm_instantiate): Rewrite the XPM data to

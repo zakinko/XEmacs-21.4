@@ -403,22 +403,70 @@ Otherwise treat `\\' in NEWTEXT as special:
 	    str newstr))
     str)))
 
-(defun split-string (string &optional pattern)
-  "Return a list of substrings of STRING which are separated by PATTERN.
-If PATTERN is omitted, it defaults to \"[ \\f\\t\\n\\r\\v]+\"."
-  (or pattern
-      (setq pattern "[ \f\t\n\r\v]+"))
-  (let (parts (start 0) (len (length string)))
-    (if (string-match pattern string)
-	(setq parts (cons (substring string 0 (match-beginning 0)) parts)
-	      start (match-end 0)))
-    (while (and (< start len)
-		(string-match pattern string (if (> start (match-beginning 0))
-						 start
-					       (1+ start))))
-      (setq parts (cons (substring string start (match-beginning 0)) parts)
-	    start (match-end 0)))
-    (nreverse (cons (substring string start) parts))))
+(defconst split-string-default-separators "[ \f\t\n\r\v]+"
+  "The default value of separators for `split-string'.
+
+A regexp matching strings of whitespace.  May be locale-dependent
+\(as yet unimplemented).  Should not match non-breaking spaces.
+
+Warning: binding this to a different value and using it as default is
+likely to have undesired semantics.")
+
+;; specification for `split-string' agreed with rms 2003-04-23
+;; xemacs design <87vfx5vor0.fsf@tleepslib.sk.tsukuba.ac.jp>
+
+;; The specification says that if both SEPARATORS and OMIT-NULLS are
+;; defaulted, OMIT-NULLS should be treated as t.  Simplifying the logical
+;; expression leads to the equivalent implementation that if SEPARATORS
+;; is defaulted, OMIT-NULLS is treated as t.
+
+(defun split-string (string &optional separators omit-nulls)
+  "Splits STRING into substrings bounded by matches for SEPARATORS.
+
+The beginning and end of STRING, and each match for SEPARATORS, are
+splitting points.  The substrings matching SEPARATORS are removed, and
+the substrings between the splitting points are collected as a list,
+which is returned.
+
+If SEPARATORS is non-`nil', it should be a regular expression matching text
+which separates, but is not part of, the substrings.  If `nil' it defaults to
+`split-string-default-separators', normally \"[ \\f\\t\\n\\r\\v]+\", and
+OMIT-NULLS is forced to `t'.
+
+If OMIT-NULLS is `t', zero-length substrings are omitted from the list \(so
+that for the default value of SEPARATORS leading and trailing whitespace
+are effectively trimmed).  If `nil', all zero-length substrings are retained,
+which correctly parses CSV format, for example.
+
+Note that the effect of `(split-string STRING)' is the same as
+`(split-string STRING split-string-default-separators t)').  In the rare
+case that you wish to retain zero-length substrings when splitting on
+whitespace, use `(split-string STRING split-string-default-separators nil)'.
+
+Modifies the match data when successful; use `save-match-data' if necessary."
+
+  (let ((keep-nulls (not (if separators omit-nulls t)))
+	(rexp (or separators split-string-default-separators))
+	(start 0)
+	notfirst
+	(list nil))
+    (while (and (string-match rexp string
+			      (if (and notfirst
+				       (= start (match-beginning 0))
+				       (< start (length string)))
+				  (1+ start) start))
+		(< start (length string)))
+      (setq notfirst t)
+      (if (or keep-nulls (< start (match-beginning 0)))
+	  (setq list
+		(cons (substring string start (match-beginning 0))
+		      list)))
+      (setq start (match-end 0)))
+    (if (or keep-nulls (< start (length string)))
+	(setq list
+	      (cons (substring string start)
+		    list)))
+    (nreverse list)))
 
 ;; #### #### #### AAaargh!  Must be in C, because it is used insanely
 ;; early in the bootstrap process.
