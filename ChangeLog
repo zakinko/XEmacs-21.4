@@ -1,3 +1,7 @@
+2002-05-04  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* PROBLEMS (General): Decribe failed AUTH with EFS.
+
 2002-04-22  Hrvoje Niksic  <hniksic@xemacs.org>
 
 	* etc/photos/hniksic.png, etc/photos/hniksic.png: Update.
