@@ -414,3 +414,33 @@ baaaa
   (Assert (null (match-string 4 text)))				; nil
 )
 
+;; trivial subpatterns and backreferences with shy groups
+(let ((text1 "abb")
+      (text2 "aba")
+      (re0 "\\(a\\)\\(b\\)\\2")
+      (re1 "\\(?:a\\)\\(b\\)\\2")
+      (re2 "\\(?:a\\)\\(b\\)\\1")
+      (re3 "\\(a\\)\\(?:b\\)\\1"))
+
+  (Assert (eq 0 (string-match re0 text1)))
+  (Assert (string= text1 (match-string 0 text1)))
+  (Assert (string= "a" (match-string 1 text1)))
+  (Assert (string= "b" (match-string 2 text1)))
+  (Assert (null (string-match re0 text2)))
+
+  (Check-Error-Message 'invalid-regexp "Invalid back reference"
+		       (string-match re1 text1))
+
+  (Assert (eq 0 (string-match re2 text1)))
+  (Assert (string= text1 (match-string 0 text1)))
+  (Assert (string= "b" (match-string 1 text1)))
+  (Assert (null (match-string 2 text1)))
+  (Assert (null (string-match re2 text2)))
+
+  (Assert (null (string-match re3 text1)))
+  (Assert (eq 0 (string-match re3 text2)))
+  (Assert (string= text2 (match-string 0 text2)))
+  (Assert (string= "a" (match-string 1 text2)))
+  (Assert (null (match-string 2 text2)))
+)
+

@@ -304,6 +304,12 @@ the Assert macro checks for correctness."
     ;; This is how you suppress output from `message', called by `write-region'
     (flet ((append-message (&rest args) ()))
       (Assert (not (equal name1 name2)))
+      ;; Kludge to handle Mac OS X which groks only UTF-8.
+      (cond ((eq system-type 'darwin)
+	     (Check-Error-Message 'file-error "Opening output file"
+	      (write-region (point-min) (point-max) name1))
+	     (require 'un-define)
+	     (setq file-name-coding-system 'utf-8)))
       (Assert (not (file-exists-p name1)))
       (write-region (point-min) (point-max) name1)
       (Assert (file-exists-p name1))

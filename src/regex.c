@@ -1994,6 +1994,7 @@ regex_compile (re_char *pattern, int size, reg_syntax_t syntax,
   bufp->re_nsub = 0;
   bufp->re_ngroups = 0;
 
+  /* Allocate index translation array if needed. */
   if (bufp->external_to_internal_register == 0)
     {
       bufp->external_to_internal_register_size = INIT_REG_TRANSLATE_SIZE;
@@ -2002,6 +2003,7 @@ regex_compile (re_char *pattern, int size, reg_syntax_t syntax,
 		int);
     }
 
+  /* Initialize translations to impossible value to aid debugging. */
   {
     int i;
 
@@ -2614,6 +2616,8 @@ regex_compile (re_char *pattern, int size, reg_syntax_t syntax,
 		r = ++regnum;
 		bufp->re_ngroups++;
 		if (!shy)
+		  /* Record the translation from capturing group index to
+		     register number, reallocating table as needed. */
 		  {
 		    bufp->re_nsub++;
 		    while (bufp->external_to_internal_register_size <=
@@ -3053,22 +3057,22 @@ regex_compile (re_char *pattern, int size, reg_syntax_t syntax,
             case '6': case '7': case '8': case '9':
 	      {
 		int reg;
+
 		if (syntax & RE_NO_BK_REFS)
 		  goto normal_char;
 
+		/* External register indexing. */
 		reg = c - '0';
 
 		if (reg > bufp->re_nsub)
 		  FREE_STACK_RETURN (REG_ESUBREG);
 
-		{
-		  int regint = bufp->external_to_internal_register[reg];
-		  /* Can't back reference to a subexpression if inside it. */
-		  if (group_in_compile_stack (compile_stack, regint))
-		    {
-		      goto normal_char;
-		    }
-		}
+		/* Convert external to internal as soon as possible. */
+		reg = bufp->external_to_internal_register[reg];
+
+		/* Can't back reference to a subexpression if inside it. */
+		if (group_in_compile_stack (compile_stack, reg))
+		  goto normal_char;
 
 		laststart = buf_end;
 		BUF_PUSH_2 (duplicate, reg);
@@ -4710,62 +4714,62 @@ re_match_2_internal (struct re_pattern_buffer *bufp, re_char *string1,
 	succeed_label:
           DEBUG_PRINT1 ("Accepting match.\n");
 
-          /* If caller wants register contents data back, do it.  */
-	  {
-	    int num_nonshy_regs = bufp->re_nsub + 1;
-	    if (regs && !bufp->no_sub)
-	      {
-		/* Have the register data arrays been allocated?  */
-		if (bufp->regs_allocated == REGS_UNALLOCATED)
-		  { /* No.  So allocate them with malloc.  We need one
-		       extra element beyond `num_regs' for the `-1' marker
-		       GNU code uses.  */
-		    regs->num_regs = MAX (RE_NREGS, num_nonshy_regs + 1);
-		    regs->start = TALLOC (regs->num_regs, regoff_t);
-		    regs->end = TALLOC (regs->num_regs, regoff_t);
-		    if (regs->start == NULL || regs->end == NULL)
-		      {
-			FREE_VARIABLES ();
-			return -2;
-		      }
-		    bufp->regs_allocated = REGS_REALLOCATE;
-		  }
-		else if (bufp->regs_allocated == REGS_REALLOCATE)
-		  { /* Yes.  If we need more elements than were already
-		       allocated, reallocate them.  If we need fewer, just
-		       leave it alone.  */
-		    if (regs->num_regs < num_nonshy_regs + 1)
-		      {
-			regs->num_regs = num_nonshy_regs + 1;
-			RETALLOC (regs->start, regs->num_regs, regoff_t);
-			RETALLOC (regs->end, regs->num_regs, regoff_t);
-			if (regs->start == NULL || regs->end == NULL)
-			  {
-			    FREE_VARIABLES ();
-			    return -2;
-			  }
-		      }
-		  }
-		else
-		  {
-		    /* The braces fend off a "empty body in an else-statement"
-		       warning under GCC when assert expands to nothing.  */
-		    assert (bufp->regs_allocated == REGS_FIXED);
-		  }
+          /* If caller wants register contents data back, fill REGS.  */
+	  if (regs && !bufp->no_sub)
+	    {
+	      int num_nonshy_regs = bufp->re_nsub + 1;
+	      /* Have the register data arrays been allocated?  */
+	      if (bufp->regs_allocated == REGS_UNALLOCATED)
+		{ /* No.  So allocate them with malloc.  We need one
+		     extra element beyond `num_regs' for the `-1' marker
+		     GNU code uses.  */
+		  regs->num_regs = MAX (RE_NREGS, num_nonshy_regs + 1);
+		  regs->start = TALLOC (regs->num_regs, regoff_t);
+		  regs->end = TALLOC (regs->num_regs, regoff_t);
+		  if (regs->start == NULL || regs->end == NULL)
+		    {
+		      FREE_VARIABLES ();
+		      return -2;
+		    }
+		  bufp->regs_allocated = REGS_REALLOCATE;
+		}
+	      else if (bufp->regs_allocated == REGS_REALLOCATE)
+		{ /* Yes.  If we need more elements than were already
+		     allocated, reallocate them.  If we need fewer, just
+		     leave it alone.  */
+		  if (regs->num_regs < num_nonshy_regs + 1)
+		    {
+		      regs->num_regs = num_nonshy_regs + 1;
+		      RETALLOC (regs->start, regs->num_regs, regoff_t);
+		      RETALLOC (regs->end, regs->num_regs, regoff_t);
+		      if (regs->start == NULL || regs->end == NULL)
+			{
+			  FREE_VARIABLES ();
+			  return -2;
+			}
+		    }
+		}
+	      else
+		{
+		  /* The braces fend off a "empty body in an else-statement"
+		     warning under GCC when assert expands to nothing.  */
+		  assert (bufp->regs_allocated == REGS_FIXED);
+		}
 
-		/* Convert the pointer data in `regstart' and `regend' to
-		   indices.  Register zero has to be set differently,
-		   since we haven't kept track of any info for it.  */
-		if (regs->num_regs > 0)
-		  {
-		    regs->start[0] = pos;
-		    regs->end[0] = (MATCHING_IN_FIRST_STRING
-				    ? ((regoff_t) (d - string1))
-				    : ((regoff_t) (d - string2 + size1)));
-		  }
+	      /* Convert the pointer data in `regstart' and `regend' to
+		 indices.  Register zero has to be set differently,
+		 since we haven't kept track of any info for it.  */
+	      if (regs->num_regs > 0)
+		{
+		  regs->start[0] = pos;
+		  regs->end[0] = (MATCHING_IN_FIRST_STRING
+				  ? ((regoff_t) (d - string1))
+				  : ((regoff_t) (d - string2 + size1)));
+		}
 
-		/* Go through the first `min (num_regs, regs->num_regs)'
-		   registers, since that is all we initialized.  */
+		/* Map over the NUM_NONSHY_REGS non-shy internal registers.
+		   Copy each into the corresponding external register.
+		   N.B. MCNT indexes external registers. */
 		for (mcnt = 1;
 		     mcnt < MIN (num_nonshy_regs, regs->num_regs);
 		     mcnt++)
@@ -4783,7 +4787,6 @@ re_match_2_internal (struct re_pattern_buffer *bufp, re_char *string1,
 		      }
 		  }
 	      } /* regs && !bufp->no_sub */
-	  }
 
 	  /* If we have regs and the regs structure has more elements than
 	     were in the pattern, set the extra elements to -1.  If we
@@ -5958,7 +5961,7 @@ re_match_2_internal (struct re_pattern_buffer *bufp, re_char *string1,
 
 static re_bool
 group_match_null_string_p (unsigned char **p, unsigned char *end,
-			   register_info_type *reg_info)
+			   register_info_type *register_info)
 {
   int mcnt;
   /* Point to after the args to the start_memory.  */
@@ -6007,7 +6010,7 @@ group_match_null_string_p (unsigned char **p, unsigned char *end,
                      its number.  */
 
                   if (!alt_match_null_string_p (p1, p1 + mcnt - 3,
-				                      reg_info))
+				                      register_info))
                     return false;
 
                   /* Move to right after this alternative, including the
@@ -6036,7 +6039,7 @@ group_match_null_string_p (unsigned char **p, unsigned char *end,
                  the length of the alternative.  */
               EXTRACT_NUMBER (mcnt, p1 - 2);
 
-              if (!alt_match_null_string_p (p1, p1 + mcnt, reg_info))
+              if (!alt_match_null_string_p (p1, p1 + mcnt, register_info))
                 return false;
 
               p1 += mcnt;	/* Get past the n-th alternative.  */
@@ -6051,7 +6054,7 @@ group_match_null_string_p (unsigned char **p, unsigned char *end,
 
 
         default:
-          if (!common_op_match_null_string_p (&p1, end, reg_info))
+          if (!common_op_match_null_string_p (&p1, end, register_info))
             return false;
         }
     } /* while p1 < end */
@@ -6066,7 +6069,7 @@ group_match_null_string_p (unsigned char **p, unsigned char *end,
 
 static re_bool
 alt_match_null_string_p (unsigned char *p, unsigned char *end,
-			 register_info_type *reg_info)
+			 register_info_type *register_info)
 {
   int mcnt;
   unsigned char *p1 = p;
@@ -6086,7 +6089,7 @@ alt_match_null_string_p (unsigned char *p, unsigned char *end,
           break;
 
 	default:
-          if (!common_op_match_null_string_p (&p1, end, reg_info))
+          if (!common_op_match_null_string_p (&p1, end, register_info))
             return false;
         }
     }  /* while p1 < end */
@@ -6102,7 +6105,7 @@ alt_match_null_string_p (unsigned char *p, unsigned char *end,
 
 static re_bool
 common_op_match_null_string_p (unsigned char **p, unsigned char *end,
-			       register_info_type *reg_info)
+			       register_info_type *register_info)
 {
   int mcnt;
   re_bool ret;
@@ -6130,13 +6133,14 @@ common_op_match_null_string_p (unsigned char **p, unsigned char *end,
     case start_memory:
       reg_no = *p1;
       assert (reg_no > 0 && reg_no <= MAX_REGNUM);
-      ret = group_match_null_string_p (&p1, end, reg_info);
+      ret = group_match_null_string_p (&p1, end, register_info);
 
       /* Have to set this here in case we're checking a group which
          contains a group and a back reference to it.  */
 
-      if (REG_MATCH_NULL_STRING_P (reg_info[reg_no]) == MATCH_NULL_UNSET_VALUE)
-        REG_MATCH_NULL_STRING_P (reg_info[reg_no]) = ret;
+      if (REG_MATCH_NULL_STRING_P (register_info[reg_no]) ==
+	  MATCH_NULL_UNSET_VALUE)
+        REG_MATCH_NULL_STRING_P (register_info[reg_no]) = ret;
 
       if (!ret)
         return false;
@@ -6167,7 +6171,7 @@ common_op_match_null_string_p (unsigned char **p, unsigned char *end,
       break;
 
     case duplicate:
-      if (!REG_MATCH_NULL_STRING_P (reg_info[*p1]))
+      if (!REG_MATCH_NULL_STRING_P (register_info[*p1]))
         return false;
       break;
 

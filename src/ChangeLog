@@ -1,3 +1,29 @@
+2005-01-13  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	Fix backreference bug caught by test suite.
+
+	* regex.c (regex_compile):
+	Make backref duplicate internal register.
+
+2005-01-13  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	Documentation, code clarification, and warning suppression.
+	
+	* regex.c (regex_compile):
+	Improve comments.
+	(re_match_2_internal):
+	Improve comments and avoid redundant braces.  [Most of the big hunk
+	at l. 4710 is indentation; use diff -w to see the real changes.]
+	(alt_match_null_string_p):
+	(common_op_match_null_string_p):
+	Avoid shadowing global on Mac OS X 10.4, at least.
+
+2004-09-08  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* regex.c (regcomp): Fix "unsigned comparison" warning (maybe
+	introduced with shy groups fix).  [Already applied, probably
+	with the second "fix shy groups" patch of 2004-10-07.] 
+
 2005-01-10  Steve Youngs  <steve@sxemacs.org>
 
 	From Andrey Slusar <anrays@gmail.com>:
