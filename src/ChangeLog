@@ -1,3 +1,8 @@
+2002-04-17  Nix  <nix@esperi.demon.co.uk>
+
+	* process.h (PROCESS_LIVE_P): Use the process status as
+	evidence of health, not the state of the input stream.
+
 2002-04-30  Charles G. Waldman <cgw@xemacs.org>
 
         * sysdep.c (sys_siglist): change "signum" to "signal"
