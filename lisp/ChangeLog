@@ -1,3 +1,7 @@
+2002-05-04  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.7 "Economic Science" is released.
+
 2002-03-18  Adrian Aichner  <adrian@xemacs.org>
 
 	* cus-edit.el (customize-save-variable): Fix typo in prompt.

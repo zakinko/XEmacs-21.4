@@ -1,5 +1,9 @@
 2002-05-04  Stephen J. Turnbull  <stephen@xemacs.org>
 
+	* XEmacs 21.4.7 "Economic Science" is released.
+
+2002-05-04  Stephen J. Turnbull  <stephen@xemacs.org>
+
 	* etc/sample.init.el: Fix comment typo about resize-minibuffer.
 
 	* etc/sample.init.el: Add description of initialization process,

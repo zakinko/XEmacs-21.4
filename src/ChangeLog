@@ -1,3 +1,7 @@
+2002-05-04  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.7 "Economic Science" is released.
+
 2002-04-17  Nix  <nix@esperi.demon.co.uk>
 
 	* process.h (PROCESS_LIVE_P): Use the process status as
