@@ -1,3 +1,18 @@
+2003-02-06  Andrew Begel  <abegel@CS.Berkeley.EDU>
+
+	* sysdll.c: Included lisp.h to define needed alloca_array.
+
+2003-02-13  Martin Buchholz  <martin@xemacs.org>
+
+	Make XEmacs redisplay 10 times faster.
+	If, that is, you're using a slow X connection and MoveOpaque.
+	Use compress_exposure = XtExposeCompressMaximal | XtExposeNoRegion.
+	Use compress_motion = TRUE.
+	* EmacsFrame.c (emacsFrameClassRec): 
+	* EmacsShell-sub.c (EMACS_SHELL_CLASS_REC):
+	* EmacsManager.c (emacsManagerClassRec):
+	* xintrinsicp.h: Make sure XtExposeNoRegion is defined.
+
 2003-01-30  Vin Shelton  <acs@xemacs.org>
 
 	* s/linux.h (ORDINARY_LINK): define ORDINARY_LINK for linux.
