@@ -1,3 +1,15 @@
+2003-06-17  Vin Shelton  <acs@xemacs.org>
+
+	* PROBLEMS: Sync up with latest version from 21.5
+
+2003-04-28  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* PROBLEMS (Windows): New: auxiliary programs for Windows.
+
+2003-05-24  Norbert Koch  <viteno@xemacs.org>
+
+	* etc/package-index.LATEST.pgp: Official package release.
+
 2003-05-25  XEmacs Build Bot <builds@cvs.xemacs.org>
 
 	* XEmacs 21.4.13 is released
