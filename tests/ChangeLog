@@ -1,3 +1,8 @@
+2002-04-27  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* automated/test-harness.el (test-harness-from-buffer): Clean up
+	Check-Message and Check-Error-Message when done.
+
 2001-12-17  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* XEmacs 21.4.6 "Common Lisp" is released.

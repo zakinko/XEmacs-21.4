@@ -584,7 +584,7 @@ echo "  Use \`$progname --help' to show usage.") >&2 && exit 1
 				
 		prefix | exec_prefix | bindir | datadir | statedir | libdir | \
 	mandir | infodir | infopath | lispdir | etcdir | pkgdir | \
-	archlibdir | docdir | package_path )
+	archlibdir | docdir | package_path | moduledir )
 	   	   if test "$valomitted" = "yes"; then
 	     if test "$#" = 0; then
 		 (echo "$progname: Usage error:"
