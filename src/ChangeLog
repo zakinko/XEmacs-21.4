@@ -1,3 +1,13 @@
+2005-01-26  Arnaud Giersch  <arnaud.giersch@free.fr>
+
+	* regex.c (re_match_2_internal):
+	Correctly initialize loop which clears uninitialized registers.
+
+2005-01-28  Vin Shelton  <acs@xemacs.org>
+
+	* sheap.c (more_static_core): Applied Ben's version of the long
+	string patch.
+
 2005-01-24  Vin Shelton  <acs@xemacs.org>
 
 	* sheap.c (more_static_core): Reformatted printf string so
