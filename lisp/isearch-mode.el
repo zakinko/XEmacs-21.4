@@ -238,7 +238,11 @@ Default nil means edit the string from the search ring first."
     ;; then it would terminate the search and be executed without this.
     (let ((i 32)
 	  (str (make-string 1 0)))
-      (while (< i 127)
+      ;; #### If Mule is broken, screw the ISO 8859-1 users too to maximize
+      ;; probability of a report.
+      ;; Yes, C1 is "printing" too, in KOI8 and Windows-land at least.
+      ;; Probably low risk, as most of us have to type C-q 2 0 0 etc.
+      (while (< i (if (featurep 'mule) 127 255))
 	(aset str 0 i)
 	(define-key map str 'isearch-printing-char)
 	(setq i (1+ i))))

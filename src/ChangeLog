@@ -1,3 +1,12 @@
+2003-01-07  Daiki Ueno  <daiki@xemacs.org>
+
+	* process-unix.c (unix_create_process): Don't let outchannel block.
+
+2003-01-05  Rick Rankin  <rick_rankin@yahoo.com>
+
+        * emacs.c: Include "syswindows.h" when compiling under Cygwin.
+        Needed for IsBadReadPtr().
+
 2003-01-03  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* XEmacs 21.4.11 "Native Windows TTY Support" is released.

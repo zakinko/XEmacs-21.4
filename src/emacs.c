@@ -180,6 +180,10 @@ version 18.59 released October 31, 1992.
 #include "sysfile.h"
 #include "systime.h"
 
+#ifdef CYGWIN
+#include "syswindows.h"
+#endif
+
 #ifdef PDUMP
 #include "dumper.h"
 #endif

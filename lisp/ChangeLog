@@ -1,3 +1,12 @@
+2003-01-07  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* isearch-mode.el (isearch-mode-map): GR (and C1) is printable.
+
+2003-01-06  Ville Skyttä  <scop@xemacs.org>
+
+	* menubar-items.el (default-menubar): Use browse-url-mozilla
+	instead of browse-url-gnome-moz for Mozilla.
+
 2003-01-03  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* XEmacs 21.4.11 "Native Windows TTY Support" is released.
