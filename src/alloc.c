@@ -3882,8 +3882,8 @@ reinit_alloc_once_early (void)
 #ifdef DOUG_LEA_MALLOC
   mallopt (M_TRIM_THRESHOLD, 128*1024); /* trim threshold */
   mallopt (M_MMAP_THRESHOLD, 64*1024); /* mmap threshold */
-#if 0 /* Moved to emacs.c */
-  mallopt (M_MMAP_MAX, 64); /* max. number of mmap'ed areas */
+#if 1 /* Moved to emacs.c */
+  mallopt (M_MMAP_MAX, 0); /* max. number of mmap'ed areas */
 #endif
 #endif
   init_string_alloc ();

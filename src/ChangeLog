@@ -1,3 +1,14 @@
+2002-11-07  Wolfram Gloger  <wg@malloc.de>
+
+	* alloc.c (reinit_alloc_once_early): Disable mmap in Doug Lea malloc.
+	* emacs.c (main): Assert that mmap'd allocation is disabled.
+
+2002-10-14  Andy Piper  <andy@xemacs.org>
+
+	* glyphs-widget.c (layout_query_geometry): add in fiddle
+	factor. Include border text in width layout calculation.
+	(layout_layout): use BORDER_FIDDLE_FACTOR instead of 10.
+
 2002-11-02  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* XEmacs 21.4.10 "Military Intelligence" is released.

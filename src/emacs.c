@@ -2713,7 +2713,8 @@ main (int argc, char **argv, char **envp)
   if (!initialized)
     {
 #ifdef DOUG_LEA_MALLOC
-      mallopt (M_MMAP_MAX, 0);
+      if (mallopt (M_MMAP_MAX, 0) != 1)
+	abort();
 #endif
       run_temacs_argc = 0;
       if (! SETJMP (run_temacs_catch))
@@ -2770,7 +2771,8 @@ main (int argc, char **argv, char **envp)
     defined(_NO_MALLOC_WARNING_) || \
     (defined(__GLIBC__) && __GLIBC_MINOR__ < 1 && !defined(MULE)) || \
     defined(DEBUG_DOUG_LEA_MALLOC)
-      mallopt (M_MMAP_MAX, 64);
+      if(mallopt (M_MMAP_MAX, 0) != 1)
+	abort();
 #endif
 #ifdef REL_ALLOC
       r_alloc_reinit ();
