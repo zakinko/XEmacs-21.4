@@ -1,3 +1,8 @@
+2004-06-24  Vin Shelton  <acs@xemacs.org>
+
+	* package-get.el (package-get-require-signed-base-updates):
+	now defaults to nil.
+
 2004-06-09  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* subr.el (split-string): Clean up docstring.

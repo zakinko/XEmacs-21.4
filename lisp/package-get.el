@@ -413,16 +413,12 @@ Returns t if both are found, nil otherwise.  As a side effect, set
 	result
       nil)))
 
-(defcustom package-get-require-signed-base-updates (package-get-pgp-available-p)
+(defcustom package-get-require-signed-base-updates nil
   "*If non-nil, try to verify the package index database via PGP.
 
 If nil, no PGP verification is done.  If the package index database
 entries are not PGP signed and this variable is non-nil, require user
-confirmation to continue with the package-get procedure.
-
-The default for this variable is the return value of
-`package-get-pgp-available-p', non-nil if both the \"Mailcrypt\"
-package and a suitable PGP executable are available, nil otherwise."
+confirmation to continue with the package-get procedure."
   :type 'boolean
   :group 'package-get)
 
