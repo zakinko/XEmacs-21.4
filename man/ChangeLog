@@ -1,3 +1,13 @@
+2005-02-22  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* lispref/glyphs.texi: Complete reorganization, some content updated.
+	* lispref/lispref.texi (Top): Update menu to match.
+	* lispref/extents.texi (Extent Properties): Update xref.
+ 	* lispref/faces.texi (Face Properties): Background pixmaps can be
+	used on GTK and MS Windows.
+ 	(Face Convenience Functions): Cross-reference glyph interface.
+ 	Background pixmap is an image specifier, not a glyph.
+
 2005-02-06  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.17 is released

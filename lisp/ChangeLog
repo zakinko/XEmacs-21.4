@@ -1,3 +1,8 @@
+2005-02-21  Norbert Koch  <viteno@xemacs.org>
+
+	* package-ui.el (pui-list-packages): MF21.5, adapt to longer
+	package names, quell a byte-compiler warning, doc fix.
+
 2005-02-16  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* buffer.el (pop-to-buffer):
