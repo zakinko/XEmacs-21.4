@@ -1,3 +1,7 @@
+2003-11-28  Norbert Koch  <viteno@xemacs.org>
+
+	* etc/PACKAGES (ERC): new.
+
 2003-11-19  Vin Shelton  <acs@xemacs.org>
 
 	* configure.usage (--with-widgets): widgets now defaults to
