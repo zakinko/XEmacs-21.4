@@ -1,3 +1,7 @@
+2003-05-25  XEmacs Build Bot <builds@cvs.xemacs.org>
+
+	* XEmacs 21.4.13 is released
+
 2003-01-15  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* XEmacs 21.4.12 "Portable Code" is released.
@@ -358,6 +362,6 @@
 
 	* all: port from cygwin setup.
 
-%%% $Id: ChangeLog,v 1.2.2.21 2003/01/15 18:02:36 stephent Exp $
-$Revision: 1.2.2.21 $
+%%% $Id: ChangeLog,v 1.2.2.22 2003/05/25 21:22:52 vins Exp $
+$Revision: 1.2.2.22 $
 
