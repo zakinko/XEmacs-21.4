@@ -1,3 +1,7 @@
+2001-07-28  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.4 "Artificial Intelligence" is released.
+
 2001-06-06  Alexey Mahotkin  <alexm@hsys.msk.ru>
 
 	* xemacs/mule.texi: Typo fixes and describe CCL and fonts.

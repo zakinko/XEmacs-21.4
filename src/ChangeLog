@@ -1,3 +1,7 @@
+2001-07-28  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.4 "Artificial Intelligence" is released.
+
 2001-07-22  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* event-msw.c (mswindows_wnd_proc): Add GC debugging assert.

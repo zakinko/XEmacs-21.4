@@ -1,3 +1,7 @@
+2001-07-28  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.4 "Artificial Intelligence" is released.
+
 2001-07-18  Paul Krause  <pkrause@soundbite.com>
 
 	* xemacs.mak (DEPEND): defined(_) isn't a reliable method for
