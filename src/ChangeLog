@@ -1,3 +1,7 @@
+2003-09-13  Martin Buchholz  <martin@xemacs.org>
+
+	* s/sol2.h: Use OS_RELEASE=os_release_major*100+os_release_minor
+
 2003-09-15  Vin Shelton  <acs@xemacs.org>
 
 	* .gdbinit (pobj): Remove Ilya's fix that was only intended for
