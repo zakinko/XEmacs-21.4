@@ -2917,13 +2917,24 @@ extern Bool XRegisterIMInstantiateCallback(
   if test "$unexec" = "unexaix.o" -a "$x11_release" = "6"; then
     dnl X11R6 requires thread-safe code on AIX for some reason
     if test "$GCC" = "yes"; then
-      XE_PREPEND(-mthreads, X_CFLAGS)
-      XE_PREPEND(-mthreads, libs_x)
+      dnl gcc changed the name of the `-mthreads' option to `-pthread'
+      dnl on 2000-06-12
+      AC_MSG_CHECKING(for name of AIX gcc threads option)
+      case `$CC -v --help 2>&1` in
+        *-mthreads*) aix_threads=-mthreads ;;
+                  *) aix_threads=-pthread  ;;
+      esac
+      AC_MSG_RESULT($aix_threads)
+      XE_PREPEND($aix_threads, X_CFLAGS)
+      XE_PREPEND($aix_threads, libs_x)
     else
-      case "$CC" in
-        "xlc" ) CC="xlc_r" ;;
-        "xlC" ) CC="xlC_r" ;;
-        "cc"  ) CC="cc_r" ;;
+      dnl Try to use the thread-safe "_r" versions of xlc
+      case "$CC" in *_r) : ;;
+        *)
+         xe_save_CC="$CC"
+         CC="${CC}_r"
+         AC_CHECK_SIZEOF(short)
+         test "$ac_cv_sizeof_short" = 0 && CC="$xe_save_CC" ;;
       esac
     fi
   fi
@@ -3420,15 +3431,7 @@ if test "$with_x11" = "yes"; then
   AC_CHECKING(for X11 graphics libraries)
 fi
 
-dnl We don't automatically trigger widgets if athena is present
-dnl because of stability concerns.
-dnl But if the user wants widgets, still offer him autodetections
-case "$with_widgets" in
-  "yes" | "athena")		detect_athena=yes ;;
-   *)				detect_athena=no ;;
-esac
-
-if test "$with_x11" = "yes" -a "$detect_athena" = "yes" ; then
+if test "$with_x11" = "yes"; then
   AC_CHECKING(for the Athena widgets)
 
   dnl What in heck did the user actually want?
@@ -3442,22 +3445,24 @@ if test "$with_x11" = "yes" -a "$detect_athena" = "yes" ; then
     *)		XE_DIE("Unknown Athena widget set \`$with_athena'. This should not happen.") ;;
   esac
 
+  athena_3d_function=Xaw3dComputeBottomShadowRGB
+
   dnl Search for the Athena library...
   if test "$athena_3d" = "no"; then
     AC_CHECK_LIB($athena_variant, XawScrollbarSetThumb,
       [
         dnl Must not be a 3d library...
-        AC_CHECK_LIB($athena_variant, threeDClassRec,
+        AC_CHECK_LIB($athena_variant, $athena_3d_function,
           AC_MSG_WARN("Could not find a non-3d Athena widget library."),
           athena_lib=$athena_variant)
       ],
       AC_MSG_WARN("Could not find an Athena widget library."))
   else
     dnl The real configuration, need 3d library
-    AC_CHECK_LIB($athena_variant, threeDClassRec, athena_lib=$athena_variant,
+    AC_CHECK_LIB($athena_variant, $athena_3d_function, athena_lib=$athena_variant,
       dnl OK, couldn't find it with a proper name, try the standard Athena lib
       dnl If that is 3d, presume the user asked for what they have installed.
-      AC_CHECK_LIB(Xaw, threeDClassRec,
+      AC_CHECK_LIB(Xaw, $athena_3d_function,
         [
           athena_lib=Xaw;
           AC_MSG_WARN("Assuming that libXaw is actually $athena_variant.");
@@ -3527,7 +3532,7 @@ if test "$with_x11" = "yes" -a "$detect_athena" = "yes" ; then
 
 else
   have_xaw=no
-fi dnl "$with_x11" = "yes" -a "detect_athena" = "yes"
+fi dnl "$with_x11" = "yes"
 
 if test "$with_x11" = "yes"; then
   dnl autodetect Motif - but only add to libs_x later (if necessary)
