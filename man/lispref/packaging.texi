@@ -640,11 +640,11 @@ engineer, as it will confuse the package administration tools.
 
 The following variables determine where files are installed and how they
 are installed.  Several of the defaults use the variable
-@var{XEMACS_PACKAGES_BASE}.  Never set this variable in
+@code{XEMACS_PACKAGES_BASE}.  Never set this variable in
 @file{Local.rules}; it is automatically set in @file{XEmacs.rules}.
 
 @table @asis
-@item @var{XEMACS_STAGING}
+@item @code{XEMACS_STAGING}
 The default is @file{$@{XEMACS_PACKAGES_BASE@}/../xemacs-packages}.
 
 Generic packages will be installed here.  This can be the final
@@ -654,7 +654,7 @@ locally), or a clean staging area for building tarballs.
 @strong{N.B.}  @samp{make bindist} ignores this variable.  It should be
 handled by the administration utilities, but currently isn't.
 
-@item @var{MULE_STAGING}
+@item @code{MULE_STAGING}
 
 The default is @file{$@{XEMACS_PACKAGES_BASE@}/../mule-packages}.
 
@@ -857,7 +857,7 @@ same as the package's.
 @item an entry in the @code{cond} in @code{package-name-to-directory}
 This is optional; it is necessary only if you keep your Lisp code
 somewhere other than the top-level directory of the package's source
-tree, eg, in @file{packages/xemacs-packages/@var{PACKAGE}/lisp}.
+tree, eg, in @file{packages/xemacs-packages/@code{$(PACKAGE)}/lisp}.
 @end table
 
 This only needs to be done once, when the package is first added to the
@@ -1235,7 +1235,7 @@ targets.)
 @end table
 
 Data files include things like pixmaps for a package-specific toolbar,
-and are normally installed in @file{etc/@var{PACKAGE_NAME}}.  A few
+and are normally installed in @file{etc/@code{$(PACKAGE_NAME)}}.  A few
 packages have needs beyond the basic templates.  See @file{XEmacs.rules}
 or a future revision of this manual for details.
 

@@ -1,3 +1,19 @@
+2003-09-27  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* search.c (trivial_regexp_p): Regexps containing "\{" are
+	nontrivial.  Thanks to Manfred Bartz for reporting the bug and
+	Stefan Monnier for suggesting a diagnosis.
+
+2003-09-25  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* elhash.c (make-hash-table): Clarify use of :test #'equal.
+
+2003-09-12  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* search.c (Fsearch_forward):
+	(Fsearch_backward):
+	Document negative count.
+
 2003-09-13  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* regex.c (re_max_failures): Bump to 20000 for REGEX_MALLOC, too.
