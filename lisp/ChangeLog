@@ -1,3 +1,14 @@
+2004-12-15  Ville Skyttä  <scop@xemacs.org>
+
+	* bytecomp-runtime.el (make-obsolete): Add 3rd argument (no-op for
+	now) for GNU Emacs compatibility.
+	(make-obsolete-variable): Ditto.
+
+2004-01-08  Ben Wing  <ben@xemacs.org>
+
+	* code-files.el (load):
+	File positions are 0 based not 1 based. Thanks to Steve Youngs.
+
 2004-12-05  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.16 is released

@@ -279,22 +279,22 @@ ${srcdir}/lib-src/config.values.in : ${srcdir}/configure
 	cd ${srcdir} && $(SHELL) lib-src/config.values.sh
 
 depend ${srcdir}/src/depend:
-	cd ./src && $(RECURSIVE_MAKE) depend
+	+cd ./src && $(RECURSIVE_MAKE) depend
 
 ## Build XEmacs and recompile out-of-date and missing .elc files along
 ## the way.
-all-elc all-elcs: autoloads dump-elcs
+all-elc all-elcs: ${PROGNAME} autoloads dump-elcs
 	${blddir}/src/${PROGNAME} -batch -vanilla \
 		-l update-elc-2.el -f batch-update-elc-2 lisp
 
 ## Sub-target for all-elc.
 dump-elc dump-elcs: ${GENERATED_HEADERS} FRC.dump-elcs
-	cd ./src && $(RECURSIVE_MAKE) dump-elcs
+	+cd ./src && $(RECURSIVE_MAKE) dump-elcs
 
 autoloads: lib-src lwlib src lisp/auto-autoloads.el lisp/custom-load.el
 
 FRC.lisp.auto.autoloads.el:
-lisp/auto-autoloads.el:	FRC.lisp.auto.autoloads.el
+lisp/auto-autoloads.el:	${PROGNAME} FRC.lisp.auto.autoloads.el
 	$(RM) lisp/auto-autoloads.el
 	${blddir}/src/${PROGNAME} -batch -no-autoloads \
 		-l autoload -f batch-update-directory lisp
@@ -303,7 +303,7 @@ lisp/auto-autoloads.el:	FRC.lisp.auto.autoloads.el
 	@$(RM) lisp/auto-autoloads.el~
 
 FRC.lisp.custom.load.el:
-lisp/custom-load.el: FRC.lisp.custom.load.el lisp/auto-autoloads.el
+lisp/custom-load.el: ${PROGNAME} FRC.lisp.custom.load.el lisp/auto-autoloads.el
 	${blddir}/src/${PROGNAME} -batch -vanilla -l cus-dep \
 		-f Custom-make-dependencies lisp
 
@@ -350,9 +350,12 @@ FRC.src FRC.lib-src FRC.lwlib FRC.dynodump pkg-src/FRC.tree-x:
 FRC.lisp.finder-inf.el:
 
 ${SUBDIR}: ${SUBDIR_MAKEFILES} ${GENERATED_HEADERS} FRC
-	cd ./$@ && $(RECURSIVE_MAKE) all
+	+cd ./$@ && $(RECURSIVE_MAKE) all
 
-Makefile: ${srcdir}/Makefile.in config.status
+## Building modules depends on ellcc, found in lib-src.
+modules/sample modules/ldap modules/zlib modules/base64: lib-src
+
+Makefile: ${srcdir}/Makefile.in.in config.status
 	./config.status
 
 src/Makefile: ${srcdir}/src/Makefile.in.in ${srcdir}/src/depend config.status
@@ -554,7 +557,7 @@ FRC.mostlyclean FRC.clean FRC.distclean FRC.realclean FRC.tags:
 ##      target for GCC does not delete `libgcc.a', because recompiling it
 ##      is rarely necessary and takes a lot of time.
 mostlyclean: FRC.mostlyclean
-	for d in $(SUBDIR); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
+	+for d in $(SUBDIR); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
 
 ## `clean'
 ##      Delete all files from the current directory that are normally
@@ -565,7 +568,7 @@ mostlyclean: FRC.mostlyclean
 
 ##      Delete `.dvi' files here if they are not part of the distribution.
 clean: FRC.clean
-	for d in $(SUBDIR); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
+	+for d in $(SUBDIR); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
 	$(RM) core
 
 ## `distclean'
@@ -581,7 +584,7 @@ top_distclean=\
 	$(RM) -r site-packages xemacs-packages mule-packages site-lisp
 
 distclean: FRC.distclean
-	for d in $(SUBDIR_DISTCLEAN); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
+	+for d in $(SUBDIR_DISTCLEAN); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
 	-${top_distclean}
 
 ## `realclean'
@@ -596,7 +599,7 @@ distclean: FRC.distclean
 ##      anything that needs to exist in order to run `configure' and then
 ##      begin to build the program.
 realclean: FRC.realclean
-	for d in $(SUBDIR); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
+	+for d in $(SUBDIR); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
 	-${top_distclean}
 	$(RM) TAGS
 
@@ -605,7 +608,7 @@ realclean: FRC.realclean
 ## the coding standards seem to come from.  It's like distclean, but
 ## it deletes backup and autosave files too.
 extraclean:
-	for d in $(SUBDIR); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
+	+for d in $(SUBDIR); do (cd ./$$d && $(RECURSIVE_MAKE) $@); done
 	$(RM) *~ \#*
 	-${top_distclean}
 
@@ -654,13 +657,13 @@ TAGS tags: FRC.tags
 	  xargs etags -a -l none -r "/^(def\\(var\\|un\\|alias\\|const\\|macro\\|subst\\|struct\\|face\\|group\\|custom\\|ine-\\(function\\|compiler-macro\\|[a-z-]+alias\\)\\)[ 	]+'?\\([^ 	]+\\)/\\3/"
 
 check:
-	cd ./src && $(RECURSIVE_MAKE) $@
+	+cd ./src && $(RECURSIVE_MAKE) $@
 
 info: FRC.info
-	cd ${srcdir}/man && $(RECURSIVE_MAKE) $@
+	+cd ${srcdir}/man && $(RECURSIVE_MAKE) $@
 
 dvi:
-	cd ${srcdir}/man && $(RECURSIVE_MAKE) $@
+	+cd ${srcdir}/man && $(RECURSIVE_MAKE) $@
 
 ## Fix up version information in executables (Solaris-only)
 mcs:

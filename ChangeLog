@@ -1,3 +1,8 @@
+2004-09-08  Malcolm Purvis  <malcolmp@xemacs.org>
+
+	* INSTALL: A POSIX compatible Make is required for builds.
+	* Makefile.in.in: Enable support for parallel builds.
+
 2004-12-05  Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.16 is released

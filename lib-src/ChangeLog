@@ -1,3 +1,11 @@
+2005-01-09  Steve Youngs  <steve@sxemacs.org>
+
+	From Andrey Slusar <anrays@gmail.com>:
+
+	* fakemail.c (CURRENT_USER): Define it if FreeBSD version is >=
+	400000.  Also, when FreeBSD version is >= 400000 geteuid returns
+	uid_t instead of unsigned short.
+
 2004-12-17  Vin Shelton  <acs@xemacs.org>
 	* etags.c (add_regex): Use zeropattern to initialize patbuf and
 	thus avoid a segv.
