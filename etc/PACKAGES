@@ -370,6 +370,9 @@ MULE: Lisp Interface to EDICT, Kanji Dictionary.
 *** egg-its
 MULE: Wnn (4.2 and 6) support.  SJ3 support.
 
+*** latin-euro-standards
+MULE: Support for the Latin{7,8,9,10} character sets & coding systems.
+
 *** latin-unity
 MULE: find single ISO 8859 character set to encode a buffer.
 
@@ -383,7 +386,7 @@ MULE: Localized menubars and localized splash screens.
 MULE: Dictionary support.
 
 *** mule-base
-MULE: Basic Mule support, required for building with Mule.
+MULE: Basic Mule support.
 
 *** mule-ucs
 MULE: Extended coding systems (including Unicode) for XEmacs.
