@@ -1,3 +1,7 @@
+2003-08-15  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* config.h.in (REGEX_MALLOC): Make it configure'able.
+
 2003-08-14  Andrew Begel  <abegel@CS.Berkeley.EDU>
 
 	* config.h.in: Add HAVE_DYLD to indicate Darwin/MacOSX dynamic

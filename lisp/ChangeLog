@@ -1,3 +1,7 @@
+2003-08-17  Vin Shelton  <acs@xemacs.org>
+
+	* about.el: Vanity patch.
+
 2003-08-11  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* code-process.el (call-process):
