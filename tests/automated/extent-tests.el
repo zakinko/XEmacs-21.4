@@ -369,3 +369,4 @@
     (put e 'start-open t)
     (et-insert-at "foo" 4)
     (Assert (equal (et-range e) '(4 4)))))
+
