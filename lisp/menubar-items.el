@@ -128,6 +128,13 @@ which will not be used as accelerators."
 	     "")))
 	(t "")))
 
+(defun menu-item-search ()
+  "Bring up a search dialog if possible and desired, else do interactive search"
+  (interactive)
+  (if (should-use-dialog-box-p)
+      (make-search-dialog)
+    (isearch-forward)))
+
 (defconst default-menubar
 ; (purecopy-menubar ;purespace is dead
    ;; note backquote.
@@ -201,7 +208,7 @@ which will not be used as accelerators."
       ["Select %_All" mark-whole-buffer]
       ["Select Pa%_ge" mark-page]
       "----"
-      ["%_Find..." make-search-dialog]
+      ["%_Find..." menu-item-search]
       ["R%_eplace..." query-replace]
       ["Replace (Rege%_xp)..." query-replace-regexp]
       ["%_List Matching Lines..." list-matching-lines]
