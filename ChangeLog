@@ -1,3 +1,8 @@
+2003-07-21  Malcolm Purvis  <malcolmpurvis@optushome.com.au>
+
+	* etc/gtkrc: New file.  This is the GTK equivalent of the
+	app-default file.
+
 2004-03-30  Norbert Koch  <viteno@xemacs.org>
 
 	* PACKAGES: Introduce new packages escreen, xlib, and xwem.

@@ -1,6 +1,6 @@
 ;;; etags.el --- etags facility for Emacs
 
-;; Copyright 1985, 1986, 1988, 1990, 1997 Free Software Foundation, Inc.
+;; Copyright 1985, 1986, 1988, 1990, 1997, 2003 Free Software Foundation, Inc.
 
 ;; Author: Their Name is Legion (see list below)
 ;; Maintainer: XEmacs Development Team
@@ -172,6 +172,11 @@ This affects the `tags-search' and `tags-query-replace' commands."
   :type 'boolean
   :group 'etags)
 
+(defcustom tags-check-parent-directories-for-tag-files t
+  "*If non-nil, look for TAGS files in all parent directories."
+  :type 'boolean
+  :group 'etags)
+
 (defcustom tags-exuberant-ctags-optimization-p nil
   "*If this variable is nil (the default), then exact tag search is able
 to find tag names in the name part of the tagtable (enclosed by  ^?..^A)
@@ -198,10 +203,21 @@ the current buffer."
     ;; Current directory
     (when (file-readable-p (concat default-directory "TAGS"))
       (push (concat default-directory "TAGS") result))
-    ;; Parent directory
-    (let ((parent-tag-file (expand-file-name "../TAGS" default-directory)))
-      (when (file-readable-p parent-tag-file)
-	(push parent-tag-file result)))
+    ;; Parent directories
+    (when tags-check-parent-directories-for-tag-files
+      (let ((cur default-directory))
+	;; Fuck!  Shouldn't there be a more obvious portable way
+	;; to determine if we're the root?  Shouldn't we have a
+	;; proper path manipulation API?  Do you know how many
+	;; god-damn bugs are lurking out there because of Unix/
+	;; Windows differences?  And how much code is littered
+	;; with stuff such as 10 lines down from here?
+	(while (not (and (equal (file-name-as-directory cur) cur)
+			 (equal (directory-file-name cur) cur)))
+	  (setq cur (expand-file-name ".." cur))
+	  (let ((parent-tag-file (expand-file-name "TAGS" cur)))
+	    (when (file-readable-p parent-tag-file)
+	      (push parent-tag-file result))))))
     ;; tag-table-alist
     (let* ((key (or buffer-file-name
 		    (concat default-directory (buffer-name))))
@@ -481,16 +497,29 @@ this buffer uses."
      (or (memq tag-table-symbol tag-symbol-tables)
 	 (set tag-symbol (cons tag-table-symbol tag-symbol-tables)))))
 
+;; Can't use "\\s-" in these patterns because that will include newline
+;; \2 matches an explicit name.
 (defconst tags-explicit-name-pattern "\177\\(\\([^\n\001]+\\)\001\\)?")
-;; Can't use "\\s " in these patterns because that will include newline
+;; \1 matches Lisp-name, \2 matches C-name, \5 (from
+;; tags-explicit-name-pattern) matches explicit name.
 (defconst tags-DEFUN-pattern
-          "DEFUN[ \t]*(\"\\([^\"]+\\)\",[ \t]*\\(\\(\\sw\\|\\s_\\)+\\),\C-?")
+  (concat "DEFUN[ \t]*(\"\\([^\"]+\\)\",[ \t]*\\(\\(\\sw\\|\\s_\\)+\\),"
+	  tags-explicit-name-pattern))
+;; \1 matches an array name.  Explicit names unused?
 (defconst tags-array-pattern ".*[ \t]+\\([^ \[]+\\)\\[")
+;; \2 matches a Lispish name, \5 (from tags-explicit-name-pattern) matches
+;; explicit name.
 (defconst tags-def-pattern
-          "\\(.*[ \t]+\\)?\\**\\(\\(\\sw\\|\\s_\\)+\\)[ ();,\t]*\C-?"
-;; "\\(.*[ \t]+\\)?\\(\\(\\sw\\|\\s_\\)+\\)[ ()]*\C-?"
-;; "\\(\\sw\\|\\s_\\)+[ ()]*\C-?"
+  (concat "\\(.*[ \t]+\\)?\\**\\(\\(\\sw\\|\\s_\\)+\\)[ ();,\t]*"
+;; "\\(.*[ \t]+\\)?\\(\\(\\sw\\|\\s_\\)+\\)[ ()]*"
+;; "\\(\\sw\\|\\s_\\)+[ ()]*"
+	  tags-explicit-name-pattern)
       )
+;; \1 matches Schemish name, \4 (from tags-explicit-name-pattern) matches
+;; explicit name
+(defconst tags-schemish-pattern
+  (concat "\\s-*(\\s-*def\\sw*\\s-*(?\\s-*\\(\\(\\sw\\|\\s_\\|:\\)+\\))?\\s-*"
+	  tags-explicit-name-pattern))
 (defconst tags-file-pattern "^\f\n\\(.+\\),[0-9]+\n")
 
 (defun add-to-tag-completion-table-exuberant-ctags ()
@@ -504,8 +533,6 @@ work with xemacs etags."
 	name tag-symbol
 	tag-symbol-tables
 	(case-fold-search nil))
-    ;; Loop over the files mentioned in the TAGS file for each file,
-    ;; try to find its major-mode, then process tags appropriately.
     (while (re-search-forward tags-explicit-name-pattern nil t)
       ;; no need to check the mode here
       (setq name (match-string 2))
@@ -520,7 +547,7 @@ work with xemacs etags."
   (goto-char (point-min))
   (let ((tag-table-symbol (intern buffer-file-name tag-completion-table))
 	;; tag-table-symbol is used by intern-tag-symbol
-	filename file-type name name2 tag-symbol
+	filename file-type name name2 name3 tag-symbol
 	tag-symbol-tables
 	(case-fold-search nil))
     ;; Loop over the files mentioned in the TAGS file for each file,
@@ -549,7 +576,7 @@ work with xemacs etags."
 			       lisp-mode-syntax-table)
 			      (t (standard-syntax-table))))
       ;; Clear loop variables.
-      (setq name nil name2 nil)
+      (setq name nil name2 nil name3 nil)
       (lmessage 'progress "%s..." filename)
       ;; Loop over the individual tag lines.
       (while (not (or (eobp) (eq (char-after) ?\f)))
@@ -559,8 +586,9 @@ work with xemacs etags."
 	       (or (looking-at tags-DEFUN-pattern)
 		   (error "DEFUN doesn't fit pattern"))
 	       (setq name (match-string 1)
-		     name2 (match-string 2)))
-	      ;;((looking-at "\\s ")
+		     name2 (match-string 2)
+		     name3 (match-string 5)))
+	      ;;((looking-at "\\s-")
 	      ;; skip probably bogus entry:
 	      ;;)
 	      ((and (eq file-type 'c-mode)
@@ -572,15 +600,18 @@ work with xemacs etags."
 		     (t
 		      (setq name (match-string 1)))))
 	      ((and (eq file-type 'scheme-mode)
-		    (looking-at "\\s-*(\\s-*def\\sw*\\s-*(?\\s-*\\(\\(\\sw\\|\\s_\\|:\\)+\\))?\\s-*\C-?"))
+		    (looking-at tags-schemish-pattern))
 	       ;; Something Schemish (is this really necessary??)
-	       (setq name (match-string 1)))
+	       (setq name (match-string 1)
+		     name2 (match-string 4)))
 	      ((looking-at tags-def-pattern)
 	       ;; ???
-	       (setq name (match-string 2))))
+	       (setq name (match-string 2)
+		     name2 (match-string 5))))
 	;; add the tags we found to the completion table
 	(and name (intern-tag-symbol name))
 	(and name2 (intern-tag-symbol name2))
+	(and name3 (intern-tag-symbol name3))
 	(forward-line 1)))
     (or (eobp) (error "Bad TAGS file")))
   (message "Adding %s to tags completion table...done" buffer-file-name))
@@ -601,12 +632,10 @@ Make it buffer-local in a mode hook.  The function is called with no
 ;; Return a default tag to search for, based on the text at point.
 (defun find-tag-default ()
   (or (and (not (memq find-tag-default-hook '(nil find-tag-default)))
-	   (condition-case data
-	       (funcall find-tag-default-hook)
-	     (error
-	      (warn "Error in find-tag-default-hook signalled error: %s"
-		    (error-message-string data))
-	      nil)))
+	   (with-trapping-errors 
+	     :function 'find-tag-default-hook
+	     :error-form nil
+	     (funcall find-tag-default-hook)))
       (symbol-near-point)))
 
 ;; This function depends on the following symbols being bound properly:
@@ -658,6 +687,7 @@ If it returns non-nil, this file needs processing by evalling
 (autoload 'get-symbol-syntax-table "symbol-syntax")
 
 (defun find-tag-internal (tagname)
+  
   (let ((next (null tagname))
 	(tmpnext (null tagname))
 	;; If tagname is a list: (TAGNAME), this indicates
@@ -667,7 +697,7 @@ If it returns non-nil, this file needs processing by evalling
 	(exact-syntax-table (get-symbol-syntax-table (syntax-table)))
 	tag-table-currently-matching-exact
 	tag-target exact-tagname
-	tag-tables tag-table-point file linebeg startpos buf
+	tag-tables tag-table-point file linebeg line startpos buf
 	offset found pat syn-tab)
     (when (consp tagname)
       (setq tagname (car tagname)))
@@ -737,45 +767,117 @@ If it returns non-nil, this file needs processing by evalling
 	       (if exact "matching" "containing")
 	       tagname))
       (beginning-of-line)
-      (search-forward "\C-?")
-      (setq file (expand-file-name (file-of-tag)
-				   ;; In XEmacs, this needs to be
-				   ;; relative to:
-				   (or (file-name-directory (car tag-tables))
-				       "./")))
-      (setq linebeg (buffer-substring (1- (point)) (point-at-bol)))
-      (search-forward ",")
-      (setq startpos (read (current-buffer)))
+
+      ;; from here down, synched with FSF 20.7
+      ;; etags-snarf-tag and etags-goto-tag-location. --ben
+
+      (if (save-excursion
+	    (forward-line -1)
+	    (looking-at "\f\n"))
+	  (progn
+	    ;; The match was for a source file name, not any tag
+	    ;; within a file.  Give text of t, meaning to go exactly
+	    ;; to the location we specify, the beginning of the file.
+	    (setq linebeg t
+		  line nil
+		  startpos 1)
+	    (setq file
+		  (expand-file-name (file-of-tag)
+				    ;; In XEmacs, this needs to be
+				    ;; relative to:
+				    (or (file-name-directory (car tag-tables))
+					"./"))))
+	(search-forward "\C-?")
+	(setq file
+	      (expand-file-name (file-of-tag)
+				;; In XEmacs, this needs to be
+				;; relative to:
+				(or (file-name-directory (car tag-tables))
+				    "./")))
+	(setq linebeg (buffer-substring (1- (point)) (point-at-bol)))
+	;; Skip explicit tag name if present.
+	(search-forward "\001" (save-excursion (forward-line 1) (point)) t)
+	(if (looking-at "[0-9]")
+	    (setq line (string-to-int (buffer-substring
+				       (point)
+				       (progn (skip-chars-forward "0-9")
+					      (point))))))
+	(search-forward ",")
+	(if (looking-at "[0-9]")
+	    (setq startpos (string-to-int (buffer-substring
+					   (point)
+					   (progn (skip-chars-forward "0-9")
+						  (point)))))))
+      ;; Leave point on the next line of the tags file.
+      (forward-line 1)
       (setq last-tag-data
 	    (nconc (list tagname (point) tag-table-currently-matching-exact)
 		   tag-tables))
       (setq buf (find-file-noselect file))
+
+      ;; LINEBEG is the initial part of a line containing the tag and
+      ;; STARTPOS is the character position of LINEBEG within the file
+      ;; (starting from 1); LINE is the line number.  If LINEBEG is t,
+      ;; it means the tag refers to exactly LINE or STARTPOS
+      ;; (whichever is present, LINE having preference, no searching).
+      ;; Either LINE or STARTPOS may be nil; STARTPOS is used if
+      ;; present.  If the tag isn't exactly at the given position then
+      ;; look around that position using a search window which expands
+      ;; until it hits the start of file.
+
       (with-current-buffer buf
 	(save-excursion
 	  (save-restriction
 	    (widen)
-	    ;; Here we search for PAT in the range [STARTPOS - OFFSET,
-	    ;; STARTPOS + OFFSET], with increasing values of OFFSET.
-	    ;;
-	    ;; We used to set the initial offset to 1000, but the
-	    ;; actual sources show that finer-grained control is
-	    ;; needed (e.g. two `hash_string's in src/symbols.c.)  So,
-	    ;; I changed 100 to 100, and (* 3 offset) to (* 5 offset).
-	    (setq offset 100)
-	    (setq pat (concat "^" (regexp-quote linebeg)))
-	    (or startpos (setq startpos (point-min)))
-	    (while (and (not found)
-			(progn
-			  (goto-char (- startpos offset))
-			  (not (bobp))))
-	      (setq found (re-search-forward pat (+ startpos offset) t))
-	      (setq offset (* 5 offset)))
-	    ;; Finally, try finding it anywhere in the buffer.
-	    (or found
-		(re-search-forward pat nil t)
-		(error "%s not found in %s" pat file))
-	    (beginning-of-line)
-	    (setq startpos (point)))))
+	    (if (eq linebeg t)
+		;; Direct file tag.
+		(cond (line (goto-line line))
+		      (startpos (goto-char startpos))
+		      (t (error "etags.el BUG: bogus direct file tag")))
+	      ;; Here we search for PAT in the range [STARTPOS - OFFSET,
+	      ;; STARTPOS + OFFSET], with increasing values of OFFSET.
+	      ;;
+	      ;; We used to set the initial offset to 1000, but the
+	      ;; actual sources show that finer-grained control is
+	      ;; needed (e.g. two `hash_string's in src/symbols.c.)  So,
+	      ;; I changed 1000 to 100, and (* 3 offset) to (* 5 offset).
+	      (setq offset 100)
+	      (setq pat (concat (if (eq selective-display t)
+				    "\\(^\\|\^m\\)" "^")
+				(regexp-quote linebeg)))
+
+	      ;; The character position in the tags table is 0-origin.
+	      ;; Convert it to a 1-origin Emacs character position.
+	      (if startpos (setq startpos (1+ startpos)))
+	      ;; If no char pos was given, try the given line number.
+	      (or startpos
+		  (if line
+		      (setq startpos (progn (goto-line line)
+					    (point)))))
+	      (or startpos
+		  (setq startpos (point-min)))
+	      ;; First see if the tag is right at the specified location.
+	      (goto-char startpos)
+	      (setq found (looking-at pat))
+	      (while (and (not found)
+			  (progn
+			    (goto-char (- startpos offset))
+			    (not (bobp))))
+		(setq found
+		      (re-search-forward pat (+ startpos offset) t)
+		      offset (* 5 offset))) ; expand search window
+	      ;; Finally, try finding it anywhere in the buffer.
+	      (or found
+		  (re-search-forward pat nil t)
+		  (error "Rerun etags: `%s' not found in %s"
+			 pat file))))
+	  ;; Position point at the right place
+	  ;; if the search string matched an extra Ctrl-m at the beginning.
+	  (and (eq selective-display t)
+	       (looking-at "\^m")
+	       (forward-char 1))
+	  (beginning-of-line)
+	  (setq startpos (point))))
       (cons buf startpos))))
 
 ;;;###autoload
@@ -801,8 +903,7 @@ in the tag table that matches the tagname used in the previous find-tag.
 the tag.
 
 This version of this function supports multiple active tags tables,
-and completion. See also the commands `\\[push-tag-mark]' and
-`\\[pop-tag-mark]'.
+and completion.
 
 Variables of note:
 
@@ -1211,7 +1312,7 @@ If this is a C-defined elisp function, it does something more clever."
 (defcustom tag-mark-stack-max 16
   "*The maximum number of elements kept on the mark-stack used
 by tags-search.  See also the commands `\\[push-tag-mark]' and
-`\\[pop-tag-mark]'."
+and `\\[pop-tag-mark]'."
   :type 'integer
   :group 'etags)
 

@@ -1,3 +1,7 @@
+2004-05-10  Vin Shelton  <acs@xemacs.org>
+
+	* etags.el: Sync with 21.5 version.
+
 2004-04-21  Sven Grundmann  <sven@hellerhof.de>
 
 	* etags.el:
