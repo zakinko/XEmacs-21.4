@@ -4766,16 +4766,20 @@ re_match_2_internal (struct re_pattern_buffer *bufp, re_char *string1,
 
 		/* Go through the first `min (num_regs, regs->num_regs)'
 		   registers, since that is all we initialized.  */
-		for (mcnt = 1; mcnt < MIN (num_regs, regs->num_regs); mcnt++)
+		for (mcnt = 1;
+		     mcnt < MIN (num_nonshy_regs, regs->num_regs);
+		     mcnt++)
 		  {
-		    if (REG_UNSET (regstart[mcnt]) || REG_UNSET (regend[mcnt]))
+		    int ireg = bufp->external_to_internal_register[mcnt];
+
+		    if (REG_UNSET (regstart[ireg]) || REG_UNSET (regend[ireg]))
 		      regs->start[mcnt] = regs->end[mcnt] = -1;
 		    else
 		      {
 			regs->start[mcnt]
-			  = (regoff_t) POINTER_TO_OFFSET (regstart[mcnt]);
+			  = (regoff_t) POINTER_TO_OFFSET (regstart[ireg]);
 			regs->end[mcnt]
-			  = (regoff_t) POINTER_TO_OFFSET (regend[mcnt]);
+			  = (regoff_t) POINTER_TO_OFFSET (regend[ireg]);
 		      }
 		  }
 	      } /* regs && !bufp->no_sub */
