@@ -1,3 +1,10 @@
+2003-11-05  Vin Shelton  <acs@xemacs.org>
+
+	* help.el (Help-prin1-face):
+	(Help-princ-face):
+	princ and prin1 are functions and need to be called as such.  The
+	idea for this patch was submitted by Eric Eide <eeide@cs.utah.edu>.
+
 2003-10-22  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* about.el (about-xemacs): Give full version and build date.
