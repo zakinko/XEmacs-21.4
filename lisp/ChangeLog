@@ -1,3 +1,9 @@
+2003-12-10  Hrvoje Niksic  <hniksic@xemacs.org>
+
+	* bytecomp.el (byte-compile-warn-about-unused-variables): Don't
+	apply `format' to the first argument of byte-compile-warn, it
+	already calls format.
+
 2003-12-03  Adrian Aichner  <adrian@xemacs.org>
 
 	* files.el (delete-old-versions): Avoid going interactive during

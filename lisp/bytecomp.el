@@ -1284,7 +1284,7 @@ otherwise pop it")
     (setq unreferenced (nreverse unreferenced))
     (while unreferenced
       (byte-compile-warn
-       (format "variable %s bound but not referenced" (car unreferenced)))
+       "variable %s bound but not referenced" (car unreferenced))
       (setq unreferenced (cdr unreferenced)))))
 
 
