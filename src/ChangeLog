@@ -1,3 +1,8 @@
+2005-02-12  Vin Shelton  <acs@xemacs.org>
+
+	* emacs.c (shut_down_emacs): Advise users to send email to the
+	xemacs-beta list instead of crashes@xemacs.org.
+
 2005-02-03  David Evers  <extsw@appliedgenerics.com>
 
 	* process-unix.c (unix_send_process): Flush the last chunk, even
