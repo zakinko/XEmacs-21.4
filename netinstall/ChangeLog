@@ -1,3 +1,7 @@
+2001-05-10  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.2 "Developer-Friendly Unix APIs" is released.
+
 2001-04-19  Andy Piper  <andy@xemacs.org>
 
 	* Makefile.in.in (setup-bin.ini): new. Just calculate ini for the
@@ -236,5 +240,5 @@
 
 	* all: port from cygwin setup.
 
-%%% $Id: ChangeLog,v 1.2.2.6 2001/05/09 09:53:57 stephent Exp $
-$Revision: 1.2.2.6 $
+%%% $Id: ChangeLog,v 1.2.2.7 2001/05/10 10:39:06 stephent Exp $
+$Revision: 1.2.2.7 $
