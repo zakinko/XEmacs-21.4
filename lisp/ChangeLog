@@ -1,3 +1,7 @@
+2004-04-30  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* cl.el (gensym, gentemp): Improve docstrings.
+
 2004-05-10  Vin Shelton  <acs@xemacs.org>
 
 	* etags.el: Sync with 21.5 version.
