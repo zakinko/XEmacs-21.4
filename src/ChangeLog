@@ -1,3 +1,8 @@
+2002-07-29  Jerry James  <james@xemacs.org>
+
+	* lread.c (locate_file): Any nonnegative return value indicates
+	success if MODE is nonnegative.
+
 2002-05-09  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* XEmacs 21.4.8 "Honest Recruiter" is released.
