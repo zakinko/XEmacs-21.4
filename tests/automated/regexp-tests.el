@@ -247,8 +247,8 @@
 (Assert (not (string-match "\\> " " ")))
 (Assert (not (string-match "a\\<" "a")))
 (Assert (not (string-match "\\>a" "a")))
-;; Expect these to fail :-(
-;; Added Known-Bug 2002-09-09
+;; Added Known-Bug 2002-09-09 sjt
+;; These are now fixed 2003-03-21 sjt
 (Assert (not (string-match "\\b" "")))
 (Assert (not (string-match " \\b" " ")))
 (Assert (not (string-match "\\b " " ")))

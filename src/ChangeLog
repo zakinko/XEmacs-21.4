@@ -1,3 +1,12 @@
+2003-03-24  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* database.c (Fopen_database): Don't use DB_AUTO_COMMIT.
+
+2003-03-21  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* regex.c (re_match_2_internal): Fix matching degenerate word
+	boundaries.
+
 2003-05-25  XEmacs Build Bot <builds@cvs.xemacs.org>
 
 	* XEmacs 21.4.13 is released
