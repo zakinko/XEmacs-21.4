@@ -1,3 +1,7 @@
+2002-05-04  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* custom.texi (The Init File): Rewrite completely.
+
 2002-03-19  Adrian Aichner  <adrian@xemacs.org>
 
 	* widget.texi (constants): Typo fix.
