@@ -1,3 +1,8 @@
+2003-01-15  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* isearch-mode.el (isearch-mode-map): Substitute comment on
+	desirability, and back out "GR is printable" changes.
+
 2003-01-08  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* isearch-mode.el (isearch-mode-map): Don't bind CSI.
