@@ -29,6 +29,7 @@ to 21.4.11 "Native Windows TTY Support"
 -- Fix: mmap crash in build -- Wolfram Gloger
 -- Fix: Restore layout patch -- Andy Piper
 -- New: Berkeley db 4.1 support -- Greg Allen
+-- Update: menubar for browse-url -- Ville Skyttä
 -- Build: Default pdump on for Linux -- Stephen Turnbull
 -- Docs: Examples, corrections, and oxymorons -- Katsumi Yamaoka, John Paul Wallington, Stephen Turnbull, Giacomo Boffi, Ville Skyttä, Ilya Golubev, Andy Piper
 -- Docs: Lesstif PROBLEM -- Frank McIngvale
