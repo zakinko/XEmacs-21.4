@@ -1,3 +1,8 @@
+2004-05-05  Chuck Hines <chuck.hines@baesystems.com>
+
+       * dgif_lib.c (DGifSlurp): Changed do-while to while to stop
+        coredump from deref of NULL ptr (ExtData)
+
 2004-04-19  Jerry James  <james@xemacs.org>
 
 	* data.c (sign_extend_lisp_int): Use INT_VALBITS instead of
