@@ -1,3 +1,7 @@
+2003-02-23  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* config.h.in (DLSYM_NEEDS_UNDERSCORE): Define on darwin.
+
 2003-02-06  Andrew Begel  <abegel@CS.Berkeley.EDU>
 
 	* sysdll.c: Included lisp.h to define needed alloca_array.
@@ -29,7 +33,7 @@
 
 2003-01-29  Vin Shelton <acs@xemacs.org>
 
-	Patch couresy of Andrew Begel <abegel@cs.berkeley.edu>
+	Patch courtesy of Andrew Begel <abegel@cs.berkeley.edu>
 
 	* dynarr.c (Dynarr_realloc): memcpy copies number of bytes, so
 	remember to multiply by the element size.
