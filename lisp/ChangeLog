@@ -1,3 +1,7 @@
+2001-12-17  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.6 "Common Lisp" is released.
+
 2001-11-21  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* package-net.el: Inadvertant synch with Windows branch.  From

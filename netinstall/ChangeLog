@@ -1,3 +1,7 @@
+2001-12-17  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.6 "Common Lisp" is released.
+
 2001-10-27  Andy Piper  <andy@xemacs.org>
 
 	* localdir.cc (dialog_cmd): allow download directory to be
@@ -284,5 +288,5 @@
 
 	* all: port from cygwin setup.
 
-%%% $Id: ChangeLog,v 1.2.2.12 2001/12/17 05:49:16 stephent Exp $
-$Revision: 1.2.2.12 $
+%%% $Id: ChangeLog,v 1.2.2.13 2001/12/17 08:45:59 stephent Exp $
+$Revision: 1.2.2.13 $

@@ -1,3 +1,7 @@
+2001-12-17  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* XEmacs 21.4.6 "Common Lisp" is released.
+
 2001-12-16  Torsten Duwe  <duwe@caldera.de>
 
 	* search.c (Freplace_match): Add missing sub-expression functionality.
