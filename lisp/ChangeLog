@@ -1,3 +1,9 @@
+2004-04-21  Sven Grundmann  <sven@hellerhof.de>
+
+	* list-mode.el (display-completion-list): Fixed completion list was
+	taking the width of the frame and not of the window for displaying
+	the selection methods.
+
 2004-04-18  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* menubar-items.el (default-menubar): Options are saved to custom.el.
