@@ -1,3 +1,19 @@
+2004-03-23  Malcolm Purvis  <malcolmpurvis@optushome.com.au>
+
+	* configure (GTK_CONFIG): Check GTK version validity only when the
+	right instance of gtk-config is found.
+
+2004-03-20  Adrian Aichner  <adrian@xemacs.org>
+
+	* etc/sample.init.el: Sync typo and copycat fix from 21.5.
+	* etc/sample.init.el ((console-on-window-system-p)): Sync
+	"\C-x\C-c" definition from 21.5.
+
+2004-03-20  Vin Shelton  <acs@xemacs.org>
+
+	* configure.usage (--use-regex-malloc): Correct warning about
+	disabling regex-malloc.
+
 2004-03-04  Malcolm Purvis  <malcolmpurvis@optushome.com.au>
 
 	* configure.in (src/Makefile): No longer include a special linker

@@ -1,3 +1,21 @@
+2004-03-23  Malcolm Purvis  <malcolmpurvis@optushome.com.au>
+	* gtk-widgets.el: New import: gtk-accel-group-new.
+	* dialog-gtk.el:
+	* dialog-gtk.el (gtk-popup-convert-underscores): New.
+	* dialog-gtk.el (popup-builtin-question-dialog):
+	Added support for dialog button mnemonics.
+
+2004-03-22  Chris Green <cmg@dok.org>
+
+	* process.el (shell-command): Output buffer was ignored when a
+	background process was run via shell-command.
+
+2004-03-19  Hrvoje Niksic  <hniksic@xemacs.org>
+
+	* cus-edit.el (custom-save-variables): Retrieve a list of
+	variables to save first, sort it, and make sure the variables are
+	saved in sorted order.
+
 2004-02-23  Steve Youngs  <sryoungs@bigpond.net.au>
  
 	* package-get.el (package-get-update-base-from-buffer): Force

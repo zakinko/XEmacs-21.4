@@ -3386,43 +3386,54 @@ Leave point at the location of the call, or after the last expression."
      (custom-save-delete 'custom-set-variables)
      (custom-save-loaded-themes)
      (custom-save-resets 'theme-value 'custom-reset-variables nil)
+
      (let ((standard-output (current-buffer)))
        (unless (bolp)
- 	(princ "\n"))
+	 (princ "\n"))
        (princ "(custom-set-variables")
-       (mapatoms (lambda (symbol)
-		  (let ((spec (car-safe (get symbol 'theme-value)))
- 			(requests (get symbol 'custom-requests))
- 			(now (not (or (get symbol 'standard-value)
- 				      (and (not (boundp symbol))
- 					   (not (eq (get symbol 'force-value)
-						    'rogue))))))
-			(comment (get symbol 'saved-variable-comment)))
- 		    (when (or (and spec
-				   (eq (car spec) 'user)
-				   (eq (second spec) 'set))
-			      comment
-			      ;; support non-themed vars
-			      (and (null spec) (get symbol 'saved-value)))
- 		      (princ "\n '(")
- 		      (prin1 symbol)
- 		      (princ " ")
-		      ;; This comment stuff is in the way ####
-		      ;; Is (eq (third spec) (car saved-value)) ????
- 		      ;; (prin1 (third spec))
-		      (prin1 (car (get symbol 'saved-value)))
-		      (when (or now requests comment)
-			(princ (if now " t" " nil")))
-		      (when (or comment requests)
-			(princ " ")
-			(prin1 requests))
-		      (when comment
-			(princ " ")
-			(prin1 comment))
-		      (princ ")")))))
-      (princ ")")
-      (unless (looking-at "\n")
-	(princ "\n")))))
+
+       ;; Get the list of variables to save...
+       (let (varlist)
+	 (mapatoms (lambda (symbol)
+		     (let ((spec (car-safe (get symbol 'theme-value)))
+			   (comment (get symbol 'saved-variable-comment)))
+		       (when (or (and spec
+				      (eq (first spec) 'user)
+				      (eq (second spec) 'set))
+				 comment
+				 ;; support non-themed vars
+				 (and (null spec) (get symbol 'saved-value)))
+			 (push symbol varlist)))))
+
+	 ;; ...and sort it by name, so our output can be easily diffed, etc.
+	 (setq varlist (sort varlist #'string-lessp))
+
+	 ;; Generate the output for each var.
+	 (dolist (symbol varlist)
+	   (let ((requests (get symbol 'custom-requests))
+		 (now (not (or (get symbol 'standard-value)
+			       (and (not (boundp symbol))
+				    (not (eq (get symbol 'force-value)
+					     'rogue))))))
+		 (comment (get symbol 'saved-variable-comment)))
+	     (princ "\n '(")
+	     (prin1 symbol)
+	     (princ " ")
+	     (prin1 (car (get symbol 'saved-value)))
+	     (when (or now requests comment)
+	       (princ (if now " t" " nil")))
+	     (when (or comment requests)
+	       (princ " ")
+	       (prin1 requests))
+	     (when comment
+	       (princ " ")
+	       (prin1 comment))
+	     (princ ")"))))
+
+       ;; Finish the output.
+       (princ ")")
+       (unless (looking-at "\n")
+	 (princ "\n")))))
 
 (defvar custom-save-face-ignoring nil)
 
