@@ -1982,7 +1982,7 @@ Each keyword has the form (MATCHER HIGHLIGHT ...).  See `font-lock-keywords'."
 		  "\\)\\)\\>"
 		  ;; Any whitespace and declared object.
 		  "[ \t'\(]*"
-		  "\\([^ \t\n\)]+\\)?")
+		  "\\([^ \t\n\(\)]+\\)?")
 	  '(1 font-lock-keyword-face)
 	  '(8 (cond ((match-beginning 3) 'font-lock-variable-name-face)
 		    ((match-beginning 6) 'font-lock-type-face)

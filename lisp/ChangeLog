@@ -1,3 +1,18 @@
+2003-06-11  Adrian Aichner  <adrian@xemacs.org>
+
+	* font-lock.el (lisp-font-lock-keywords-1): Only NAME, not NAME(
+	to appear in font-lock-function-name-face.
+
+2003-06-17  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* bytecomp.el (byte-compile-lambda): Discard docstring only if it
+	is not also the value of the lambda.
+
+2003-05-06  Andy Piper  <andy@xemacs.org>
+
+	* files.el (revert-buffer): Make sure local variables get processed,
+	even in the case of an optimized reversion.
+
 2003-05-25  XEmacs Build Bot <builds@cvs.xemacs.org>
 
 	* XEmacs 21.4.13 is released
