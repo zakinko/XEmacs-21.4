@@ -1,3 +1,30 @@
+2004-09-02  Yoshiki Hayashi  <yoshiki@xemacs.org>
+
+	* buffer.c (Frecord_buffer): Make sure the argument is buffer
+	to fix a crash.  Also, check the buffer is live and it
+	really exists in buffer_list.  If the buffer is not in the list,
+	prepend it.
+
+2004-09-08  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	Fix shy groups by implementing recording of all groups for
+	repetition and backtracking.  Backport from 21.5.
+	
+	* regex.h (struct re_pattern_buffer): Add members re_ngroups,
+	external_to_internal_register, external_to_internal_register_size,
+	and update comments for re_nsub.
+
+	* regex.c (re_opcode_t): Update comments.
+	(print_compiled_pattern): Ouput external_to_internal_register,
+	external_to_internal_register_size, and re_ngroups for debugging.
+	(INIT_REG_TRANSLATE_SIZE): New manifest constant.
+	(regex_compile): Update header comment.
+	Ensure that all groups are recorded so that repeat matches and
+	backtracking work correctly.  Comment related warning for groups >
+	255.
+	(re_search_2): Construct map of API indexes (which count only
+	nonshy groups) to internal register numbers, and keep it updated.
+
 2004-07-27  Malcolm Purvis  <malcolmp@xemacs.org>
 
 	* frame-gtk.c (gtk_make_frame_visible):

@@ -1,3 +1,21 @@
+2004-09-15  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	Fix bug: apropos errors if a defalias refers to an undefined
+	function.  <87pt4pmdcs.fsf@tleepslib.sk.tsukuba.ac.jp>
+
+	* apropos.el (apropos):
+	(apropos-command):
+	* help.el (frob-help-extents):
+	* help-macro.el (make-help-screen):
+	* hyper-apropos.el (hyper-apropos-grok-functions):
+	(hyper-apropos-get-doc):
+	Catch void-function error thrown by `documentation'.
+
+2004-09-02  Steve Youngs  <steve@youngs.au.com>
+
+	* packages.el (package-require): Fix incorrect arg to format.
+	This fixes a `format specifier' error.
+
 2004-08-13  Jerry James  <james@xemacs.org>
 
 	* bytecomp.el (forward-word): Tell the byte compiler the correct
@@ -139,6 +157,7 @@
 
 	* menubar-items.el (default-menubar): Options are saved to custom.el.
 
+
 2004-02-23  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* isearch-mode.el (isearch-abort): Preserve successful search target.
@@ -156,6 +175,7 @@
 	make-x-device-with-gtk-fallback.
 
 2004-03-23  Malcolm Purvis  <malcolmpurvis@optushome.com.au>
+
 	* gtk-widgets.el: New import: gtk-accel-group-new.
 	* dialog-gtk.el:
 	* dialog-gtk.el (gtk-popup-convert-underscores): New.
