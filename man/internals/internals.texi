@@ -4145,6 +4145,11 @@ highlighting different syntactic constructs of a source file in
 different colors, for easy reading.  The C support is provided so that
 this is fast.
 
+As of 21.4.10, bugs introduced at the very end of the 21.2 series in the
+``syntax properties'' code were fixed, and highlighting is acceptably
+quick again.  However, presumably more improvements are possible, and
+the places to look are probably here, in the defun-traversing code, and
+in @file{syntax.c}, in the comment-traversing code.
 
 
 @example

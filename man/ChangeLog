@@ -1,3 +1,8 @@
+2002-12-27  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* internals/internals.texi (Regression Testing XEmacs): Hints for
+	test design.
+
 2002-10-29  Ville Skyttä  <scop@xemacs.org>
 
 	* xemacs-faq.texi (Top):
