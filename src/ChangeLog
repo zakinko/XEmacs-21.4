@@ -1,3 +1,7 @@
+2005-01-12  Ville Skyttä  <scop@xemacs.org>
+
+	* console-x.h: #include X11/keysym.h before xintrinsic.h.
+
 2005-01-13  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	Fix backreference bug caught by test suite.
