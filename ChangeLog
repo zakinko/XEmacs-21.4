@@ -1,3 +1,8 @@
+2003-08-14  Andrew Begel  <abegel@CS.Berkeley.EDU>
+
+	* configure.in: Add code to detect Darwin/MacOSX dynamic linking
+	API.
+
 2003-08-12  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* configure.usage (GUI component): Improve lucid option doc.
