@@ -54,8 +54,8 @@ to 21.4.10 "Military Intelligence"
 -- Docs: New FAQs -- Stephen Turnbull
 -- Docs: New PROBLEMs -- Stephen Turnbull
 -- Docs: New configure.usage -- Stephen Turnbull
--- Docs: New oxymorons -- Stephen Turnbull
--- Docs: Typo fixes -- Jerry James, Ville Skyttä, Stephen Turnbull, Norbert Koch
+-- Docs: New oxymorons -- Stephen Turnbull, Christopher Sekiya
+-- Docs: Typo fixes -- Jerry James, Ville Skyttä, Stephen Turnbull, Norbert Koch, Juergen Stuber
 -- Docs: Update manuals on syntax functions, byte-compiler options -- Stephen Turnbull
 -- Docs: Update package sites and Texi docs -- Ville Skyttä
 -- Docs: (Native Windows) Remove redundant quoting in Installation -- Adrian Aichner
