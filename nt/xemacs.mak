@@ -48,11 +48,6 @@ XEMACSDIRSTRING=$(MAKEDIRSTRING:\\nt=)
 # Define a variable for the 'del' command to use
 DEL=-del
 
-# Define a variable for 'copy' command to use
-# Suppress confirmation for overwriting files
-COPY=xcopy /q /y
-COPYDIR=xcopy /q /y /e
-
 # Program name and version
 
 !include "$(XEMACS)\version.sh"
@@ -507,13 +502,13 @@ XEMACS_INCLUDES=\
  $(SRC)\paths.h
 
 $(SRC)\config.h:	config.h
-	@$(COPY) config.h $(SRC)
+	copy config.h $(SRC)
 
 $(SRC)\Emacs.ad.h:	Emacs.ad.h
-	@$(COPY) Emacs.ad.h $(SRC)
+	copy Emacs.ad.h $(SRC)
 
 $(SRC)\paths.h:	paths.h
-	@$(COPY) paths.h $(SRC)
+	copy paths.h $(SRC)
 
 #------------------------------------------------------------------------------
 
@@ -1416,22 +1411,22 @@ install:	all
 	cd $(NT)
 	@echo Installing in $(INSTALL_DIR) ...
 	@echo PlaceHolder > PlaceHolder
-	@$(COPY) PROBLEMS "$(INSTALL_DIR)\"
-	@$(COPY) PlaceHolder "$(INSTALL_DIR)\lock\"
+	@xcopy /q PROBLEMS "$(INSTALL_DIR)\"
+	@xcopy /q PlaceHolder "$(INSTALL_DIR)\lock\"
 	$(DEL) "$(INSTALL_DIR)\lock\PlaceHolder"
-	@$(COPY) $(LIB_SRC)\*.exe "$(INSTALL_DIR)\$(EMACS_CONFIGURATION)\"
-	@$(COPY) $(LIB_SRC)\DOC "$(INSTALL_DIR)\$(EMACS_CONFIGURATION)"
-	@$(COPY) $(CONFIG_VALUES) "$(INSTALL_DIR)\$(EMACS_CONFIGURATION)"
-	@$(COPY) $(SRC)\xemacs.exe "$(INSTALL_DIR)\$(EMACS_CONFIGURATION)"
-	@$(COPYDIR) $(XEMACS)\etc  "$(INSTALL_DIR)\etc\"
-	@$(COPYDIR) $(XEMACS)\info "$(INSTALL_DIR)\info\"
-	@$(COPYDIR) $(XEMACS)\lisp "$(INSTALL_DIR)\lisp\"
+	@xcopy /q $(LIB_SRC)\*.exe "$(INSTALL_DIR)\$(EMACS_CONFIGURATION)\"
+	@copy $(LIB_SRC)\DOC "$(INSTALL_DIR)\$(EMACS_CONFIGURATION)"
+	@copy $(CONFIG_VALUES) "$(INSTALL_DIR)\$(EMACS_CONFIGURATION)"
+	@copy $(SRC)\xemacs.exe "$(INSTALL_DIR)\$(EMACS_CONFIGURATION)"
+	@xcopy /e /q $(XEMACS)\etc  "$(INSTALL_DIR)\etc\"
+	@xcopy /e /q $(XEMACS)\info "$(INSTALL_DIR)\info\"
+	@xcopy /e /q $(XEMACS)\lisp "$(INSTALL_DIR)\lisp\"
 	@echo Making skeleton package tree in $(PACKAGE_PREFIX) ...
-	@$(COPY) PlaceHolder "$(PACKAGE_PREFIX)\site-packages\"
+	@xcopy /q PlaceHolder "$(PACKAGE_PREFIX)\site-packages\"
 	$(DEL) "$(PACKAGE_PREFIX)\site-packages\PlaceHolder"
-	@$(COPY) PlaceHolder "$(PACKAGE_PREFIX)\mule-packages\"
+	@xcopy /q PlaceHolder "$(PACKAGE_PREFIX)\mule-packages\"
 	$(DEL) "$(PACKAGE_PREFIX)\mule-packages\PlaceHolder"
-	@$(COPY) PlaceHolder "$(PACKAGE_PREFIX)\xemacs-packages\"
+	@xcopy /q PlaceHolder "$(PACKAGE_PREFIX)\xemacs-packages\"
 	$(DEL) "$(PACKAGE_PREFIX)\xemacs-packages\PlaceHolder"
 	$(DEL) PlaceHolder
 
