@@ -1,3 +1,14 @@
+2003-08-11  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* code-process.el (call-process):
+	(call-process-region):
+	(start-process):
+	Document coding system processing.
+
+2003-08-03  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* startup.el (splash-frame-body): Idiomatic English.
+
 2003-04-24  Jin Choi <jsc@orangeimagineering.com>
 
 	* font-lock.el (font-lock-match-java-declarations): Move
