@@ -1,3 +1,10 @@
+2003-08-28  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* configure.in (line 3573):
+	(Mule input methods):
+	Deprecate Motif for Linux.
+	(Installation): Report when LessTif is used.
+
 2003-10-11  Jerry James  <james@xemacs.org>
 
 	* configure.in: installexe.sh is under srcdir, not blddir.
