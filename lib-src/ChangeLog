@@ -1,7 +1,3 @@
-2005-01-29  Vin Shelton  <acs@xemacs.org>
-
-	* movemail.c (popmail): Security fixes.
-
 2005-01-09  Steve Youngs  <steve@sxemacs.org>
 
 	From Andrey Slusar <anrays@gmail.com>:
