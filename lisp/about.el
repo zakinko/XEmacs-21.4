@@ -1757,7 +1757,7 @@ Responsible for getting the current release of XEmacs out the
 door.\n"))
     (vin
      (widget-insert "\
-Vin maintains the stable version XEmacs.  This involves reviewing
+Vin maintains the stable version of XEmacs.  This involves reviewing
 a lot of other peoples' patches and testing and applying them.
 He also gets to generate his own patches from time to time.  Being
 release manager is a fun way to contribute to the XEmacs project.
