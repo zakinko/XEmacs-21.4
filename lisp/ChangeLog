@@ -1,3 +1,9 @@
+2003-02-05  Ben Wing  <ben@xemacs.org>
+
+	* simple.el:
+	* simple.el (motion-keys-for-shifted-motion):
+	Omit M-S-home/end from motion keys.
+
 2003-02-07  Ben Wing  <ben@xemacs.org>
 
 	* text-props.el (text-property-any):
