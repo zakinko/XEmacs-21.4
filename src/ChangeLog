@@ -1,3 +1,7 @@
+2003-09-13  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* regex.c (re_max_failures): Bump to 20000 for REGEX_MALLOC, too.
+
 2003-09-13  Martin Buchholz  <martin@xemacs.org>
 
 	* s/sol2.h: Use OS_RELEASE=os_release_major*100+os_release_minor

@@ -1,3 +1,13 @@
+2003-10-20  Ilya N. Golubev  <gin@mo.msk.ru>
+
+	* lispref/tips.texi (Style Tips): Note disabling undo in temporary
+	buffers.
+
+
+2003-10-16  Ilya N. Golubev  <gin@mo.msk.ru>
+
+	* lispref/tips.texi (Comment Tips): Typo fix.
+
 2003-09-22  Adrian Aichner  <adrian@xemacs.org>
 
 	* lispref/backups.texi (Reverting): Fix the PRINTED-MANUAL-TITLE
