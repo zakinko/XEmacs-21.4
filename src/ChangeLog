@@ -1,3 +1,16 @@
+2003-08-14  Andrew Begel  <abegel@CS.Berkeley.EDU>
+
+	* config.h.in: Add HAVE_DYLD to indicate Darwin/MacOSX dynamic
+	linking.
+	* sysdll.c (dll_init):
+	* sysdll.c (dll_open):
+	* sysdll.c (dll_close):
+	* sysdll.c (dll_function):
+	* sysdll.c (dll_variable):
+	* sysdll.c (dll_error):
+	Add support for loading bundles using Darwin/MacOSX
+	native API.
+
 2003-08-12  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* process.c (start-process-internal): Document coding systems.
