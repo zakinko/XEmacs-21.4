@@ -29,6 +29,7 @@ Boston, MA 02111-1307, USA.  */
 #include "sysfile.h"
 #include "console-stream.h"
 #include "dumper.h"
+#include "sysdep.h"
 
 #ifdef WIN32_NATIVE
 #include "nt.h"
@@ -1364,7 +1365,7 @@ pdump_file_try (char *exe_path)
 int
 pdump_load (const char *argv0)
 {
-  char exe_path[PATH_MAX];
+  char exe_path[PATH_MAX], real_exe_path[PATH_MAX];
 #ifdef WIN32_NATIVE
   GetModuleFileName (NULL, exe_path, PATH_MAX);
 #else /* !WIN32_NATIVE */
@@ -1430,7 +1431,11 @@ pdump_load (const char *argv0)
     }
 #endif /* WIN32_NATIVE */
 
-  if (pdump_file_try (exe_path))
+  /* Save exe_path because pdump_file_try() modifies it */
+  strcpy(real_exe_path, exe_path);
+  if (pdump_file_try (exe_path)
+      || (xrealpath(real_exe_path, real_exe_path)
+	  && pdump_file_try (real_exe_path)))
     {
       pdump_load_finish ();
       return 1;

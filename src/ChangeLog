@@ -1,3 +1,27 @@
+2002-12-12  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* dumper.c (pdump_load): Include sysdep.h; retry with truename.
+	Analysis and original patch by Vin Shelton <acs@xemacs.org>.
+
+2002-12-02  Greg Allen  <greg_allen@westlb-systems.co.uk>
+
+	* database.c: Fix open_database. Berkeley DB API has changed in
+	4.1. see: http://www.sleepycat.com/docs/ref/upgrade.4.1/fop.html
+
+2002-11-26  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* specifier.c (Fvalid_specifier_type_p): Typo in comment.
+
+2002-11-13  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* event-Xt.c (Xt_timeout):
+	(Xt_timeout_callback):
+	(emacs_Xt_add_timeout):
+	(emacs_Xt_remove_timeout):
+	(Xt_timeout_to_emacs_event):
+	Turn completed_timeouts from a stack into a queue.  Fixes
+	deadlocks <15829.21626.171573.994716@sinisa.nasamreza.org>.
+
 2002-11-07  Wolfram Gloger  <wg@malloc.de>
 
 	* alloc.c (reinit_alloc_once_early): Disable mmap in Doug Lea malloc.
