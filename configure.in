@@ -4379,13 +4379,20 @@ if test "$with_tty" = "yes"  ; then
   AC_DEFINE_UNQUOTED(CURSES_H_FILE, "${curses_h_file-curses.h}")
   AC_DEFINE_UNQUOTED(TERM_H_FILE, "${term_h_file-term.h}")
 
-  dnl Autodetect gpm
-  test -z "$with_gpm" && { AC_CHECK_HEADER(gpm.h, , with_gpm=no) }
-  test -z "$with_gpm" && { AC_CHECK_LIB(gpm, Gpm_Open, with_gpm=yes, with_gpm=no) }
-  if test "$with_gpm" = "yes"; then
-    AC_DEFINE(HAVE_GPM)
-    XE_ADD_OBJS(gpmevent.o)
-    XE_PREPEND(-lgpm, LIBS)
+  dnl General Purpose Mouse (libgpm) support
+  if test "$with_gpm" != "no"; then
+    AC_CHECK_HEADER(gpm.h, [
+      AC_CHECK_LIB(gpm, Gpm_Open, have_gpm=yes)])
+    if test "$have_gpm" = "yes"; then
+      with_gpm=yes
+      AC_DEFINE(HAVE_GPM)
+      XE_ADD_OBJS(gpmevent.o)
+      XE_PREPEND(-lgpm, LIBS)
+    elif test "$with_gpm" = "yes"; then
+      XE_DIE(["GPM requested, but gpm.h or libgpm seems to be missing."])
+    else
+      with_gpm=no
+    fi
   fi
 
 else dnl "$with_tty" = "no"

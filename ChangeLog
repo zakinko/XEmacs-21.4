@@ -1,3 +1,11 @@
+2004-05-20  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* configure.in (HAVE_GPM): Die if GPM requested but not found.
+
+2005-01-23  Vin Shelton  <acs@xemacs.org>
+
+	* Makefile.in.in (finder): Force removal of lisp/finder-inf.el.
+
 2005-01-10  Vin Shelton  <acs@xemacs.org>
 
 	* Makefile.in.in (RECURSIVE_MAKE_ARGS): Remove last few.

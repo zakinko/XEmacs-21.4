@@ -309,6 +309,7 @@ lisp/custom-load.el: ${PROGNAME} FRC.lisp.custom.load.el lisp/auto-autoloads.el
 
 finder: src
 	@echo "Building finder database ..."
+	$(RM) lisp/finder-inf.el
 	@(cd ./lisp; \
 		${blddir}/src/${PROGNAME} -batch -vanilla \
 		-eval '(setq finder-compile-keywords-quiet t)' \
