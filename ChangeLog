@@ -1,3 +1,7 @@
+2005-04-11  Norbert Koch  <viteno@xemacs.org>
+
+	* etc/PACKAGES: etc/PACKAGES: Announce re-builder, xetla.
+
 2005-11-15  Dr. Volker Zell  <Dr.Volker.Zell@oracle.com>
 
 	* configure.in: Avoid using Motif also for cygwin
