@@ -3592,7 +3592,7 @@ dnl Not all toolkits support all widgets
 
 dnl Avoid using Motif :-(
 case "$opsys" in
-  *linux* )  lucid_prefers_motif="no"  ;;
+  *linux* | cygwin* )  lucid_prefers_motif="no"  ;;
   * )        lucid_prefers_motif="yes" ;;
 esac
 
@@ -4454,6 +4454,24 @@ test "$with_database_gdbm" = "yes" -o \
      "$with_database_dbm"  = "yes" && \
   AC_DEFINE(HAVE_DBM)
 
+dnl Check for u_int*_t typedefs.
+AC_CHECK_TYPE(u_int8_t, uint8_t)
+if test $ac_cv_type_u_int8_t = yes; then
+AC_DEFINE(HAVE_U_INT8_T,1)
+fi
+AC_CHECK_TYPE(u_int16_t, uint16_t)
+if test $ac_cv_type_u_int16_t = yes; then
+AC_DEFINE(HAVE_U_INT16_T,1)
+fi
+AC_CHECK_TYPE(u_int32_t, uint32_t)
+if test $ac_cv_type_u_int32_t = yes; then
+AC_DEFINE(HAVE_U_INT32_T,1)
+fi
+AC_CHECK_TYPE(u_int64_t, uint64_t)
+if test $ac_cv_type_u_int64_t = yes; then
+AC_DEFINE(HAVE_U_INT64_T,1)
+fi
+
 dnl Check for Berkeley DB.
 if test "$with_database_berkdb" != "no"; then
   AC_MSG_CHECKING(for Berkeley db.h)
@@ -4478,11 +4496,19 @@ if test "$with_database_berkdb" != "no"; then
 #ifdef HAVE_INTTYPES_H
 #define __BIT_TYPES_DEFINED__
 #include <inttypes.h>
+#if !HAVE_U_INT8_T
 typedef uint8_t  u_int8_t;
+#endif
+#if !HAVE_U_INT16_T
 typedef uint16_t u_int16_t;
+#endif
+#if !HAVE_U_INT32_T
 typedef uint32_t u_int32_t;
+#endif
 #ifdef WE_DONT_NEED_QUADS
+#if !HAVE_U_INT64_T
 typedef uint64_t u_int64_t;
+#endif
 #endif
 #endif
 #endif

@@ -1684,13 +1684,13 @@ unix_open_network_stream (Lisp_Object name, Lisp_Object host, Lisp_Object servic
     volatile int xerrno = 0;
     volatile int failed_connect = 0;
     char *ext_host;
+    char portbuf[sizeof(long)*3 + 2];
     /*
      * Caution: service can either be a string or int.
      * Convert to a C string for later use by getaddrinfo.
      */
     if (INTP (service))
       {
-	char portbuf[128];
 	snprintf (portbuf, sizeof (portbuf), "%ld", (long) XINT (service));
 	portstring = portbuf;
 	port = htons ((unsigned short) XINT (service));

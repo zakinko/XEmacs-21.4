@@ -1,3 +1,47 @@
+2005-07-11  Malcolm Purvis  <malcolmp@xemacs.org>
+
+	* glyphs-gtk.c:  Rename a local static variable because gcc 4.0
+	says it clashes with a global with the same name.
+
+2005-07-11  Atanu Ghosh <atanu@icsi.berkeley.edu>
+
+	* sysdll.c (dll_open): Under MacOS X return NULL under the
+	filename is NULL.  Fixes problems finding local symbols under 10.4
+	(Tiger)
+
+2005-11-15  Dr. Volker Zell  <Dr.Volker.Zell@oracle.com>
+	
+	* config.h.in: New HAVE_U_INT*_T defines.
+	
+	* database.c: Only use u_int*_t typedefs if not already
+	defined.
+
+2005-04-07 15:08  Enrico Scholz <enrico.scholz@informatik.tu-chemnitz.de>
+
+	* src/process-unix.c (unix_open_network_stream): moved
+	  'portbuf' buffer out of an inner block as it is used in the
+	  entire function. With gcc4, the stack may get corrupted
+	  after leaving this block. This patches adjusts the size of
+	  the used buffer also; static '128' bytes are far too much
+	  currently and might not suffice for future architectures
+	  (e.g. for 512 bit ones ;)). Instead of, use only the really
+	  required space (max octets * ln(256)/ln(10) chars + space
+	  for '\0' and the sign)
+
+2005-04-08  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* callproc.c: Include sysdir.h, so any necessary Mule processing
+	is done on the current directory name before starting a new
+	process.
+
+2005-04-06  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* chartab.c (Fchar_table_p):
+	(Fget_range_char_table):
+	(Fput_char_table):
+	(Fmap_char_table):
+	Describe range representation and fix typo.
+
 2005-02-12  Vin Shelton  <acs@xemacs.org>
 
 	* emacs.c (shut_down_emacs): Advise users to send email to the

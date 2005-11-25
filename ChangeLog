@@ -1,3 +1,16 @@
+2005-11-15  Dr. Volker Zell  <Dr.Volker.Zell@oracle.com>
+
+	* configure.in: Avoid using Motif also for cygwin
+
+2005-11-15  Dr. Volker Zell  <Dr.Volker.Zell@oracle.com>
+
+	* configure.in: Check for u_int*_t typedefs and use them in
+	Berkeley DB detection.
+
+2005-04-11  Norbert Koch  <viteno@xemacs.org>
+
+	* etc/PACKAGES: etc/PACKAGES: Announce re-builder, xetla.
+
 2005-03-23  Vin Shelton  <acs@xemacs.org>
 
 	* configure.in: Remove -fno-gnu-linker option from Solaris

@@ -234,6 +234,9 @@ Deprecated collection of DTDs for psgml.
 *** python-modes
 Python support.
 
+*** re-builder
+Interactive development tool for regular expressions.
+
 *** reftex
 Emacs support for LaTeX cross-references, citations.
 
@@ -340,6 +343,9 @@ Fundamental XEmacs support, you almost certainly need this.
 XEmacs Lisp developer support.  This package contains utilities for
 supporting Lisp development.  It is a single-file package so it may be 
 tailored.
+
+*** xetla
+(setq mm-coding-system-priorities '(iso-8859-1 iso-8859-15 utf-8))
 
 *** xlib
 Emacs interface to X server.

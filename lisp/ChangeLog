@@ -1,3 +1,22 @@
+2005-06-06  Adrian Aichner  <adrian@xemacs.org>
+
+	* package-get.el (package-get-init-package):
+	package-get-init-package buglet (21.4.17) by Jeff Mincy
+	<mincy@rcn.com> fixing false temporary load-path shadows reported
+	after package installation and simplifying code.
+
+2005-10-18  Ville Skyttä  <scop@xemacs.org>
+
+	* package-get.el (package-get-download-sites): Sync mirrors list
+	with the XEmacs website.
+	(package-get-pre-release-download-sites): Ditto.
+
+2005-04-06  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* derived.el (derived-mode-merge-syntax-tables):
+	Revert my 21.5-only patch of 2003-07-18 which slipped in
+	through Jerry James's patch of 2004-06-07.
+
 2005-02-23  Adrian Aichner  <adrian@xemacs.org>
 
 	* cmdloop.el (keyboard-quit): Remove workaround for

@@ -204,6 +204,7 @@ directory."
     ("US (Main XEmacs Site)"
      "ftp.xemacs.org" "pub/xemacs/packages")
     ;; In alphabetical order of Country, our mirrors...
+    ("Argentina (xmundo.net)" "xemacs.xmundo.net" "pub/mirrors/xemacs/packages")
     ("Australia (aarnet.edu.au)" "mirror.aarnet.edu.au" "pub/xemacs/packages")
     ("Australia (au.xemacs.org)" "ftp.au.xemacs.org" "pub/xemacs/packages")
     ("Austria (at.xemacs.org)" "ftp.at.xemacs.org" "editors/xemacs/packages")
@@ -211,7 +212,7 @@ directory."
     ("Brazil (br.xemacs.org)" "ftp.br.xemacs.org" "pub/xemacs/packages")
     ("Canada (ca.xemacs.org)" "ftp.ca.xemacs.org" "pub/Mirror/xemacs/packages")
     ("Canada (crc.ca)" "ftp.crc.ca" "pub/packages/editors/xemacs/packages")
-    ("Canada (ualberta.ca)" "sunsite.ualberta.ca" "pub/Mirror/xemacs/packages")
+    ("Canada (nrc.ca)" "ftp.nrc.ca" "pub/packages/editors/xemacs/packages")
     ("Czech Republic (cz.xemacs.org)" "ftp.cz.xemacs.org" "MIRRORS/ftp.xemacs.org/pub/xemacs/packages")
     ("Denmark (dk.xemacs.org)" "ftp.dk.xemacs.org" "pub/emacs/xemacs/packages")
     ("Finland (fi.xemacs.org)" "ftp.fi.xemacs.org" "pub/mirrors/ftp.xemacs.org/pub/tux/xemacs/packages")
@@ -219,8 +220,9 @@ directory."
     ("France (mirror.cict.fr)" "mirror.cict.fr" "xemacs/packages")
     ("France (pasteur.fr)" "ftp.pasteur.fr" "pub/computing/xemacs/packages")
     ("Germany (de.xemacs.org)" "ftp.de.xemacs.org" "pub/ftp.xemacs.org/tux/xemacs/packages")
-    ("Germany (tu-darmstadt.de)" "ftp.tu-darmstadt.de" "pub/editors/xemacs/packages")
+    ("Iceland (is.xemacs.org)" "ftp.is.xemacs.org" "pub/xemacs/packages")
     ("Ireland (ie.xemacs.org)" "ftp.ie.xemacs.org" "mirrors/ftp.xemacs.org/pub/xemacs/packages")
+    ("Ireland (heanet.ie)" "ftp.heanet.ie" "mirrors/ftp.xemacs.org/packages")
     ("Italy (it.xemacs.org)" "ftp.it.xemacs.org" "unix/packages/XEMACS/packages")
     ("Japan (aist.go.jp)" "ring.aist.go.jp" "pub/text/xemacs/packages")
     ("Japan (asahi-net.or.jp)" "ring.asahi-net.or.jp" "pub/text/xemacs/packages")
@@ -234,7 +236,6 @@ directory."
     ("Norway (no.xemacs.org)" "ftp.no.xemacs.org" "pub/xemacs/packages")
     ("Poland (pl.xemacs.org)" "ftp.pl.xemacs.org" "pub/unix/editors/xemacs/packages")
     ("Russia (ru.xemacs.org)" "ftp.ru.xemacs.org" "pub/xemacs/packages")
-    ("Slovakia (sk.xemacs.org)" "ftp.sk.xemacs.org" "pub/mirrors/xemacs/packages")
     ("South Africa (za.xemacs.org)" "ftp.za.xemacs.org" "mirrorsites/ftp.xemacs.org/packages")
     ("Sweden (se.xemacs.org)" "ftp.se.xemacs.org" "pub/gnu/xemacs/packages")
     ("Switzerland (ch.xemacs.org)" "ftp.ch.xemacs.org" "mirror/xemacs/packages")
@@ -263,6 +264,8 @@ variable actually used to specify package download sites."
     ("Pre-Releases (Main XEmacs Site)" "ftp.xemacs.org"
      "pub/xemacs/beta/experimental/packages")
     ;; In alphabetical order of Country, our mirrors...
+    ("Argentina Pre-Releases (xmundo.net)" "xemacs.xmundo.net"
+     "pub/mirrors/xemacs/beta/experimental/packages")
     ("Australia Pre-Releases (aarnet.edu.au)" "mirror.aarnet.edu.au"
      "pub/xemacs/beta/experimental/packages")
     ("Australia Pre-Releases (au.xemacs.org)" "ftp.au.xemacs.org"
@@ -275,8 +278,8 @@ variable actually used to specify package download sites."
      "pub/Mirror/xemacs/beta/experimental/packages")
     ("Canada Pre-Releases (crc.ca)" "ftp.crc.ca"
      "pub/packages/editors/xemacs/beta/experimental/packages")
-    ("Canada Pre-Releases (ualberta.ca)" "sunsite.ualberta.ca"
-     "pub/Mirror/xemacs/beta/experimental/packages")
+    ("Canada Pre-Releases (nrc.ca)" "ftp.nrc.ca"
+     "pub/packages/editors/xemacs/beta/experimental/packages")
     ("Czech Republic Pre-Releases (cz.xemacs.org)" "ftp.cz.xemacs.org"
      "MIRRORS/ftp.xemacs.org/pub/xemacs/xemacs-21.5/experimental/packages")
     ("Denmark Pre-Releases (dk.xemacs.org)" "ftp.dk.xemacs.org"
@@ -291,10 +294,12 @@ variable actually used to specify package download sites."
      "pub/computing/xemacs/beta/experimental/packages")
     ("Germany Pre-Releases (de.xemacs.org)" "ftp.de.xemacs.org"
      "pub/ftp.xemacs.org/tux/xemacs/beta/experimental/packages")
-    ("Germany Pre-Releases (tu-darmstadt.de)" "ftp.tu-darmstadt.de"
-     "pub/editors/xemacs/beta/experimental/packages")
+    ("Iceland Pre-Releases (is.xemacs.org)" "ftp.is.xemacs.org"
+     "pub/xemacs/beta/experimental/packages")
     ("Ireland Pre-Releases (ie.xemacs.org)" "ftp.ie.xemacs.org"
      "mirrors/ftp.xemacs.org/pub/xemacs/beta/experimental/packages")
+    ("Ireland Pre-Releases (heanet.ie)" "ftp.heanet.ie"
+     "mirrors/ftp.xemacs.org/beta/experimental/packages")
     ("Italy Pre-Releases (it.xemacs.org)" "ftp.it.xemacs.org"
      "unix/packages/XEMACS/beta/experimental/packages")
     ("Japan Pre-Releases (aist.go.jp)" "ring.aist.go.jp"
@@ -316,10 +321,6 @@ variable actually used to specify package download sites."
      "pub/unix/editors/xemacs/beta/experimental/packages")
     ("Russia Pre-Releases (ru.xemacs.org)" "ftp.ru.xemacs.org"
      "pub/xemacs/beta/experimental/packages")
-    ("Saudi Arabia Pre-Releases (sa.xemacs.org)" "ftp.sa.xemacs.org"
-     "pub/mirrors/ftp.xemacs.org/xemacs/xemacs-21.5/experimental/packages")
-    ("Slovakia Pre-Releases (sk.xemacs.org)" "ftp.sk.xemacs.org"
-     "pub/mirrors/xemacs/beta/experimental/packages")
     ("South Africa Pre-Releases (za.xemacs.org)" "ftp.za.xemacs.org"
      "mirrorsites/ftp.xemacs.org/beta/experimental/packages")
     ("Sweden Pre-Releases (se.xemacs.org)" "ftp.se.xemacs.org"
@@ -844,14 +845,7 @@ Return `t' upon complete success, `nil' if any errors occurred."
 	(progn
 	  ;; Add lispdir to load-path if it doesn't already exist.
 	  ;; NOTE: this does not take symlinks, etc., into account.
-	  (if (let ((dirs load-path))
-		(catch 'done
-		  (while dirs
-		    (if (string-equal (car dirs) lispdir)
-			(throw 'done nil))
-		    (setq dirs (cdr dirs)))
-		  t))
-	      (setq load-path (cons lispdir load-path)))
+          (add-to-list 'load-path (file-name-as-directory lispdir))
 	  (if (not (package-get-load-package-file lispdir "auto-autoloads"))
 	      (package-get-load-package-file lispdir "_pkg"))
 	  t)
