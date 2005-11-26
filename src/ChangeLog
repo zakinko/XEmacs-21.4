@@ -1,3 +1,12 @@
+2002-05-13  Adrian Aichner  <adrian@xemacs.org>
+
+	* callproc.c: Process-related docstring improvements spurred by
+	Norbert Koch.
+
+2005-11-25  Vin Shelton  <acs@xemacs.org>
+
+	* depend: Regenerated.
+
 2005-07-11  Malcolm Purvis  <malcolmp@xemacs.org>
 
 	* glyphs-gtk.c:  Rename a local static variable because gcc 4.0
