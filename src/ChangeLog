@@ -1,3 +1,9 @@
+2005-11-26  Vin Shelton  <acs@xemacs.org>
+
+	* callproc.c (Fold_call_process_internal): Create the buffer if it
+	does not already exist.  The original patch came from Ben Wing in
+	http://list-archive.xemacs.org/xemacs-patches/200205/msg00117.html
+
 2002-05-13  Adrian Aichner  <adrian@xemacs.org>
 
 	* callproc.c: Process-related docstring improvements spurred by
