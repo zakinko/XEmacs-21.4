@@ -205,6 +205,7 @@ void *alloca ();
 #undef THIS_IS_X11R6
 
 #undef HAVE_XCONVERTCASE
+#undef HAVE_XTREGISTERDRAWABLE
 
 #undef HAVE_BALLOON_HELP
 

@@ -2911,7 +2911,7 @@ dnl Avoid re-AC_DEFINE-ing xmkmf symbols we've already defined above.
     esac
   fi
 
-  AC_CHECK_FUNCS(XConvertCase)
+  AC_CHECK_FUNCS(XConvertCase XtRegisterDrawable)
 
   AC_CHECK_HEADERS(X11/Xlocale.h)
 

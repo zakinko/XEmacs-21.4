@@ -1,3 +1,8 @@
+2005-03-12  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* configure.in (XE_COMPUTE_RUNPATH): Check XtRegisterDrawable
+	availability. 
+
 2005-04-11  Norbert Koch  <viteno@xemacs.org>
 
 	* etc/PACKAGES: etc/PACKAGES: Announce re-builder, xetla.

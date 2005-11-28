@@ -3,6 +3,15 @@
 	* lispref/mule.texi (CCL Example): Detail an implementation of the
 	web's URL encoding as a CCL coding system example. 
 
+2005-03-26  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* lispref/mule.texi (CCL Example):
+	char-int -> char-to-int, and hex 41 is decimal 65, both problems
+	with my previous patch pointed out by Stephen.
+	* lispref/mule.texi (The actual coding system):
+	Give information on the make-coding-system call, and where the
+	actual package can be found.
+
 2005-02-23  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* lispref/searching.texi (Syntax of Regexps):
