@@ -1,3 +1,13 @@
+2005-11-29  Ilya Golubev  <golubev@xemacs.org>
+
+	* configure.in: Merge revision 1.19 change: fix ldap libraries
+	configuration lossage when `-lldap -llber' links and but `-lldap'
+	does not; allow `ldap_libs' to be empty or overridden by builder.
+	The lossage was introduced in upstream revision 1.151.2.31
+	(2005/01/31 02:54:47 vins) by (extremely hasty and unwise) merge
+	of revision 1.232 change.
+	* etc/NEWS: Document it.
+
 2005-03-12  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* configure.in (XE_COMPUTE_RUNPATH): Check XtRegisterDrawable
