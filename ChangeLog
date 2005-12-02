@@ -1,3 +1,8 @@
+2005-12-01  Vin Shelton  <acs@xemacs.org>
+
+	* etc/TUTORIAL.cs: copied from 21.5.
+	* etc/TUTORIAL.sl: copied from 21.5.
+
 2005-11-29  Ilya Golubev  <golubev@xemacs.org>
 
 	* configure.in: Merge revision 1.19 change: fix ldap libraries
