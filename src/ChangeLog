@@ -1,3 +1,9 @@
+2005-12-06  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* mule-ccl.c (POSSIBLE_LEADING_BYTE_P): Add.
+	* mule-ccl.c: Check that a character set exists before using it
+	to create a character. 
+
 2005-12-06  Vin Shelton  <acs@xemacs.org>
 
 	* objects-x.c (MAX_FONT_COUNT): Increase MAX_FONT_COUNT from 5000
