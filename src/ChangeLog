@@ -1,3 +1,8 @@
+2005-05-10  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* callproc.c: #include sysdir.h, so that any appropriate Mule
+	magic happens with the chdir() call when calling a subprocess. 
+
 2005-12-06  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* mule-ccl.c (POSSIBLE_LEADING_BYTE_P): Add.
