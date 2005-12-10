@@ -1,3 +1,8 @@
+2005-12-08  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* automated/syntax-tests.el (backward-up-list): New test.
+	Thanks to Zacjev Evgeny for report, Aidan Kehoe for reproduction.
+
 2005-05-10  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* automated/mule-tests.el: Test that starting a process in a
