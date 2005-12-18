@@ -1,6 +1,7 @@
 2005-12-17  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs.iss: Move packages out of version-specific location.
+		      Removed CRs.
 
 2005-12-15  Vin Shelton  <acs@xemacs.org>
 
