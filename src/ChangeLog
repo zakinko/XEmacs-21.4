@@ -1,3 +1,14 @@
+2005-12-05  Dr. Volker Zell  <Dr.Volker.Zell@oracle.com>
+
+	* database.c: Suppress compiler warning under Cygwin.
+	* database.c: Removed __FreeBSD__ check, should be handled by
+        HAVE_U_xxx_T defines.
+
+2005-12-18  Malcolm Purvis  <malcolmp@xemacs.org>
+
+	* console.c (stuff_buffered_input): Compile body only if
+	HAVE_TTY.
+
 2005-05-10  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* callproc.c: #include sysdir.h, so that any appropriate Mule

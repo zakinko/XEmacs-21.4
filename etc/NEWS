@@ -121,6 +121,7 @@ consulted for a more detailed list of changes.
     - Python now supported.
     - New file extensions recognized: .ss, .pdb, .psw.
   -- Fixed ldap libraries configuration.
+  -- Fixed `LDAP_OPT_ON' libraries configuration.
 
 ** The delete key now deletes forward by default.
 
@@ -607,6 +608,15 @@ for PSWrap.
 
 It used to fail when `-lldap' requires `-llber'.  Introduced in
 upstream `configure.in' revision 1.151.2.31 (2005/01/31 02:54:47 +0).
+
+*** Fixed `LDAP_OPT_ON' libraries configuration.
+
+The original fix of local `configure.in' revision 1.19 (2004/12/19
+21:10:02 +0) introduced lossage on another class of systems.  In some
+openldap versions `ldap_*' functions may link successfully without
+`-lber', but compiling and linking program with `LDAP_OPT_ON' may
+require `-lber'.  When configuring ldap libraries, check for such
+systems, and in a cleaner way than in upstream.
 
 
 * Lisp and internal changes in XEmacs 21.4
