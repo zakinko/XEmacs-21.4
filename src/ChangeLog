@@ -1,3 +1,8 @@
+2005-12-24  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* objects-gtk.c (MAX_FONT_COUNT): Increase MAX_FONT_COUNT from
+	5000 to INT_MAX.
+
 2005-12-05  Dr. Volker Zell  <Dr.Volker.Zell@oracle.com>
 
 	* database.c: Suppress compiler warning under Cygwin.
