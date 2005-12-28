@@ -1,3 +1,12 @@
+2005-12-26  Vin Shelton  <acs@xemacs.org>
+
+	* find-paths.el:
+	* find-paths.el (paths-emacs-root-p): Add search for package root.
+	* find-paths.el (paths-find-emacs-root): Replaced with
+	paths-find-invocation-roots, which returns a list of roots.
+	* find-paths.el (paths-find-invocation-roots): New.
+	* find-paths.el (paths-find-emacs-roots): Call paths-find-invocation-roots.
+
 2005-12-05  Ville Skyttä  <scop@xemacs.org>
 
 	* minibuf.el (x-library-search-path): Add /usr(/local)/share/X11.
