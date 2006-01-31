@@ -1,5 +1,9 @@
 2006-01-28  Vin Shelton  <acs@xemacs.org>
 
+	* XEmacs.iss: Erase old code.
+
+2006-01-28  Vin Shelton  <acs@xemacs.org>
+
 	* XEmacs 21.4.19 is released
 
 2006-01-28  Vin Shelton  <acs@xemacs.org>

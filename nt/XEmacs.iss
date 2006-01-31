@@ -2,6 +2,7 @@
 ; This script runs with Inno Setup version 5.1.6, see http://www.jrsoftware.org/ for more info.
 ;
 ; Version History
+; 2006-01-28  Vin Shelton <acs@xemacs.org>    Erase unused registry code.
 ; 2006-01-26  Vin Shelton <acs@xemacs.org>    Don't append XEmacs binary directory to system path.
 ; 2006-01-21  Vin Shelton <acs@xemacs.org>    Append XEmacs binary directory to system path; this is not currently deleted on uninstall.
 ;                                             Get built kit from C:\XEmacs-built.
@@ -49,14 +50,6 @@ Name: "{group}\{cm:UninstallProgram,XEmacs}"; Filename: "{uninstallexe}"
 Name: "{userdesktop}\XEmacs"; Filename: "{app}\XEmacs-{code:XEmacsVersion}\i586-pc-win32\xemacs.exe"; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\XEmacs"; Filename: "{app}\XEmacs-{code:XEmacsVersion}\i586-pc-win32\xemacs.exe"; Tasks: quicklaunchicon
 
-[Registry]
-; Set a registry key to point to the packages so they can be shared between multiple installed versions of XEmacs
-; This is no longer necessary as of version 21.4.19.
-;Root: HKLM; Subkey: "Software\XEmacs\XEmacs"; ValueType: string; ValueName: "EMACSPACKAGEPATH"; ValueData: "{app}\Packages"; Flags: uninsdeletekey
-; Don't fiddle with the system path
-;Root: HKLM; Subkey: "SYSTEM\CurrentControlSet\Control\Session Manager\Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{olddata};{app}\XEmacs-{code:XEmacsVersion}\i586-pc-win32"
-
-
 [Run]
 Filename: "{app}\XEmacs-{code:XEmacsVersion}\i586-pc-win32\xemacs.exe"; Description: "{cm:LaunchProgram,XEmacs}"; Flags: nowait postinstall skipifsilent
 
@@ -71,7 +64,7 @@ end;
 
 procedure CurStepChanged(CurStep: TSetupStep);
 var
-  BinDir: String;
+//  BinDir: String;
   EtcDir: String;
   InstallBase: String;
   SiteStart: String;
