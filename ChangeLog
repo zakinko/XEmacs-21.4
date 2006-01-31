@@ -1,5 +1,12 @@
 2006-01-28  Vin Shelton  <acs@xemacs.org>
 
+	* configure.in: Simplify cygwin include and nox/Xpm handling.
+	As of cygwin-1.5.19, 'gcc -print-file-name=libc.a' (effectively)
+	returns '/lib' instead of '/usr/lib', so we'll use
+	'gcc -print-search-dirs' instead.
+
+2006-01-28  Vin Shelton  <acs@xemacs.org>
+
 	* XEmacs 21.4.19 is released
 
 2006-01-28  Vin Shelton  <acs@xemacs.org>
