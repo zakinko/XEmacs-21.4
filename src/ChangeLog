@@ -1,3 +1,12 @@
+2006-03-17  Vin Shelton  <acs@xemacs.org>
+
+	* dialog-msw.c (handle_directory_dialog_box): Don't declare
+	Q_title here.  LOCAL_FILE_FORMAT_TO_TSTR requires an lvalue.
+
+	* glyphs-msw.c (read_bitmap_data): change 'initialized' to
+	'hex_initialized' because it conflicts with 'initialized' in
+	lisp.h.
+
 2006-01-28  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs 21.4.19 is released
