@@ -517,7 +517,7 @@ init_native_sound (struct device *d)
 		DEVICE_ON_CONSOLE_P (d) = 0;
 	      else
 		{
-		  char hn [255];
+		  char *hn = alloca_array (char, strlen (h->h_name) + 1);
 		  struct hostent *l;
 		  strcpy (hn, h->h_name);
 		  l = gethostbyname (localname);

@@ -1,4 +1,4 @@
-/* mswindows output and frame manipulation routines.
+* mswindows output and frame manipulation routines.
    Copyright (C) 1994, 1995 Board of Trustees, University of Illinois.
    Copyright (C) 1994 Lucid, Inc.
    Copyright (C) 1995 Sun Microsystems, Inc.
@@ -1044,7 +1044,7 @@ mswindows_output_display_block (struct window *w, struct display_line *dl, int b
 			  int cursor_width, int cursor_height)
 {
   struct frame *f = XFRAME (w->frame);
-  Emchar_dynarr *buf = Dynarr_new (Emchar);
+  Emchar_dynarr *buf;
   Lisp_Object window;
 
   struct display_block *db = Dynarr_atp (dl->display_blocks, block);
@@ -1071,7 +1071,7 @@ mswindows_output_display_block (struct window *w, struct display_line *dl, int b
 
   if (end < 0)
     end = Dynarr_length (rba);
-  Dynarr_reset (buf);
+  buf = Dynarr_new (Emchar);
 
   while (elt < end)
     {
