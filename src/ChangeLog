@@ -1,3 +1,7 @@
+2006-07-04  Vin Shelton  <acs@xemacs.org>
+
+	* redisplay-msw.c: Fix tiny, but crucial typo.
+
 2006-06-22  Jerry James  <james@xemacs.org>
 
 	* EmacsShell-sub.c (ChangeManaged):

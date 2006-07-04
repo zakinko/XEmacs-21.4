@@ -1,4 +1,4 @@
-* mswindows output and frame manipulation routines.
+/* mswindows output and frame manipulation routines.
    Copyright (C) 1994, 1995 Board of Trustees, University of Illinois.
    Copyright (C) 1994 Lucid, Inc.
    Copyright (C) 1995 Sun Microsystems, Inc.
