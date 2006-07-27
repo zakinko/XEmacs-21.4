@@ -1,3 +1,7 @@
+2006-07-21  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* etags.c: Xemacs -> XEmacs
+
 2006-01-28  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs 21.4.19 is released
