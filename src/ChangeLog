@@ -1,3 +1,7 @@
+2006-07-31  Aidan Kehoe <kehoea@parhasard.net>
+
+	* bytecode.c: Use xnew_array instead of alloca.
+
 2006-07-04  Vin Shelton  <acs@xemacs.org>
 
 	* redisplay-msw.c: Fix tiny, but crucial typo.
