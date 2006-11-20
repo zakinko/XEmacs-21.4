@@ -1,3 +1,19 @@
+2006-11-14  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* buffer.c (buffer-file-name): Document invariant.
+	(buffer-file-truename): Sync wording to buffer-file-name.
+	Thanks to Nelson Ferreira <nelson.ferreira@ieee.org> for report
+	and discussion.
+
+2006-11-19  Benson Margulies  <benson@dchbk.us>
+
+	* fileio.c: Add code to use full Win32 API to check for write
+	access.  Win32 has the general design policy that you aren't
+	supposed to ask this question, since security checks change
+	depending on asynchronous processes.  Nonetheless, there is a way,
+	by acting as if we are a server doing interpretive access
+	control.
+
 2006-07-31  Aidan Kehoe <kehoea@parhasard.net>
 
 	* bytecode.c: Use xnew_array instead of alloca.
