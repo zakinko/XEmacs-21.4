@@ -1,3 +1,7 @@
+2006-10-14  Jeff Miller  <jmiller@xemacs.org>
+
+	* info.el (Info-find-emacs-command-nodes): fix regex for find command node.
+
 2006-11-14  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* info.el (Info-find-file-node, Info-insert-dir)

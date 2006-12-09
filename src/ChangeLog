@@ -1,3 +1,11 @@
+2006-12-08  Nelson Ferreira  <njsf@sxemacs.org>
+
+	* src/fns.c (XMALLOC_OR_ALLOCA,free_malloced_ptr,XMALLOC_UNBIND):
+	relocated the definitions to be used sooner in file.
+	(concat,plists_differ,mapcar1,Fmapconcat,Fmapcar): Use
+	XMALLOC_OR_ALLOCA macro instead of alloca to prevent stack
+	overflow.
+
 2006-11-29  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* sound.c (init_native_sound):
