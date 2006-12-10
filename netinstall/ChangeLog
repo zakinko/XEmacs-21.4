@@ -1,3 +1,7 @@
+2006-12-09  Vin Shelton  <acs@xemacs.org>
+
+	* XEmacs 21.4.20 is released
+
 2006-01-28  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs 21.4.19 is released
@@ -386,6 +390,6 @@
 
 	* all: port from cygwin setup.
 
-%%% $Id: ChangeLog,v 1.2.2.28 2006/01/29 00:00:29 vins Exp $
-$Revision: 1.2.2.28 $
+%%% $Id: ChangeLog,v 1.2.2.29 2006/12/10 00:14:49 vins Exp $
+$Revision: 1.2.2.29 $
 
