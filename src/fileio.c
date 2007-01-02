@@ -2307,13 +2307,17 @@ check_writable (const char *filename)
   filename = filename_buffer;
 #endif
 
+  // ask simple question first
+  attributes = GetFileAttributes(filename);
+  if (0 != (attributes & FILE_ATTRIBUTE_READONLY))
+      return 0;
+
   /* Win32 prototype lacks const. */
   error = GetNamedSecurityInfo((LPTSTR)filename, SE_FILE_OBJECT, 
                                DACL_SECURITY_INFORMATION|GROUP_SECURITY_INFORMATION|OWNER_SECURITY_INFORMATION,
                                &psidOwner, &psidGroup, &pDacl, &pSacl, &pDesc);
   if (error != ERROR_SUCCESS) { // FAT?
-    attributes = GetFileAttributes(filename);
-    return (attributes & FILE_ATTRIBUTE_DIRECTORY) || (0 == (attributes & FILE_ATTRIBUTE_READONLY));
+      return 1;
   }
 
   genericMapping.GenericRead = FILE_GENERIC_READ;
