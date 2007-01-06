@@ -2307,17 +2307,18 @@ check_writable (const char *filename)
   filename = filename_buffer;
 #endif
 
-  // ask simple question first
+  // First check for a normal file with the old-style readonly bit
   attributes = GetFileAttributes(filename);
-  if (0 != (attributes & FILE_ATTRIBUTE_READONLY))
-      return 0;
+  if (FILE_ATTRIBUTE_READONLY == (attributes & (FILE_ATTRIBUTE_DIRECTORY|FILE_ATTRIBUTE_READONLY)))
+    return 0;
 
   /* Win32 prototype lacks const. */
   error = GetNamedSecurityInfo((LPTSTR)filename, SE_FILE_OBJECT, 
                                DACL_SECURITY_INFORMATION|GROUP_SECURITY_INFORMATION|OWNER_SECURITY_INFORMATION,
                                &psidOwner, &psidGroup, &pDacl, &pSacl, &pDesc);
   if (error != ERROR_SUCCESS) { // FAT?
-      return 1;
+    attributes = GetFileAttributes(filename);
+    return (attributes & FILE_ATTRIBUTE_DIRECTORY) || (0 == (attributes & FILE_ATTRIBUTE_READONLY));
   }
 
   genericMapping.GenericRead = FILE_GENERIC_READ;

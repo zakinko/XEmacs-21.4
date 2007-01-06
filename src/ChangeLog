@@ -1,3 +1,8 @@
+2007-01-04  Vin Shelton  <acs@xemacs.org>
+
+	* fileio.c (check_writable): Check old-style readonly bit only for
+	non-directories.
+
 2006-12-25  Benson I. Margulies  <benson@dchbk.us>
 
 	* src/fileio.c (check_writable): 
