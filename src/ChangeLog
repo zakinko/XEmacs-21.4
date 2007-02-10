@@ -1,3 +1,8 @@
+2007-02-08  Adrian Aichner  <adrian@xemacs.org>
+
+	* postgresql.c: Update Steve Baur's email address by his request.
+	* postgresql.h: Ditto.
+
 2007-01-04  Vin Shelton  <acs@xemacs.org>
 
 	* fileio.c (check_writable): Check old-style readonly bit only for
