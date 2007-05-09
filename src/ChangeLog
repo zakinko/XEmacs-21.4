@@ -1,3 +1,16 @@
+2007-05-02  Vin Shelton  <acs@xemacs.org>
+
+	* dumper.c (pdump): Don't close pdump_fd (already closed by
+	fclose() call.  Patch from Steve Higham.
+	* callproc.c (Fold_call_process_internal): Don't close fd1 if it's
+	already closed.  Patch inspired by Steve Higham.
+
+2007-05-01  Vin Shelton  <acs@xemacs.org>
+
+	* nt.c (mswindows_stat): Tie _S_IEXEC permission to read access.
+	(mswindows_fstat): Ditto.
+	* sysfile.h: Under Windows, define X_OK to be the same as R_OK.
+
 2007-02-08  Adrian Aichner  <adrian@xemacs.org>
 
 	* postgresql.c: Update Steve Baur's email address by his request.
