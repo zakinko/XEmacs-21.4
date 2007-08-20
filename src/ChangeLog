@@ -1,3 +1,25 @@
+2007-08-14  Marcus Crestani  <crestani@xemacs.org>
+
+	* s/sol2.h: Fix for GCC lossage not needed with SunOS 5.10.
+
+2007-02-17  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* glyphs-eimage.c (png_instantiate_unwind): Avoid recursion.
+	(png_instantiate): Initialize setjmp_buffer early, and avoid
+	recursive entry to error handler.
+
+2007-06-23  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* linuxplay.c (linux_play_data_or_file): More 64-bit tweaking, and
+	a typo fix.
+
+2007-05-12  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* event-Xt.c (x_reset_modifier_mapping):
+	* event-gtk.c (gtk_reset_modifier_mapping):
+	Zero out the device's modifier map once we've freed it, to prevent
+	a double free on a re-entrant call. 
+
 2007-05-17  Vin Shelton  <acs@xemacs.org>
 
 	* linuxplay.c (linux_play_data_or_file): Fix playing sound on

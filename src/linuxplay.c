@@ -290,8 +290,9 @@ static int linux_play_data_or_file(int fd,unsigned char *data,
   fmtType        ffmt;
   int            fmt,speed,tracks;
   unsigned char *pptr,*optr,*cptr,*sptr;
-  int            wrtn,rrtn,crtn,prtn;
-  unsigned char         sndbuf[SNDBUFSZ];
+  int            wrtn, crtn;
+  size_t         prtn, rrtn;
+  unsigned char  sndbuf[SNDBUFSZ];
 
   /* We need to read at least the header information before we can start
      doing anything */
