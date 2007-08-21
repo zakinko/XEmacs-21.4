@@ -1,3 +1,9 @@
+2007-08-21  Adrian Aichner  <adrian@xemacs.org>
+
+	* package-get.el (package-get-download-sites): Update download
+	sites in Japan.
+	* package-get.el (package-get-pre-release-download-sites): Ditto.
+
 2007-08-18  Vin Shelton  <acs@xemacs.org>
 
 	* package-get.el (package-get-pre-release-download-sites): Sync
