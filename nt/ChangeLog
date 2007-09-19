@@ -1,3 +1,7 @@
+2007-09-19  Vin Shelton  <acs@xemacs.org>
+
+	* XEmacs.iss: Various updates: Add support for 21.5; add easypg.
+
 2006-12-09  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs 21.4.20 is released
