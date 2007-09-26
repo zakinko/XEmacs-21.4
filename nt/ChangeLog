@@ -1,3 +1,9 @@
+2007-09-25  Vin Shelton  <acs@xemacs.org>
+
+	* XEmacs.iss: Put comment wrapper around site-start.el changes and
+	remove those changes on uninstall.  Enable ftp.xemacs.org for
+	package retrieval and set the ftp path.
+
 2007-09-19  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs.iss: Various updates: Add support for 21.5; add easypg.

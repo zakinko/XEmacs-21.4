@@ -3,6 +3,8 @@
 ; This script requires the Inno Setup pre-processor.
 ;
 ; Version History
+; 2007-09-25  Vin Shelton <acs@xemacs.org>    Put comment wrapper around site-start.el changes and remove them on uninstall.
+;                                             Enable ftp.xemacs.org for packages and set path to ftp.exe in site-start.el.
 ; 2007-09-06  Vin Shelton <acs@xemacs.org>    Added easypg.
 ; 2006-04-06  Vin Shelton <acs@xemacs.org>    Changed defaults for ExecSrc and PkgSrc.
 ;                                             Don't set 'Start in' property.
@@ -18,6 +20,8 @@
 
 ; Allow undefined identifiers, e.g. 'KitName'
 #pragma parseroption -u+
+
+;#define QUICKIE_TEST
 
 #ifndef XEmacsVersion
   #define XEmacsVersion  "21.4.20"
@@ -65,7 +69,8 @@ Source: "{#PkgSrc}\xemacs-base-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Fla
 ; minitar.exe and unpack.cmd are used to unpack the packages
 Source: "{#ExecSrc}\XEmacs-{#XEmacsVersion}\i586-pc-win32\minitar.exe"; DestDir: "{app}\xemacs-packages"; Flags: ignoreversion
 Source: "unpack.cmd"; DestDir: "{app}\xemacs-packages"; Flags: ignoreversion
-Source: "{#PkgSrc}\package-index.LATEST.gpg"; DestDir: "{app}\XEmacs-{#XEmacsVersion}\etc"; Flags: ignoreversion
+Source: "{#PkgSrc}\package-index.LATEST.gpg"; DestDir: "{app}";
+#ifndef QUICKIE_TEST
 ; Recommended
 Source: "{#PkgSrc}\c-support-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Components: c_support; Flags: ignoreversion
 Source: "{#PkgSrc}\cc-mode-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Components: cc_mode; Flags: ignoreversion
@@ -135,6 +140,7 @@ Source: "{#PkgSrc}\x-symbol-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Compon
 Source: "{#PkgSrc}\xetla-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Components: xetla; Flags: ignoreversion
 Source: "{#PkgSrc}\xslide-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Components: xslide; Flags: ignoreversion
 Source: "{#PkgSrc}\xslt-process-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Components: xslt_process; Flags: ignoreversion
+#endif  // ifndef QUICKIE_TEST
 #ifdef MULE
 Source: "{#PkgSrc}\latin-euro-standards-*-pkg.tar"; DestDir: "{app}\mule-packages"; Components: latin_euro_standards; Flags: ignoreversion
 Source: "{#PkgSrc}\latin-unity-*-pkg.tar"; DestDir: "{app}\mule-packages"; Components: latin_unity; Flags: ignoreversion
@@ -252,6 +258,8 @@ Type: files; Name: "{app}\Internet shortcut.url"
 
 [Code]
 Const
+  SiteStartFooter = ';;; End of XEmacs_Setup addition' + #10;
+  SiteStartHeader = #10 + ';;; Lines added by XEmacs_Setup' + #10;
   SubKeyName = 'Software\XEmacs\XEmacs';
   ValueName = 'EMACSPACKAGEPATH';
 
@@ -282,31 +290,84 @@ end;
 // Create a site-start.el file to allow easy package downloading
 procedure CreateSiteStart();
 var
-  EtcDir: String;
+  Contents: String;
+  FtpExe: String;
+  HeaderRequired, FooterRequired: Boolean;
+  InsertPos: Integer;
   InstallBase: String;
+  Payload: String;
   SiteStart: String;
 begin
 
   // Here's what we're going to add to lisp\site-start.el:
-  //   (setq package-get-package-index-file-location "C:\\Program Files\XEmacs\\XEmacs-21.4.98\\etc")
-  //   ; Uncomment the next line to select the primary XEmacs package download site
-  //   ;(setq package-get-remote '("ftp.xemacs.org" "pub/xemacs/packages"))
+  //   ;;; Lines added by XEmacs_Setup
+  //   (setq package-get-package-index-file-location "C:\\Program Files\\XEmacs")
+  //   (setq package-get-remote '("ftp.xemacs.org" "pub/xemacs/packages"))
+  //   (setq efs-ftp-program-name "C:\\WINDOWS\\system32\\ftp.exe")
+  //   (setq package-get-always-update t)
+  //   ;;; End of XEmacs_Setup addition
 
-  // Convert directory names to lisp format by doubling each backslash
-  InstallBase := WizardDirValue + '\XEmacs-' + '{#XEmacsVersion}'
-  StringChange(InstallBase, '\', '\\');
-  EtcDir := InstallBase + '\\etc';
-
-  SiteStart := WizardDirValue + '\site-packages';
+  SiteStart := ExpandConstant('{app}') + '\site-packages';
   CreateDir(SiteStart);
   SiteStart := SiteStart + '\lisp';
   CreateDir(SiteStart);
   SiteStart := SiteStart + '\site-start.el';
-    
-  SaveStringToFile(SiteStart, #13#10 + '(setq package-get-package-index-file-location "' + EtcDir + '")' + #13#10, True);
-  SaveStringToFile(SiteStart, '; Uncomment the next line to select the primary XEmacs package download site' + #13#10, True);
-  SaveStringToFile(SiteStart, ';(setq package-get-remote ' + Chr(39) + '("ftp.xemacs.org" "pub/xemacs/packages"))' + #13#10, True);
-    
+
+  // Optimize for the most common cases: either site-start.el does not contain anything related to XEmacs setup
+  // or site-start.el contains the entire text verbatim.
+
+  // Convert directory names to lisp format by doubling each backslash
+  InstallBase := ExpandConstant('{app}');
+  StringChange(InstallBase, '\', '\\');
+  FtpExe := ExpandConstant('{syswow64}') + '\ftp.exe';
+  StringChange(FtpExe, '\', '\\');
+  Payload := '(setq package-get-package-index-file-location "' + InstallBase + '")' + #10 +
+             '(setq package-get-remote ' + Chr(39) + '("ftp.xemacs.org" "pub/xemacs/packages"))' + #10
+             '(setq efs-ftp-program-name "' + FtpExe + '")' + #10
+             '(setq package-get-always-update t)' + #10;
+
+  // File is non-existant - write header, payload and footer
+  if NOT LoadStringFromFile(SiteStart, Contents) then
+  begin
+    SaveStringToFile(SiteStart, SiteStartHeader + Payload + SiteStartFooter, False);
+  end else
+  begin
+
+    // Pos > 0 indicates that the full text already appears verbatim in the site-start.el file, so do nothing in that case
+    if Pos(SiteStartHeader + Payload + SiteStartFooter, Contents) = 0 then
+    begin
+      FooterRequired := True;
+      HeaderRequired := True;
+      InsertPos := Pos(SiteStartHeader, Contents);
+      if InsertPos > 0 then
+      begin
+        HeaderRequired := False
+        InsertPos := Pos(SiteStartFooter, Contents);
+        if InsertPos > 0 then
+        begin
+          FooterRequired := False;
+        end else
+        begin
+          InsertPos := Length(Contents);
+        end;
+      end;
+
+      if InsertPos = 0 then InsertPos := 1;
+
+      if HeaderRequired then
+      begin
+        Insert(SiteStartHeader, Contents, InsertPos);
+        InsertPos := InsertPos + Length(SiteStartHeader);
+      end;
+      Insert(Payload, Contents, InsertPos);
+      InsertPos := InsertPos + Length(Payload);
+
+      if FooterRequired then
+        Insert(SiteStartFooter, Contents, InsertPos);
+
+      SaveStringToFile(SiteStart, Contents, False);
+    end;
+  end;
 end;
 
 procedure CleanupPackagePath();
@@ -320,3 +381,37 @@ begin
   CreateSiteStart;
   CleanupPackagePath;
 end;
+
+procedure RemoveSiteStartModifications();
+var
+  Contents: String;
+  Footer, Header: Integer;
+  SiteStart: String;
+begin
+  SiteStart := ExpandConstant('{app}') + '\site-packages\lisp\site-start.el';
+  if LoadStringFromFile(SiteStart, Contents) then
+  begin
+    Header := Pos(SiteStartHeader, Contents);
+    if Header > 0 then
+    begin
+      Footer := Pos(SiteStartFooter, Contents);
+      if (Footer > 0) AND (Footer > Header) then
+      begin
+        Footer := Footer + Length(SiteStartFooter);
+        Delete(Contents, Header, Footer-Header);
+        SaveStringToFile(SiteStart, Contents, False);
+      end;
+    end;
+  end;
+end;
+
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
+begin
+  case CurUninstallStep of
+  usUninstall:
+    begin
+      RemoveSiteStartModifications;
+    end;
+  end;
+end;
+
