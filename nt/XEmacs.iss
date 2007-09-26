@@ -301,9 +301,9 @@ begin
 
   // Here's what we're going to add to lisp\site-start.el:
   //   ;;; Lines added by XEmacs_Setup
-  //   (setq package-get-package-index-file-location "C:\\Program Files\\XEmacs")
+  //   (setq package-get-package-index-file-location "C:/Program Files/XEmacs")
   //   (setq package-get-remote '("ftp.xemacs.org" "pub/xemacs/packages"))
-  //   (setq efs-ftp-program-name "C:\\WINDOWS\\system32\\ftp.exe")
+  //   (setq efs-ftp-program-name "C:/WINDOWS/system32/ftp.exe")
   //   (setq package-get-always-update t)
   //   ;;; End of XEmacs_Setup addition
 
@@ -316,11 +316,11 @@ begin
   // Optimize for the most common cases: either site-start.el does not contain anything related to XEmacs setup
   // or site-start.el contains the entire text verbatim.
 
-  // Convert directory names to lisp format by doubling each backslash
+  // Convert separators from backslash to slash
   InstallBase := ExpandConstant('{app}');
-  StringChange(InstallBase, '\', '\\');
+  StringChange(InstallBase, '\', '/');
   FtpExe := ExpandConstant('{syswow64}') + '\ftp.exe';
-  StringChange(FtpExe, '\', '\\');
+  StringChange(FtpExe, '\', '/');
   Payload := '(setq package-get-package-index-file-location "' + InstallBase + '")' + #10 +
              '(setq package-get-remote ' + Chr(39) + '("ftp.xemacs.org" "pub/xemacs/packages"))' + #10
              '(setq efs-ftp-program-name "' + FtpExe + '")' + #10
