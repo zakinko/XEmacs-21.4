@@ -3,6 +3,7 @@
 ; This script requires the Inno Setup pre-processor.
 ;
 ; Version History
+; 2007-09-26  Vin Shelton <acs@xemacs.org>    Remove setting of package-get-always-update and miscellaneous cleanup.
 ; 2007-09-25  Vin Shelton <acs@xemacs.org>    Put comment wrapper around site-start.el changes and remove them on uninstall.
 ;                                             Enable ftp.xemacs.org for packages and set path to ftp.exe in site-start.el.
 ; 2007-09-06  Vin Shelton <acs@xemacs.org>    Added easypg.
@@ -237,15 +238,11 @@ Name: "xslide"; Description: "xslide: XSL editing support"; Types: complete cust
 Name: "xslt_process"; Description: "xslt-process: XSLT processing support"; Types: complete custom
 
 [INI]
-Filename: "{app}\Internet shortcut.url"; Section: "InternetShortcut"; Key: "URL"; String: "http://www.xemacs.org"
 
 [Icons]
 Name: "{group}\XEmacs-{#XEmacsVersion}"; Filename: "{app}\XEmacs-{#XEmacsVersion}\i586-pc-win32\xemacs.exe"
-Name: "{group}\{cm:ProgramOnTheWeb,XEmacs}"; Filename: "{app}\xemacs.url"
 Name: "{group}\{cm:UninstallProgram,XEmacs-{#XEmacsVersion}}"; Filename: "{uninstallexe}"
 ; WorkingDir corresponds to the 'Start in' property.
-;Name: "{userdesktop}\XEmacs-{#XEmacsVersion}"; Filename: "{app}\XEmacs-{#XEmacsVersion}\i586-pc-win32\xemacs.exe"; WorkingDir: "{userdocs}"; Tasks: desktopicon
-;Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\XEmacs-{#XEmacsVersion}"; Filename: "{app}\XEmacs-{#XEmacsVersion}\i586-pc-win32\xemacs.exe"; WorkingDir: "{userdocs}"; Tasks: quicklaunchicon
 Name: "{userdesktop}\XEmacs-{#XEmacsVersion}"; Filename: "{app}\XEmacs-{#XEmacsVersion}\i586-pc-win32\xemacs.exe"; Tasks: desktopicon
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\XEmacs-{#XEmacsVersion}"; Filename: "{app}\XEmacs-{#XEmacsVersion}\i586-pc-win32\xemacs.exe"; Tasks: quicklaunchicon
 
@@ -254,7 +251,6 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\XEmacs-{#XEmacsVer
 Filename: "{app}\xemacs-packages\unpack.cmd"; WorkingDir: "{app}\xemacs-packages"; Flags: runhidden;  AfterInstall: AfterInstall
 
 [UninstallDelete]
-Type: files; Name: "{app}\Internet shortcut.url"
 
 [Code]
 Const
@@ -263,29 +259,26 @@ Const
   SubKeyName = 'Software\XEmacs\XEmacs';
   ValueName = 'EMACSPACKAGEPATH';
 
-procedure RemovePackagePathSetting(RootKey: Integer);
-var
-  RootKeyName: String;
-  Value: String;
+// Internal Declarations
+procedure AfterInstall(); forward;
+procedure CleanupPackagePath(); forward;
+procedure CreateSiteStart(); forward;
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep); forward;
+procedure RemovePackagePathSetting(RootKey: Integer); forward;
+procedure RemoveSiteStartModifications(); forward;
+
+
+procedure AfterInstall();
 begin
-  RootKeyName := 'Unknown Root';
-  case RootKey of
-    HKEY_CURRENT_USER:
-      RootKeyName := 'HKEY_CURRENT_USER';
-    HKEY_LOCAL_MACHINE:
-      RootKeyName := 'HKEY_LOCAL_MACHINE';
-  end;
-  // Check to see if the key exists in the specified registry root
-  if RegQueryStringValue(RootKey, SubKeyName, ValueName, Value) then
-  begin
-    // Allow the user to delete it
-    if MsgBox('Do you want to delete the registry key ' + RootKeyName + '\' + SubKeyName + '\' + ValueName + '?' #13 'Currently this key has the value "' + Value + '".' #13#13 'If you do not delete this registry key, then the packages installed from this setup kit will not be found when XEmacs runs.' #13, mbConfirmation, MB_YESNO) = IDYES then
-    begin
-      RegDeleteValue(RootKey, SubKeyName, ValueName);
-    end;
-  end;
+  CreateSiteStart;
+  CleanupPackagePath;
 end;
 
+procedure CleanupPackagePath();
+begin
+  RemovePackagePathSetting(HKEY_CURRENT_USER);
+  RemovePackagePathSetting(HKEY_LOCAL_MACHINE);
+end;
 
 // Create a site-start.el file to allow easy package downloading
 procedure CreateSiteStart();
@@ -304,7 +297,6 @@ begin
   //   (setq package-get-package-index-file-location "C:/Program Files/XEmacs")
   //   (setq package-get-remote '("ftp.xemacs.org" "pub/xemacs/packages"))
   //   (setq efs-ftp-program-name "C:/WINDOWS/system32/ftp.exe")
-  //   (setq package-get-always-update t)
   //   ;;; End of XEmacs_Setup addition
 
   SiteStart := ExpandConstant('{app}') + '\site-packages';
@@ -323,8 +315,7 @@ begin
   StringChange(FtpExe, '\', '/');
   Payload := '(setq package-get-package-index-file-location "' + InstallBase + '")' + #10 +
              '(setq package-get-remote ' + Chr(39) + '("ftp.xemacs.org" "pub/xemacs/packages"))' + #10
-             '(setq efs-ftp-program-name "' + FtpExe + '")' + #10
-             '(setq package-get-always-update t)' + #10;
+             '(setq efs-ftp-program-name "' + FtpExe + '")' + #10;
 
   // File is non-existant - write header, payload and footer
   if NOT LoadStringFromFile(SiteStart, Contents) then
@@ -370,17 +361,39 @@ begin
   end;
 end;
 
-procedure CleanupPackagePath();
+procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
-  RemovePackagePathSetting(HKEY_CURRENT_USER);
-  RemovePackagePathSetting(HKEY_LOCAL_MACHINE);
+  case CurUninstallStep of
+  usUninstall:
+    begin
+      RemoveSiteStartModifications;
+    end;
+  end;
 end;
 
-procedure AfterInstall();
+procedure RemovePackagePathSetting(RootKey: Integer);
+var
+  RootKeyName: String;
+  Value: String;
 begin
-  CreateSiteStart;
-  CleanupPackagePath;
+  RootKeyName := 'Unknown Root';
+  case RootKey of
+    HKEY_CURRENT_USER:
+      RootKeyName := 'HKEY_CURRENT_USER';
+    HKEY_LOCAL_MACHINE:
+      RootKeyName := 'HKEY_LOCAL_MACHINE';
+  end;
+  // Check to see if the key exists in the specified registry root
+  if RegQueryStringValue(RootKey, SubKeyName, ValueName, Value) then
+  begin
+    // Allow the user to delete it
+    if MsgBox('Do you want to delete the registry key ' + RootKeyName + '\' + SubKeyName + '\' + ValueName + '?' #13 'Currently this key has the value "' + Value + '".' #13#13 'If you do not delete this registry key, then the packages installed from this setup kit will not be found when XEmacs runs.' #13, mbConfirmation, MB_YESNO) = IDYES then
+    begin
+      RegDeleteValue(RootKey, SubKeyName, ValueName);
+    end;
+  end;
 end;
+
 
 procedure RemoveSiteStartModifications();
 var
@@ -401,16 +414,6 @@ begin
         Delete(Contents, Header, Footer-Header);
         SaveStringToFile(SiteStart, Contents, False);
       end;
-    end;
-  end;
-end;
-
-procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
-begin
-  case CurUninstallStep of
-  usUninstall:
-    begin
-      RemoveSiteStartModifications;
     end;
   end;
 end;

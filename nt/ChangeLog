@@ -1,3 +1,7 @@
+2007-09-27  Vin Shelton  <acs@xemacs.org>
+
+	* XEmacs.iss: Don't set package-get-always-update.
+
 2007-09-25  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs.iss: Put comment wrapper around site-start.el changes and
