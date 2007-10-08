@@ -1,3 +1,12 @@
+2007-09-19  Didier Verna  <didier@xemacs.org>
+
+	Update my personal info.
+	* about.el (xemacs-hackers): Use 'didier instead of 'dv.
+	* about.el (about-other-current-hackers): Ditto.
+	* about.el (about-url-alist): Add my musical website.
+	* about.el (about-personal-info): Update my entry.
+	* about.el (about-hacker-contribution): Ditto.
+
 2007-08-21  Adrian Aichner  <adrian@xemacs.org>
 
 	* package-get.el (package-get-download-sites): Update download
