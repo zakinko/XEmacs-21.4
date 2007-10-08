@@ -1,3 +1,7 @@
+2007-10-07  Vin Shelton  <acs@xemacs.org>
+
+	* XEmacs 21.4.21 is released
+
 2007-09-27  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs.iss: Don't set package-get-always-update.
