@@ -1,3 +1,7 @@
+2008-09-27  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* automated/regexp-tests.el: Add test for at_dot regexp.
+
 2007-10-07  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs 21.4.21 is released
