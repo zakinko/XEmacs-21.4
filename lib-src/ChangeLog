@@ -1,3 +1,7 @@
+2008-12-28  Vin Shelton  <acs@xemacs.org>
+
+	* XEmacs 21.4.22 is released
+
 2008-01-09  Vin Shelton  <acs@xemacs.org>
 
 	* winclient.c: Create CONNECT_RETRIES and increase retry count
