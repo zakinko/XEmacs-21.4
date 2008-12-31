@@ -2,6 +2,11 @@
 
 	* XEmacs 21.4.22 is released
 
+2008-12-30  Vin Shelton  <acs@xemacs.org>
+
+	* easy-mmode.el: Added easy-mmode.el so autoload.el will work
+	during building even if no packages are found.
+
 2008-05-13  Aidan Kehoe  <kehoea@parhasard.net>
 
  	* printer.el (generic-print-region): 
