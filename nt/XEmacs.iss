@@ -3,6 +3,15 @@
 ; This script requires the Inno Setup pre-processor.
 ;
 ; Version History
+; 2009-01-06  Vin Shelton <acs@xemacs.org>    Remove {#KitName} and {#XEmacs_Branch} and force the caller
+;                                             to define the ReadMe file name and Setup file name directly.
+; 2009-01-03  Vin Shelton <acs@xemacs.org>    Bump default version to 21.4.22.
+; 2008-01-24  Vin Shelton <acs@xemacs.org>    Implement the concept of release kits, like "XEmacs_Setup_21.4.21.exe"
+;                                             and replace the version info with a date string in non-release kits, so
+;                                             experimental kits are named something like "XEmacs_Setup_21.4-2008-01-24.exe".
+;                                             This feature was implemented at the request of Adrian Aichner, who
+;                                             found the string "21.4.21-2008-01-24" misleading, because the kit is built
+;                                             based on current CVS or mercurial sources, not from the release sources.
 ; 2007-09-26  Vin Shelton <acs@xemacs.org>    Remove setting of package-get-always-update and miscellaneous cleanup.
 ; 2007-09-25  Vin Shelton <acs@xemacs.org>    Put comment wrapper around site-start.el changes and remove them on uninstall.
 ;                                             Enable ftp.xemacs.org for packages and set path to ftp.exe in site-start.el.
@@ -13,26 +22,34 @@
 ; 2006-03-03  Vin Shelton <acs@xemacs.org>    Support for 21.5.  Added packages as separate components.
 ; 2006-01-28  Vin Shelton <acs@xemacs.org>    Erase unused registry code.
 ; 2006-01-26  Vin Shelton <acs@xemacs.org>    Don't append XEmacs binary directory to system path.
-; 2006-01-21  Vin Shelton <acs@xemacs.org>    Append XEmacs binary directory to system path; this is not currently deleted on uninstall.
+; 2006-01-21  Vin Shelton <acs@xemacs.org>    Append XEmacs binary directory to system path; this is not currently
+;                                             deleted on uninstall.
 ;                                             Get built kit from C:\XEmacs-built.
-; 2005-12-26  Vin Shelton <acs@xemacs.org>    Packages are now installed directly into {app}\xemacs-packages, etc.  As of 21.4.19, the package root is found automatically, so EMACSPACKAGEPATH is no longer necessary.
+; 2005-12-26  Vin Shelton <acs@xemacs.org>    Packages are now installed directly into {app}\xemacs-packages, etc.
+;                                             As of 21.4.19, the package root is found automatically,
+;                                             so EMACSPACKAGEPATH is no longer necessary.
 ; 2005-12-17  Vin Shelton <acs@xemacs.org>    Move packages out of the version-specific tree.
 ; 2005-12-13  Vin Shelton <acs@xemacs.org>    Created.
 
-; Allow undefined identifiers, e.g. 'KitName'
+; Allow undefined identifiers
 #pragma parseroption -u+
 
 ;#define QUICKIE_TEST
 
 #ifndef XEmacsVersion
-  #define XEmacsVersion  "21.4.20"
+  #define XEmacsVersion "21.4.22"
 #endif
-;#define KitName     "-2"
 #ifndef ExecSrc
   #define ExecSrc     "installed"
 #endif
 #ifndef PkgSrc
   #define PkgSrc      "packages"
+#endif
+#ifndef ReadMe
+  #define ReadMe      "ReadMe"
+#endif
+#ifndef KitFile
+  #define KitFile     "XEmacs_Setup"
 #endif
 
 [Setup]
@@ -46,9 +63,9 @@ AppUpdatesURL=http://www.xemacs.org
 Compression=lzma
 DefaultDirName={pf}\XEmacs
 DefaultGroupName=XEmacs
-InfoBeforeFile=ReadMe-{#XEmacsVersion}
+InfoBeforeFile={#ReadMe}
+OutputBaseFilename={#KitFile}
 OutputDir=.
-OutputBaseFilename=XEmacs_Setup_{#XEmacsVersion}{#KitName}
 SolidCompression=yes
 UninstallFilesDir={app}/XEmacs-{#XEmacsVersion}
 
@@ -417,4 +434,3 @@ begin
     end;
   end;
 end;
-
