@@ -1,3 +1,8 @@
+2009-01-31  Vin Shelton  <acs@xemacs.org>
+
+	* regex.c (re_search_2): Really apply Julian Bradfield's patch for
+	at_dot.
+
 2008-12-28  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs 21.4.22 is released

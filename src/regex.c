@@ -4075,7 +4075,7 @@ re_search_2 (struct re_pattern_buffer *bufp, const char *str1,
      don't keep searching past point.  */
   if (bufp->used > 0 && (re_opcode_t) bufp->buffer[0] == at_dot && range > 0)
     {
-      range = BUF_PT (regex_emacs_buffer) - BUF_BEGV (regex_emacs_buffer)
+      range = BI_BUF_PT (regex_emacs_buffer) - BI_BUF_BEGV (regex_emacs_buffer)
 	      - startpos;
       if (range < 0)
 	return -1;
