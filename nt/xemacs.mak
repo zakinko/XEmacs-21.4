@@ -63,6 +63,18 @@ COPYCMD=/y
 COPY=xcopy /q
 COPYDIR=xcopy /q /e
 
+########################### Figure out current version of VC++.
+
+!if [if not exist $(OUTDIR) mkdir "$(OUTDIR)"]
+!endif
+!if [echo MSC_VER=_MSC_VER > $(OUTDIR)\vcversion.c]
+!endif
+!if [cl /nologo /EP $(OUTDIR)\vcversion.c > $(OUTDIR)\vcversion.tmp]
+!endif
+!include "$(OUTDIR)\vcversion.tmp"
+
+########################### Process the config.inc options.
+
 !include "config.inc"
 
 !if !defined(INFODOCK)
@@ -355,14 +367,10 @@ DEPEND=0
 
 !if $(USE_INTEL_COMPILER)
 CC=icl
-# Use static library if possible
-INTEL_LIBS=libircmt.lib libmmt.lib
-# Debugging requires DLL version of libm
-!if $(DEBUG_XEMACS)
+# The static math lib no longer works for building XEmacs as of version 11.0
+# of the Intel C Compiler, so always link with the dynamic version.
 INTEL_LIBS=libircmt.lib libmmd.lib
 !endif
-!endif
-
 #
 # Compiler command echo control. Define VERBOSECC=1 to get verbose compilation.
 #
@@ -379,6 +387,9 @@ CCV=@$(CC)
 OPT=-Od -Zi
 !else
 OPT=-O2 -G5
+!if $(USE_INTEL_COMPILER)
+OPT=-Os -arch:ia32
+!endif
 !endif
 
 !if $(USE_CRTDLL)
@@ -568,6 +579,11 @@ CONFIG_VALUES = $(LIB_SRC)\config.values
 {$(LIB_SRC)}.c{$(LIB_SRC)}.exe :
 	cd $(LIB_SRC)
 	$(CCV) -I. -I$(XEMACS)/src -I$(XEMACS)/nt/inc $(LIB_SRC_DEFINES) $(CFLAGS) -Fe$@ $** -link -incremental:no setargv.obj
+# If we're using Visual Studio 2005 or greater,
+# embed the manifest into the executable.
+!if $(MSC_VER) >= 1400
+	mt -manifest $@.manifest -outputresource:$@;1
+!endif
 	cd $(NT)
 
 # Individual dependencies
@@ -576,15 +592,30 @@ $(LIB_SRC)/etags.exe : $(LIB_SRC)/etags.c $(ETAGS_DEPS)
 $(LIB_SRC)/movemail.exe: $(LIB_SRC)/movemail.c $(LIB_SRC)/pop.c $(ETAGS_DEPS)
 	cd $(LIB_SRC)
 	$(CCV) -I. -I$(XEMACS)/src -I$(XEMACS)/nt/inc $(LIB_SRC_DEFINES) $(CFLAGS) -Fe$@ $** wsock32.lib -link -incremental:no
+# If we're using Visual Studio 2005 or greater,
+# embed the manifest into the executable.
+!if $(MSC_VER) >= 1400
+	mt -manifest $@.manifest -outputresource:$@;1
+!endif
 	cd $(NT)
 
 $(LIB_SRC)/winclient.exe: $(LIB_SRC)/winclient.c
 	cd $(LIB_SRC)
 	$(CCV) -I. -I$(XEMACS)/src -I$(XEMACS)/nt/inc $(LIB_SRC_DEFINES) $(CFLAGS) -Fe$@ $** user32.lib -link -incremental:no
+# If we're using Visual Studio 2005 or greater,
+# embed the manifest into the executable.
+!if $(MSC_VER) >= 1400
+	mt -manifest $@.manifest -outputresource:$@;1
+!endif
 	cd $(NT)
 
 $(LIB_SRC)/minitar.exe : $(NT)/minitar.c
 	$(CCV) $(CFLAGS_NO_LIB) -I"$(ZLIB_DIR)" $(LIB_SRC_DEFINES) -MD -Fe$@ $** $(ZLIB_DIR)\zlib.lib -link -incremental:no
+# If we're using Visual Studio 2005 or greater,
+# embed the manifest into the executable.
+!if $(MSC_VER) >= 1400
+	mt -manifest $@.manifest -outputresource:$@;1
+!endif
 
 LIB_SRC_TOOLS = \
 	$(LIB_SRC)/etags.exe		\
@@ -1438,6 +1469,11 @@ $(PROGNAME) : $(TEMACS) $(TEMACS_DIR)\NEEDTODUMP
 # Make the resource section read/write since almost all of it is the dump
 # data which needs to be writable.  This avoids having to copy it.
 	editbin -nologo -stack:0x800000 -section:.rsrc,rw xemacs.exe
+# If we're using Visual Studio 2005 or greater,
+# embed the manifest into the executable.
+!if $(MSC_VER) >= 1400
+	mt -manifest $@.manifest -outputresource:$@;1
+!endif
 	$(DEL) $(TEMACS_DIR)\xemacs.dmp
 !else
 	editbin -nologo -stack:0x800000 xemacs.exe

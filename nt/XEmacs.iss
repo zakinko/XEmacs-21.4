@@ -3,6 +3,8 @@
 ; This script requires the Inno Setup pre-processor.
 ;
 ; Version History
+; 2009-01-29  Vin Shelton <acs@xemacs.org>    Add MSVCR80.dll, which is required by VS 2005 and needed at
+;                                             installation time by minitar.
 ; 2009-01-06  Vin Shelton <acs@xemacs.org>    Remove {#KitName} and {#XEmacs_Branch} and force the caller
 ;                                             to define the ReadMe file name and Setup file name directly.
 ; 2009-01-03  Vin Shelton <acs@xemacs.org>    Bump default version to 21.4.22.
@@ -86,6 +88,7 @@ Source: "{#PkgSrc}\efs-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Flags: igno
 Source: "{#PkgSrc}\xemacs-base-*-pkg.tar"; DestDir: "{app}\xemacs-packages"; Flags: ignoreversion
 ; minitar.exe and unpack.cmd are used to unpack the packages
 Source: "{#ExecSrc}\XEmacs-{#XEmacsVersion}\i586-pc-win32\minitar.exe"; DestDir: "{app}\xemacs-packages"; Flags: ignoreversion
+Source: "{#ExecSrc}\XEmacs-{#XEmacsVersion}\i586-pc-win32\MSVCR80.dll"; DestDir: "{app}\xemacs-packages"; Flags: ignoreversion
 Source: "unpack.cmd"; DestDir: "{app}\xemacs-packages"; Flags: ignoreversion
 Source: "{#PkgSrc}\package-index.LATEST.gpg"; DestDir: "{app}";
 #ifndef QUICKIE_TEST
