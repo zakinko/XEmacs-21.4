@@ -1,3 +1,14 @@
+2009-10-14  Mike Sperber  <mike@xemacs.org>
+
+	* fileio.c (Finsert_file_contents_internal): Don't call the
+	file-name handler for `insert-file-contents' from here, which is
+	too late.  Instead, do it from Lisp.SSper
+
+2009-10-01  Mike Sperber  <mike@xemacs.org>
+
+	* frame-x.c (x_focus_on_frame): Use correct timestamep with
+	XSetInputFocus.
+
 2009-01-31  Vin Shelton  <acs@xemacs.org>
 
 	* regex.c (re_search_2): Really apply Julian Bradfield's patch for
