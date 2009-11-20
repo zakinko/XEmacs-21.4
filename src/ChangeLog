@@ -1,3 +1,13 @@
+2009-11-17  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	Fix issue630.
+
+	* regex.c (regex_compile):
+	Sync treatment of normal_char to GNU Emacs 22.1.
+	Thanks to Aidan Kehoe for the diagnosis and suggestion.
+	(print_partial_compiled_pattern):
+	Avoid buffer overrun in case of /exactn/0.
+
 2009-10-14  Mike Sperber  <mike@xemacs.org>
 
 	* fileio.c (Finsert_file_contents_internal): Don't call the
