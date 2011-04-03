@@ -1,6 +1,7 @@
 /* Code conversion functions.
    Copyright (C) 1991, 1995 Free Software Foundation, Inc.
    Copyright (C) 1995 Sun Microsystems, Inc.
+   Copyright (C) 2010 Ben Wing
 
 This file is part of XEmacs.
 
@@ -5412,7 +5413,7 @@ encode_coding_iso2022 (Lstream *encoding, const Bufbyte *src,
 	  if (EQ (charset, Vcharset_control_1))
 	    {
 	      if (CODING_SYSTEM_ISO2022_ESCAPE_QUOTED (codesys)
-		  && fit_to_be_escape_quoted (c))
+		  && fit_to_be_escape_quoted (c - 0x20))
 		Dynarr_add (dst, ISO_CODE_ESC);
 	      /* you asked for it ... */
 	      Dynarr_add (dst, c - 0x20);

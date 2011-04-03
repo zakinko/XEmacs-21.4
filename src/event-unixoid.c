@@ -70,6 +70,24 @@ int signal_event_pipe_initialized;
 
 int fake_event_occurred;
 
+struct console *
+find_tty_or_stream_console_from_fd (int fd)
+{
+  Lisp_Object concons;
+
+  CONSOLE_LOOP (concons)
+    {
+      struct console *c;
+
+      c = XCONSOLE (XCAR (concons));
+      if ((CONSOLE_TTY_P (c) && CONSOLE_TTY_DATA (c)->infd == fd) ||
+	  (CONSOLE_STREAM_P (c) && fileno (CONSOLE_STREAM_DATA (c)->in) == fd))
+	return c;
+    }
+
+  return 0;
+}
+
 int
 read_event_from_tty_or_stream_desc (Lisp_Event *event,
 				    struct console *con, int fd)

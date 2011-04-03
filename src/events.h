@@ -651,6 +651,7 @@ int event_stream_unixoid_select_console   (struct console *con);
 int event_stream_unixoid_unselect_console (struct console *con);
 int event_stream_unixoid_select_process   (Lisp_Process *proc);
 int event_stream_unixoid_unselect_process (Lisp_Process *proc);
+struct console *find_tty_or_stream_console_from_fd (int fd);
 int read_event_from_tty_or_stream_desc (Lisp_Event *event,
 					struct console *con, int fd);
 USID event_stream_unixoid_create_stream_pair (void* inhandle, void* outhandle,

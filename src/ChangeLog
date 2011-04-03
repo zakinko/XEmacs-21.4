@@ -1,3 +1,22 @@
+2010-03-05  Ben Wing  <ben@xemacs.org>
+
+	* mule-coding.c (iso2022_encode):
+	Horrible bug: `escape-quoted' was failing to escape-quote special
+	characters in the 0x80 - 0x9F range.  Who knows what breakage ensued?
+	Ported from 21.5.
+
+2011-04-02  Vin Shelton  <acs@xemacs.org>
+
+	* eldap.h: Added definition of LDAP_DEPRECATED per Hans de Graaff:
+	http://sources.gentoo.org/cgi-bin/viewvc.cgi/gentoo-x86/app-editors/xemacs/files/xemacs-21.4.22-deprecated-ldap.patch
+
+2011-04-02  Mats Lidell <mats@xemacs.org>
+
+	* event-unixoid: implement find_tty_or_stream_cosole_from_fd()
+	from 21.5.
+	* events.c:
+	* event-tty.c: Use find_tty_or_stream_console_from_fd().
+
 2009-11-17  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	Fix issue630.

@@ -1,3 +1,8 @@
+2010-03-07  Stephen J. Turnbull  <stephen@xemacs.org>
+
+	* automated/mule-tests.el (string character conversion):
+	Test that escape-quoted quotes CSI, SS2, and SS3 from C1 controls.
+
 2008-12-28  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs 21.4.22 is released

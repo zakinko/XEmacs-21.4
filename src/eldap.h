@@ -21,6 +21,8 @@ Boston, MA 02111-1307, USA.  */
 #ifndef INCLUDED_eldap_h_
 #define INCLUDED_eldap_h_
 
+#define LDAP_DEPRECATED 1
+
 #include <lber.h>
 #include <ldap.h>
 

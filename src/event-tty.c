@@ -142,7 +142,7 @@ emacs_tty_next_event (Lisp_Event *emacs_event)
 		 user events ahead of process events. */
 	      if (FD_ISSET (i, &temp_mask) && FD_ISSET (i, &tty_only_mask))
 		{
-		  struct console *c = tty_find_console_from_fd (i);
+		  struct console *c = find_tty_or_stream_console_from_fd (i);
 
 		  assert (c);
 		  if (read_event_from_tty_or_stream_desc (emacs_event, c, i))
