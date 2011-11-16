@@ -1,4 +1,11 @@
 2009-08-14  Aidan Kehoe  <kehoea@parhasard.net>
+2011-11-14  Vin Shelton  <acs@xemacs.org>
+
+	* faces.el: When the default background was changed from light to
+	dark or vice versa, the custom-property cache maintained the old
+	value, preventing face definitions from choosing the proper
+	values.  Patch from Aidan Kehoe.
+
 
 	* minibuf.el (read-from-minibuffer):
 	Use buffer (format " *Minibuf-%d*" (minibuffer-depth)), regardless
