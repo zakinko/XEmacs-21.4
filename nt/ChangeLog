@@ -1,3 +1,7 @@
+2011-11-28  Vin Shelton  <acs@xemacs.org>
+
+	* config.inc.samp: Update versions for png, tiff and jpeg.
+
 2009-02-06  Vin Shelton  <acs@xemacs.org>
 
 	* xemacs.mak: Visual Studio 2005 support: add manifest to
