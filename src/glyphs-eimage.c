@@ -935,13 +935,22 @@ png_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
   png_read_info (png_ptr, info_ptr);
 
   {
-    int y;
+    int y, padding;
     unsigned char **row_pointers;
     height = info_ptr->height;
     width = info_ptr->width;
 
-    /* Wow, allocate all the memory.  Truly, exciting. */
-    unwind.eimage = xnew_array_and_zero (unsigned char, width * height * 3);
+    /* Wow, allocate all the memory.  Truly, exciting.
+       Well, yes, there's excitement to be had.  It turns out that libpng
+       strips in place, so the last row overruns the buffer if depth is 16
+       or there's an alpha channel.  This is a crash on Linux.  So we need
+       to add padding.
+       The worst case is reducing 8 bytes (16-bit RGBA) to 3 (8-bit RGB). */
+
+    padding = 5 * width;
+    unwind.eimage = xnew_array_and_zero (unsigned char,
+					 width * height * 3 + padding);
+
     /* libpng expects that the image buffer passed in contains a
        picture to draw on top of if the png has any transparencies.
        This could be a good place to pass that in... */
@@ -996,9 +1005,6 @@ png_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
     if (info_ptr->color_type == PNG_COLOR_TYPE_GRAY ||
         info_ptr->color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
       png_set_gray_to_rgb (png_ptr);
-    /* we can't handle alpha values */
-    if (info_ptr->color_type & PNG_COLOR_MASK_ALPHA)
-      png_set_strip_alpha (png_ptr);
     /* tell libpng to strip 16 bit depth files down to 8 bits */
     if (info_ptr->bit_depth == 16)
       png_set_strip_16 (png_ptr);
@@ -1010,6 +1016,13 @@ png_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
 	else
 	  png_set_packing (png_ptr);
       }
+
+    /* we can't handle alpha values
+       png_read_update_info ensures the alpha flag is set when one of
+       the transforms above causes an alpha channel to be generated */
+    png_read_update_info (png_ptr, info_ptr);
+    if (info_ptr->color_type & PNG_COLOR_MASK_ALPHA)
+      png_set_strip_alpha (png_ptr);
 
     png_read_image (png_ptr, row_pointers);
     png_read_end (png_ptr, info_ptr);
