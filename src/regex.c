@@ -3293,12 +3293,18 @@ at_begline_loc_p (re_char *pattern, re_char *p, reg_syntax_t syntax)
 {
   re_char *prev = p - 2;
   re_bool prev_prev_backslash = prev > pattern && prev[-1] == '\\';
+  re_bool shy_open = prev-1 > pattern && prev[0] == ':'
+    && prev[-1] == '?' && prev[-2] == '(';
+  re_bool ppp_backslash = prev-2 > pattern && prev[-3] == '\\';
 
   return
        /* After a subexpression?  */
        (*prev == '(' && (syntax & RE_NO_BK_PARENS || prev_prev_backslash))
        /* After an alternative?  */
-    || (*prev == '|' && (syntax & RE_NO_BK_VBAR || prev_prev_backslash));
+    || (*prev == '|' && (syntax & RE_NO_BK_VBAR || prev_prev_backslash))
+       /* After a shy open? */
+    || (!(syntax & RE_NO_SHY_GROUPS) && shy_open 
+      && (syntax & RE_NO_BK_PARENS || ppp_backslash));
 }
 
 

@@ -447,11 +447,16 @@ baaaa
   (Assert (progn (string-match "\\(a\\)" "a")  
 		 (string-match "\\(?:a\\)" "a")  
 		 (not (match-beginning 1))))
+
+  ;; ^ at beginning of shy group. Fix by
+  ;; Julian Bradfield on 2012-12-11.
+  (Assert (string-match "\\(?:^\\)" ""))
+  (Assert (string-match "a(?:^)" "a:^)"))
 )
 
 
 ;; empty string at point
-;; Thanks Julian Bradford on XEmacs Beta
+;; Thanks Julian Bradfield on XEmacs Beta
 ;; <18652.54975.894512.880956@krk.inf.ed.ac.uk>
 (with-string-as-buffer-contents "aáa"
   (goto-char (point-min))
