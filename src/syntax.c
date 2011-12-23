@@ -498,7 +498,7 @@ update_syntax_cache (int pos, int count)
    into the code it signifies.
    This is used by modify-syntax-entry, and other things. */
 
-const unsigned char syntax_spec_code[0400] =
+const unsigned char syntax_spec_code[0200] =
 { 0377, 0377, 0377, 0377, 0377, 0377, 0377, 0377,
   0377, 0377, 0377, 0377, 0377, 0377, 0377, 0377,
   0377, 0377, 0377, 0377, 0377, 0377, 0377, 0377,
