@@ -1,3 +1,8 @@
+2012-07-12  Vin Shelton  <acs@xemacs.org>
+
+	* glyphs-eimage.c: Fix this so it compiles with libpng-1.5.10.
+	Thanks to Aidan, Julian and Hans de Graaff.
+
 2011-08-05  Stephen J. Turnbull  <stephen@xemacs.org>
 	There are only (octal) 0200 ASCII characters, and only 128 values
 	supplied in the definition.
