@@ -1,3 +1,9 @@
+2013-01-02  Vin Shelton  <acs@xemacs.org>
+
+	* lispref/menus.texi (Creating Menu Accelerators): Fix typo in
+	add-submenu example (original patch from Byrel Mitchell).  Change
+	top-level accelerator key from t to s.
+
 2011-04-02  Stephen J. Turnbull  <stephen@xemacs.org>
 
 	* xemacs-faq.texi (Q2.5.7):
