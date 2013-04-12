@@ -1,3 +1,9 @@
+2013-04-12  Vin Shelton  <acs@xemacs.org>
+
+	* event-Xt.c (x_event_to_emacs_event): Allow XEmacs to recognize
+	shifted function keys directly.  This is likely an XFree bug.
+	Patch by Sean MacLennan.
+
 2012-07-12  Vin Shelton  <acs@xemacs.org>
 
 	* glyphs-eimage.c: Fix this so it compiles with libpng-1.5.10.
