@@ -48,10 +48,6 @@ Boston, MA 02111-1307, USA.
  * ../etc/gnuserv.README relative to the directory containing this file)
  */
 
-#ifdef  CYGWIN
-extern void cygwin_conv_to_posix_path(const char *path, char *posix_path);
-#endif
-
 #include "gnuserv.h"
 
 char gnuserv_version[] = "gnuclient version " GNUSERV_VERSION;
@@ -75,6 +71,7 @@ char gnuserv_version[] = "gnuclient version " GNUSERV_VERSION;
 
 #if !defined(SYSV_IPC) && !defined(UNIX_DOMAIN_SOCKETS) && \
     !defined(INTERNET_DOMAIN_SOCKETS)
+
 int
 main (int argc, char *argv[])
 {
@@ -193,10 +190,6 @@ filename_expand (char *fullpath, char *filename)
   /* fullpath - returned full pathname */
   /* filename - filename to expand */
 {
-#ifdef  CYGWIN
-  char cygwinFilename[MAXPATHLEN+1];
-#endif
-
   int len;
   fullpath[0] = fullpath[MAXPATHLEN] = '\0';
 
@@ -204,7 +197,8 @@ filename_expand (char *fullpath, char *filename)
   /*
     If we're in cygwin, just convert it and let the unix stuff handle it.
   */
-  cygwin_conv_to_posix_path(filename, cygwinFilename);
+  char *cygwinFilename;
+  CYGWIN_CONV_PATH(filename, cygwinFilename);
   filename = cygwinFilename;
 #endif
 

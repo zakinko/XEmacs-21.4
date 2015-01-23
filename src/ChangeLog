@@ -1,3 +1,15 @@
+2015-01-23  Vin Shelton  <acs@xemacs.org>
+
+	* s/cygwin32.h: Use strcasecmp instead of stricmp.
+
+2009-01-31  Dr. Volker Zell  <Dr.Volker.Zell@oracle.com>
+
+	* redisplay-msw.c (mswindows_text_width_single_run): #ifndef assertion
+	to fix a crash under Cygwin (Windows variant) when paging in Info buffer.
+
+	* sysdir.h: Revert workaround missing d_ino field from 'struct dirent'
+	for Cygwin as it's back in again.
+
 2012-07-12  Vin Shelton  <acs@xemacs.org>
 
 	* glyphs-eimage.c: Fix this so it compiles with libpng-1.5.10.

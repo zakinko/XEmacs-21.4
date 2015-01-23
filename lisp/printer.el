@@ -261,7 +261,8 @@ If BUFFER is nil or omitted, the current buffer is used."
 	     (start (if print-region (region-beginning) (point-min buffer)))
 	     (end (if print-region (region-end) (point-max buffer))))
 	(if (or (not (valid-device-type-p 'msprinter))
-		(not display-print-dialog))
+		(not display-print-dialog)
+		(not (string-equal (device-type) "mswindows")))
 	    (generic-print-region start end buffer)
 	  (let* ((d (Printer-get-device))
 		 (props (make-dialog-box 'print :device d
@@ -309,7 +310,8 @@ Recognized properties are the same as those in `make-dialog-box':
   to-page    Last page to print, inclusive, If omitted, printing ends at
              the end.
   copies     Number of copies to print.  If omitted, one copy is printed."
-  (cond ((valid-device-type-p 'msprinter)
+  (cond ((and (valid-device-type-p 'msprinter)
+	      (string-equal (device-type) "mswindows"))
 	 ;; loop, printing one copy of document per loop.  kill and
 	 ;; re-create the frame each time so that we eject the piece
 	 ;; of paper at the end even if we're printing more than one

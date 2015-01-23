@@ -224,3 +224,6 @@ cygwin_win32_to_posix_path_list(src, dst)
 #define CYGWIN_WIN32_PATH(src, dst) \
 dst = alloca (cygwin_posix_to_win32_path_list_buf_size(src)); \
 cygwin_posix_to_win32_path_list(src, dst)
+
+/* Cygwin uses strcasecmp instead of stricmp */
+#define stricmp strcasecmp

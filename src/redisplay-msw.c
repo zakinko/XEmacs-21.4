@@ -191,8 +191,15 @@ mswindows_text_width_single_run (HDC hdc, struct face_cachel *cachel,
   if (!fi->proportional_p || !hdc)
     return (fi->width * run->len);
   else
-    {
+  {
+/* The 21.4.19 version of XEmacs doesn't have the Unicode support necessary to display 
+   anything but ISO 8859-1 on Windows.
+   So commenting out the following assertion doesn't fix the problem but
+   it does prevent a crash when XEmacs tries to display Han characters
+*/ 
+#ifndef CYGWIN
       assert(run->dimension == 1);	/* #### FIXME! */
+#endif
       mswindows_set_dc_font (hdc, font_inst,
 			     cachel->underline, cachel->strikethru);
       GetTextExtentPoint32 (hdc, run->ptr, run->len, &size);
@@ -560,7 +567,9 @@ mswindows_output_string (struct window *w, struct display_line *dl,
 	  }
 	}
 
+#ifndef CYGWIN
       assert (runs[i].dimension == 1);	/* #### FIXME: Broken when Mule? */
+#endif
       ExtTextOut (hdc, xpos, dl->ypos,
 		  NILP(bg_pmap) ? ETO_CLIPPED | ETO_OPAQUE : ETO_CLIPPED,
 		  &rect, (char *) runs[i].ptr, runs[i].len, NULL); 
