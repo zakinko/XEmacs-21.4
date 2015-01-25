@@ -60,7 +60,9 @@ Boston, MA 02111-1307, USA.  */
 #include <aclapi.h>
 #endif /* WIN32_NATIVE */
 #ifdef CYGWIN
+#undef Status
 #include <w32api/aclapi.h>
+#define Status int
 #endif
 
 

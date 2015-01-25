@@ -1,3 +1,12 @@
+2015-01-24  Vin Shelton  <acs@xemacs.org>
+
+	* fileio.c: Guard include of w32api/aclapi.h to preserve Status
+	definition for X Windows.
+
+	* syswindows.h: Move #undef and redeclaration of Status because
+	more w32api includes use Status, which is already defined for X
+	Windows.
+
 2015-01-23  Vin Shelton  <acs@xemacs.org>
 
 	* s/cygwin32.h: Use strcasecmp instead of stricmp.

@@ -55,6 +55,12 @@ Boston, MA 02111-1307, USA.  */
 #define WIN32_LEAN_AND_MEAN
 #endif
 
+#ifdef HAVE_X_WINDOWS
+/* Christ almighty.  The problems you get when combining two large code bases,
+   neither with any respect for namespace purity. */
+#undef Status
+#endif
+
 #include <windows.h>
 
 #if defined (CYGWIN) && CYGWIN_VERSION_DLL_MAJOR < 21
@@ -64,15 +70,7 @@ extern BOOL WINAPI PlaySound(LPCSTR,HMODULE,DWORD);
 #define FONTENUMPROC FONTENUMEXPROC
 #define ntmTm ntmentm
 #elif defined (WIN32_LEAN_AND_MEAN)
-#ifdef HAVE_X_WINDOWS
-/* Christ almighty.  The problems you get when combining two large code bases,
-   neither with any respect for namespace purity. */
-#undef Status
-#endif
 #include <winspool.h>
-#ifdef HAVE_X_WINDOWS
-#define Status int
-#endif
 #include <mmsystem.h>
 #include <shlobj.h>
 #include <shellapi.h>
@@ -189,6 +187,10 @@ typedef NMHDR *LPNMHDR;
 /* Definitions for Mule under MS Windows */
 
 #include <wchar.h>
+
+#ifdef HAVE_X_WINDOWS
+#define Status int
+#endif
 
 #if defined (CYGWIN) && (CYGWIN_VERSION_DLL_COMBINED < 190)
 
