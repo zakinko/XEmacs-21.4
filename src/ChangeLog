@@ -1,3 +1,10 @@
+2015-01-25  Vin Shelton  <acs@xemacs.org>
+
+	Fix progress bar crashes.
+	Thanks to Ralf Soergel for diagnosis and a patch.
+
+	* config.h.in (HAVE_ATHENA_I18N): New #define. 
+
 2015-01-24  Vin Shelton  <acs@xemacs.org>
 
 	* fileio.c: Guard include of w32api/aclapi.h to preserve Status

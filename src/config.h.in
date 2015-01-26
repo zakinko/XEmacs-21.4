@@ -720,6 +720,7 @@ extern "C" {
 #undef LWLIB_WIDGETS_MOTIF
 #undef LWLIB_WIDGETS_ATHENA
 #undef HAVE_ATHENA_3D
+#undef HAVE_ATHENA_I18N
 
 /* Other things that can be disabled by configure. */
 #undef HAVE_MENUBARS

@@ -1,3 +1,12 @@
++2015-01-08  Vin Shelton  <acs@xemacs.org>
+
+	Fix progress bar crashes.
+	Thanks to Ralf Soergel for diagnosis and a patch.
+
+	* configure.in (Athena widgets):
+	Test for "international" resource in SimpleWidgetClass in libXaw3d.
+	* configure: Rebuild.
+
 2008-12-28  Vin Shelton  <acs@xemacs.org>
 
 	* XEmacs 21.4.22 is released
