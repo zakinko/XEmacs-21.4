@@ -1,9 +1,14 @@
+2015-01-27  Vin Shelton  <acs@xemacs.org>
+
+	* sysdep.c (disconnect_controlling_terminal): Don't use setsid()
+	on Cygwin.
+
 2015-01-25  Vin Shelton  <acs@xemacs.org>
 
 	Fix progress bar crashes.
 	Thanks to Ralf Soergel for diagnosis and a patch.
 
-	* config.h.in (HAVE_ATHENA_I18N): New #define. 
+	* config.h.in (HAVE_ATHENA_I18N): New #define.
 
 2015-01-24  Vin Shelton  <acs@xemacs.org>
 

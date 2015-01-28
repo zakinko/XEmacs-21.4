@@ -1319,7 +1319,7 @@ init_process_group (void)
 void
 disconnect_controlling_terminal (void)
 {
-#  ifdef HAVE_SETSID
+#  if defined(HAVE_SETSID) && !defined(CYGWIN)
   /* Controlling terminals are attached to a session.
      Create a new session for us; it will have no controlling
      terminal.  This also, of course, puts us in our own
