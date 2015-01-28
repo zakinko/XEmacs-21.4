@@ -1,7 +1,8 @@
-2015-01-27  Vin Shelton  <acs@xemacs.org>
+2015-01-28  Vin Shelton  <acs@xemacs.org>
 
-	* sysdep.c (disconnect_controlling_terminal): Don't use setsid()
-	on Cygwin.
+	* process-unix.c: Move disconnect_controlling_terminal() call
+	later in create_process_unix().  This is necessary for Cygwin, but
+	seems to work on linux (at least), too.
 
 2015-01-25  Vin Shelton  <acs@xemacs.org>
 

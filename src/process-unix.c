@@ -919,12 +919,6 @@ unix_create_process (Lisp_Process *p,
 	   cause I/O, and that, in turn, can confuse the X connection. */
 	begin_dont_check_for_quit();
 
-	/* Disconnect the current controlling terminal, pursuant to
-	   making the pty be the controlling terminal of the process.
-	   Also put us in our own process group. */
-
-	disconnect_controlling_terminal ();
-
 #ifdef HAVE_PTYS
 	if (pty_flag)
 	  {
@@ -1048,6 +1042,13 @@ unix_create_process (Lisp_Process *p,
 	  child_setup_tty (xforkout);
 
 #endif /* HAVE_PTYS */
+
+	/* Moved this here because of cygwin - this works on linux, too.
+	   Vin Shelton 2015-01-28. */
+	/* Disconnect the current controlling terminal, pursuant to
+	   making the pty be the controlling terminal of the process.
+	   Also put us in our own process group. */
+	disconnect_controlling_terminal ();
 
 	signal (SIGINT,  SIG_DFL);
 	signal (SIGQUIT, SIG_DFL);
