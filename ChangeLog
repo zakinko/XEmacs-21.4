@@ -1,4 +1,4 @@
-+2015-01-08  Vin Shelton  <acs@xemacs.org>
+2015-01-08  Vin Shelton  <acs@xemacs.org>
 
 	Fix progress bar crashes.
 	Thanks to Ralf Soergel for diagnosis and a patch.
