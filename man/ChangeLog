@@ -1,3 +1,7 @@
+2015-01-29  Vin Shelton <acs@xemacs.org>
+ 
+	* XEmacs 21.4.23 is released
+
 2013-01-02  Vin Shelton  <acs@xemacs.org>
 
 	* lispref/menus.texi (Creating Menu Accelerators): Fix typo in
