@@ -407,6 +407,7 @@ jpeg_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
    */
 
   {
+    uint64_t pixels_sq;
     int jpeg_gray = 0;		/* if we're dealing with a grayscale */
     /* Step 4: set parameters for decompression.   */
 
@@ -430,6 +431,10 @@ jpeg_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
 
     /* Step 6: Read in the data and put into EImage format (8bit RGB triples)*/
 
+    pixels_sq =
+      (uint64_t) cinfo.output_width * (uint64_t) cinfo.output_height;
+    if (pixels_sq > ((size_t) -1) / 3)
+      signal_image_error ("JPEG image too large to instantiate", instantiator);
     unwind.eimage = (unsigned char*) xmalloc (cinfo.output_width * cinfo.output_height * 3);
     if (!unwind.eimage)
       signal_image_error("Unable to allocate enough memory for image", instantiator);
@@ -671,6 +676,7 @@ gif_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
   {
     ColorMapObject *cmo = unwind.giffile->SColorMap;
     int i, j, row, pass, interlace, slice;
+    uint64_t pixels_sq;
     unsigned char *eip;
     /* interlaced gifs have rows in this order:
        0, 8, 16, ..., 4, 12, 20, ..., 2, 6, 10, ..., 1, 3, 5, ...  */
@@ -679,6 +685,9 @@ gif_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
 
     height = unwind.giffile->SHeight;
     width = unwind.giffile->SWidth;
+    pixels_sq = (uint64_t) width * (uint64_t) height;
+    if (pixels_sq > ((size_t) -1) / (3 * unwind.giffile->ImageCount))
+      signal_image_error ("GIF image too large to instantiate", instantiator);
     unwind.eimage = (unsigned char*)
       xmalloc (width * height * 3 * unwind.giffile->ImageCount);
     if (!unwind.eimage)
@@ -937,8 +946,12 @@ png_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
   {
     int y, padding;
     unsigned char **row_pointers;
+    uint64_t pixels_sq;
     height = png_get_image_height(png_ptr, info_ptr);
     width = png_get_image_width(png_ptr, info_ptr);
+    pixels_sq = (uint64_t) width * (uint64_t) height;
+    if (pixels_sq > ((size_t) -1) / 3)
+      signal_image_error ("PNG image too large to instantiate", instantiator);
 
     /* Wow, allocate all the memory.  Truly, exciting.
        Well, yes, there's excitement to be had.  It turns out that libpng
@@ -949,7 +962,7 @@ png_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
 
     padding = 5 * width;
     unwind.eimage = xnew_array_and_zero (unsigned char,
-					 width * height * 3 + padding);
+					 pixels_sq * 3 + padding);
 
     /* libpng expects that the image buffer passed in contains a
        picture to draw on top of if the png has any transparencies.
@@ -1286,6 +1299,7 @@ tiff_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
 
     uint32 *raster;
     unsigned char *ep;
+    uint64_t pixels_sq;
 
     assert (!NILP (data));
 
@@ -1308,12 +1322,15 @@ tiff_instantiate (Lisp_Object image_instance, Lisp_Object instantiator,
 
     TIFFGetField (unwind.tiff, TIFFTAG_IMAGEWIDTH, &width);
     TIFFGetField (unwind.tiff, TIFFTAG_IMAGELENGTH, &height);
-    unwind.eimage = (unsigned char *) xmalloc (width * height * 3);
+    pixels_sq = (uint64_t) width * (uint64_t) height;
+    if (pixels_sq >= 1 << 29)
+      signal_image_error ("TIFF image too large to instantiate", instantiator);
+    unwind.eimage = (unsigned char *) xmalloc (pixels_sq * 3);
 
     /* #### This is little more than proof-of-concept/function testing.
        It needs to be reimplemented via scanline reads for both memory
        compactness. */
-    raster = (uint32*) _TIFFmalloc (width * height * sizeof (uint32));
+    raster = (uint32*) _TIFFmalloc ((tsize_t) (pixels_sq * sizeof (uint32)));
     if (raster != NULL)
       {
 	int i,j;

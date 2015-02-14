@@ -1,3 +1,8 @@
+2015-02-14  Vin Shelton  <acs@xemacs.org>
+
+	* glyphs-eimage.c: CVE-2009-2688 - Check for images too large
+	(GIF, TIFF, JPEG and PNG).
+
 2015-01-29  Vin Shelton <acs@xemacs.org>
  
 	* XEmacs 21.4.23 is released
