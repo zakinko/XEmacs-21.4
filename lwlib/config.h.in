@@ -43,4 +43,8 @@ Boston, MA 02111-1307, USA.  */
 #undef ATHENA_AsciiText_h_
 #undef ATHENA_XawInit_h_
 
+#ifdef HAVE_ATHENA_I18N
+#define XAW_INTERNATIONALIZATION 1
+#endif
+
 #endif /* _LWLIB_CONFIG_H_ */

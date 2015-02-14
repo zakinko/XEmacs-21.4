@@ -3,10 +3,6 @@
 
 #include <X11/Intrinsic.h>
 
-#ifdef HAVE_ATHENA_I18N
-#define XAW_INTERNATIONALIZATION 1
-#endif
-
 #if defined (LWLIB_MENUBARS_LUCID) || defined (LWLIB_MENUBARS_MOTIF) || defined (LWLIB_MENUBARS_ATHENA)
 #define NEED_MENUBARS
 #endif
