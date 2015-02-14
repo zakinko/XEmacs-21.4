@@ -1,5 +1,15 @@
+2015-02-14  Vin Shelton  <acs@xemacs.org>
+
+	* custom.texi:
+	* info.texi:
+	* term.texi:
+	* widget.texi:
+	* lispref/edebug-inc.texi:
+	* lispref/packaging.texi: Now support texinfo version 5.2 (patch
+	from Jerry James and Volker Zell).
+
 2015-01-29  Vin Shelton <acs@xemacs.org>
- 
+
 	* XEmacs 21.4.23 is released
 
 2013-01-02  Vin Shelton  <acs@xemacs.org>

@@ -4,7 +4,7 @@ settitle Notes about emacs Term mode
 
 @titlepage
 @sp 6
-@center @titlefont(Notes about Emacs TERM Mode)
+@center @titlefont{Notes about Emacs TERM Mode}
 @end titlepage
 
 @ifinfo

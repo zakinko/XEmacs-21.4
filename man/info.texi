@@ -542,6 +542,10 @@ to cancel the @samp{f}.
 
 @c If a menu appears at the end of this node, remove it.
 @c It is an accident of the menu updating command.
+@c Except now texinfo5 insists on one
+@menu
+* Help-Cross:: Cross reference section
+@end menu
 
 @node Help-Cross,  ,  , Help-Adv
 @subsection The node reached by the cross reference in Info

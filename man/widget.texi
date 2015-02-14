@@ -38,7 +38,7 @@
 
 @node  Introduction, User Interface, Top, Top
 @comment  node-name,  next,  previous,  up
-@section Introduction
+@chapter Introduction
 
 Most graphical user interface toolkits, such as Motif and XView, provide
 a number of standard user interface controls (sometimes known as
