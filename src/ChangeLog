@@ -1,3 +1,8 @@
+2015-02-15  Vin Shelton  <acs@xemacs.org>
+
+	* dired.c (Fdirectory_files): Use POSIX-approved NAME_MAX if it's
+	available.
+
 2015-02-14  Vin Shelton  <acs@xemacs.org>
 
 	* glyphs-eimage.c: CVE-2009-2688 - Check for images too large

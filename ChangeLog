@@ -1,3 +1,8 @@
+2015-02-15  Vin Shelton  <acs@xemacs.org>
+
+	* configure.in: Additional netbsd platform definitions.
+	* configure: Rebuild.
+
 2015-01-29  Vin Shelton <acs@xemacs.org>
  
 	* XEmacs 21.4.23 is released
