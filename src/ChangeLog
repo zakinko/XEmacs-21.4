@@ -1,5 +1,9 @@
 2015-02-15  Vin Shelton  <acs@xemacs.org>
 
+	* glyphs-eimage.c: Define uint64_t on WIN32_NATIVE.  This is
+	necessary with the Visual Studio 6, compiler, at least.  The
+	preprocessor test should probably be more tightly-focused.
+
 	* dired.c (Fdirectory_files): Use POSIX-approved NAME_MAX if it's
 	available.
 

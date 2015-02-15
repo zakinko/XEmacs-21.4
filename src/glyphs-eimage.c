@@ -95,6 +95,10 @@ DEFINE_IMAGE_INSTANTIATOR_FORMAT (png);
 Lisp_Object Qpng;
 #endif
 
+#ifdef WIN32_NATIVE
+typedef unsigned __int64 uint64_t;
+#endif
+
 
 #ifdef HAVE_JPEG
 

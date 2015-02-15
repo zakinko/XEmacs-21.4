@@ -1384,22 +1384,7 @@ $(INFODIR)\new-users-guide.info: $(NEW_USERS_GUIDE_SRCS)
 	$(MAKEINFO) new-users-guide.texi
 	cd ..
 
-info:	makeinfo-test $(INFO_FILES)
-
-makeinfo-test:
-	@<<makeinfo_test.bat
-@echo off
-if exist "$(MAKEINFO)" goto test_done
-@$(XEMACS_BATCH) -eval "(condition-case nil (require (quote texinfo)) (t (kill-emacs 1)))"
-@if not errorlevel 1 goto suggest_makeinfo
-@echo XEmacs 'info' cannot be built!
-@echo Install XEmacs package 'texinfo' (see README.packages).
-:suggest_makeinfo
-@echo Consider specifying path to makeinfo program: MAKEINFO=path
-@echo as this will build info docs faster than XEmacs using 'texinfo'.
-@if errorlevel 1 exit 1
-:test_done
-<<NOKEEP
+info: $(INFO_FILES)
 
 # Section handling info ends here
 

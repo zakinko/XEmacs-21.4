@@ -1,5 +1,11 @@
+2015-02-15  Vin Shelton  <acs@xemacs.org>
+
+	* xemacs.mak (info): Zap the entire makeinfo-test section.  Now
+	that cygwin's texinfo v5.2 is required, the makeinfo-test didn't
+	work anymore.
+
 2015-01-29  Vin Shelton <acs@xemacs.org>
- 
+
 	* XEmacs 21.4.23 is released
 
 2011-12-02  Vin Shelton  <acs@xemacs.org>
