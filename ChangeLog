@@ -1,3 +1,9 @@
+2015-02-23  Vin Shelton  <acs@xemacs.org>
+
+	* configure.in: Add LIBOSSAUDIO as appropriate.  Patch from netbsd
+	via Hauke Fath.
+	* configure: Rebuild.
+
 2015-02-15  Vin Shelton  <acs@xemacs.org>
 
 	* configure.in: Additional netbsd platform definitions.

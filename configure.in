@@ -4526,6 +4526,7 @@ fi dnl with_tty
 
 AC_CHECK_LIB(ossaudio, main, LIBOSSAUDIO=-lossaudio)
 AC_SUBST(LIBOSSAUDIO)
+XE_PREPEND("$LIBOSSAUDIO",LIBS)
 
 dnl Do we need event-unixoid.o ?
 dnl This is needed for X, or for TTY, or for MSWIN w/Cygwin select()
