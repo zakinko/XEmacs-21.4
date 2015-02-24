@@ -35,7 +35,7 @@ file to do the customization in each session.  @xref{Init File}.
                      behavior of XEmacs.
 @end menu
 
-@node Minor Modes
+@node Minor Modes, , Customization, Customization
 @section Minor Modes
 @cindex minor modes
 
@@ -52,7 +52,7 @@ command function that turns the mode on or off.  Thus, the command to
 enable or disable Auto Fill mode is called @kbd{M-x auto-fill-mode}.  These
 commands are usually invoked with @kbd{M-x}, but you can bind keys to them
 if you wish.  With no argument, the function turns the mode on if it was
-off and off if it was on.  This is known as @dfn{toggling}.  A positive
+off and off if it was on.  This is called @dfn{toggling}.  A positive
 argument always turns the mode on, and an explicit zero argument or a
 negative argument always turns it off.
 
@@ -115,7 +115,7 @@ the left margin) to be used by the fill commands (@pxref{Filling}).
 * File Variables::      How files can specify variable values.
 @end menu
 
-@node Examining
+@node Examining, Easy Customization, Variables, Variables
 @subsection Examining and Setting Variables
 @cindex setting variables
 
@@ -689,7 +689,7 @@ the case of:
 (default-value 'fill-column)
 @end example
 
-@node File Variables
+@node File Variables, , Locals, Variables
 @subsection Local Variables in Files
 @cindex local variables in files
 
@@ -838,7 +838,7 @@ set of commands again by invoking the macro.
 * Kbd Macro Query::     Keyboard macros that do different things each use.
 @end menu
 
-@node Basic Kbd Macro
+@node Basic Kbd Macro, Save Kbd Macro, Keyboard Macros, Keyboard Macros
 @subsection Basic Use
 
 @kindex C-x (
@@ -923,7 +923,7 @@ additional Lisp code to record the keys (if any) that you have bound to the
 keyboard macro, so that the macro is reassigned the same keys when you
 load the file.
 
-@node Kbd Macro Query
+@node Kbd Macro Query, , Save Kbd Macro, Keyboard Macros
 @subsection Executing Macros With Variations
 
 @kindex C-x q
@@ -982,7 +982,7 @@ hyphens.
                 beginners from surprises.
 @end menu
 
-@node Keymaps
+@node Keymaps, Rebinding, Key Bindings, Key Bindings
 @subsection Keymaps
 @cindex keymap
 
@@ -1320,7 +1320,7 @@ similar fashion:
         control @@      control space
 @end example
 
-@node Disabling
+@node Disabling, , Rebinding, Key Bindings
 @subsection Disabling Commands
 @cindex disabled command
 
@@ -1387,7 +1387,7 @@ length 256 whose elements are numbers.
 * Change: Syntax Change.  How to change the information.
 @end menu
 
-@node Syntax Entry
+@node Syntax Entry, Syntax Change, Syntax, Syntax
 @subsection Information About Each Character
 
   The syntax table entry for a character is a number that encodes six
@@ -1485,7 +1485,7 @@ to @code{nil} in modes where comment-terminator sequences are liable to
 appear where there is no comment, for example, in Lisp mode where the
 comment terminator is a newline but not every newline ends a comment.
 
-@node Syntax Change
+@node Syntax Change, , Syntax Entry, Syntax
 @subsection Altering Syntax Information
 
   It is possible to alter a character's syntax table entry by storing a new
@@ -1573,7 +1573,7 @@ byte-compile it to @file{~/.xemacs/init.elc} or @file{~/.emacs.elc}.
 * Terminal Init::   Each terminal type can have an init file.
 @end menu
 
-@node Init Syntax
+@node Init Syntax, Init Examples, Init File, Init File
 @subsection Init File Syntax
 
   The init file contains one or more Lisp function call
@@ -1794,7 +1794,7 @@ Enable the use of the command @code{eval-expression} without confirmation.
 @end example
 @end itemize
 
-@node Terminal Init
+@node Terminal Init, , Init Examples, Init File
 @subsection Terminal-Specific Initialization
 
   Each terminal type can have a Lisp library to be loaded into Emacs when
@@ -2092,7 +2092,7 @@ This section is not written yet.  Try the Lisp Reference Manual:
 @ref{Menubar,,,lispref,}, @ref{Toolbar Intro,,,lispref,}, and
 @ref{Gutter Intro,,,lispref,}.
 
-@node X Resources
+@node X Resources, , Frame Components, Customization
 @section X Resources
 @cindex X resources
 @findex x-create-frame

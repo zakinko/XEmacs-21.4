@@ -4,7 +4,7 @@
 @c Copyright (C) 2002, 2004 Free Software Foundation, Inc.
 @c See the file lispref.texi for copying conditions.
 @setfilename ../../info/specifiers.info
-@node Specifiers, Faces and Window-System Objects, Extents, top
+@node Specifiers, Faces and Window-System Objects, Extents, Top
 @chapter Specifiers
 @cindex specifier
 
@@ -46,7 +46,7 @@ This function returns non-@code{nil} if @var{object} is a specifier.
                                 Other ways of working with specifications.
 @end menu
 
-@node Introduction to Specifiers
+@node Introduction to Specifiers, Simple Specifier Usage, Specifiers, Specifiers
 @section Introduction to Specifiers
 
 Perhaps the most useful way to explain specifiers is via an analogy.
@@ -131,7 +131,7 @@ red for all other buffers displayed on a color device
 white for all other buffers
 @end itemize
 
-@node Simple Specifier Usage
+@node Simple Specifier Usage, Specifiers In-Depth, Introduction to Specifiers, Specifiers
 @section Simple Specifier Usage
 @cindex specifier examples
 @cindex examples, specifier
@@ -275,7 +275,7 @@ Specifications}, for documentation of @code{specifier-specs} and
 
 (It should be obvious why the example uses the lazy unreliable method!)
 
-@node Specifiers In-Depth
+@node Specifiers In-Depth, Specifier Instancing, Simple Specifier Usage, Specifiers
 @section In-Depth Overview of a Specifier
 @cindex specification (in a specifier)
 @cindex domain (in a specifier)
@@ -408,7 +408,7 @@ device, etc.  Furthermore, this conversion (called @dfn{instantiation})
 might fail---a font or color might not exist on a particular device,
 for example.
 
-@node Specifier Instancing
+@node Specifier Instancing, Specifier Types, Specifiers In-Depth, Specifiers
 @section How a Specifier Is Instanced
 @cindex fallback (in a specifier)
 @cindex specifier, fallback
@@ -469,7 +469,7 @@ locales, then device locales, then the @code{global} locale.  Instancing
 over a device domain looks only for device locales and the @code{global}
 locale.
 
-@node Specifier Types
+@node Specifier Types, Adding Specifications, Specifier Instancing, Specifiers
 @section Specifier Types
 
 There are various different types of specifiers.  The type of a
@@ -603,7 +603,7 @@ This function returns non-@code{nil} if @var{object} is an image
 specifier.
 @end defun
 
-@node Adding Specifications
+@node Adding Specifications, Retrieving Specifications, Specifier Types, Specifiers
 @section Adding specifications to a Specifier
 
 @defun add-spec-to-specifier specifier instantiator &optional locale tag-set how-to-add
@@ -888,7 +888,7 @@ Otherwise, @var{inst-pair} is invalid.
 In summary, this function generally prefers more abbreviated forms.
 @end defun
 
-@node Retrieving Specifications
+@node Retrieving Specifications, Specifier Tag Functions, Adding Specifications, Specifiers
 @section Retrieving the Specifications from a Specifier
 
 @defun specifier-spec-list specifier &optional locale tag-set exact-p
@@ -968,7 +968,7 @@ fallback not be consulted. (The C code does this, for example, when
 merging faces.) See @code{specifier-instance}.
 @end defun
 
-@node Specifier Tag Functions
+@node Specifier Tag Functions, Specifier Instancing Functions, Retrieving Specifications, Specifiers
 @section Working With Specifier Tags
 
 A specifier tag set is an entity that is attached to an instantiator
@@ -1043,7 +1043,7 @@ This includes the built-in ones (the device types and classes).
 This function returns the predicate for the given specifier tag.
 @end defun
 
-@node Specifier Instancing Functions
+@node Specifier Instancing Functions, Specifier Examples, Specifier Tag Functions, Specifiers
 @section Functions for Instancing a Specifier
 
 @defun specifier-instance specifier &optional domain default no-fallback
@@ -1138,7 +1138,7 @@ In most circumstances, you should not use this function; use
 @code{specifier-instance} instead.
 @end defun
 
-@node Specifier Examples
+@node Specifier Examples, Creating Specifiers, Specifier Instancing Functions, Specifiers
 @section Examples of Specifier Usage
 
 Now let us present an example to clarify the theoretical discussions we
@@ -1349,7 +1349,7 @@ buffer-local, weird stuff happens, and it is extremely hard to track
 down.
 
 
-@node Creating Specifiers
+@node Creating Specifiers, Specifier Validation Functions, Specifier Examples, Specifiers
 @section Creating New Specifier Objects
 
 @defun make-specifier type
@@ -1449,7 +1449,7 @@ in the doc string for @code{current-display-table} (@pxref{Active
 Display Table}).
 @end defun
 
-@node Specifier Validation Functions
+@node Specifier Validation Functions, Other Specification Functions, Creating Specifiers, Specifiers
 @section Functions for Checking the Validity of Specifier Components
 
 @defun valid-specifier-domain-p domain
@@ -1515,7 +1515,7 @@ This function signals an error if @var{spec-list} is invalid for
 specifier type @var{type}.
 @end defun
 
-@node Other Specification Functions
+@node Other Specification Functions,  , Specifier Validation Functions, Specifiers
 @section Other Functions for Working with Specifications in a Specifier
 
 @defun copy-specifier specifier &optional dest locale tag-set exact-p how-to-add

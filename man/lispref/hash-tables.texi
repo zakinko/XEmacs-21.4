@@ -3,7 +3,7 @@
 @c Copyright (C) 1996 Ben Wing.
 @c See the file lispref.texi for copying conditions.
 @setfilename ../../info/hash-tables.info
-@node Hash Tables, Range Tables, Display, top
+@node Hash Tables, Range Tables, Display, Top
 @chapter Hash Tables
 @cindex hash table
 
@@ -20,7 +20,7 @@ This function returns @code{t} if @var{object} is a hash table, else @code{nil}.
                                 behavior.
 @end menu
 
-@node Introduction to Hash Tables
+@node Introduction to Hash Tables, Working With Hash Tables, Hash Tables, Hash Tables
 @section Introduction to Hash Tables
 
 A @dfn{hash table} is a data structure that provides mappings from
@@ -157,7 +157,7 @@ This function returns the weakness of @var{hash-table}.
 This can be one of @code{nil}, @code{t}, @code{key} or @code{value}.
 @end defun
 
-@node Working With Hash Tables
+@node Working With Hash Tables, Weak Hash Tables, Introduction to Hash Tables, Hash Tables
 @section Working With Hash Tables
 
 @defun puthash key value hash-table
@@ -189,7 +189,7 @@ processed by @var{function}.
 @end defun
 
 
-@node Weak Hash Tables
+@node Weak Hash Tables,  , Working With Hash Tables, Hash Tables
 @section Weak Hash Tables
 @cindex hash table, weak
 @cindex weak hash table

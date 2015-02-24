@@ -3,6 +3,9 @@
 @c %**start of header
 @setfilename ../info/emodules.info
 @settitle Extending Emacs using C Modules
+@direntry
+* Emodules: (emodules).      XEmacs dynamically loadable module support.
+@end direntry
 @c %**end of header
 
 @c

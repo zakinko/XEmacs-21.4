@@ -32,7 +32,7 @@ they have a fixed, limited amount of precision.
 * Random Numbers::            Obtaining random integers, predictable or not.
 @end menu
 
-@node Integer Basics
+@node Integer Basics, Float Basics, Numbers, Numbers
 @section Integer Basics
 
   The range of values for an integer depends on the machine.  The
@@ -129,7 +129,7 @@ argument, all of the functions for markers and integers also work for
 floating point numbers.
 @end ignore
 
-@node Float Basics
+@node Float Basics, Predicates on Numbers, Integer Basics, Numbers
 @section Floating Point Basics
 
   XEmacs supports floating point numbers.  The precise range of floating
@@ -169,7 +169,7 @@ precisely, the value is the logarithm of @var{number} base 2, rounded
 down to an integer.
 @end defun
 
-@node Predicates on Numbers
+@node Predicates on Numbers, Comparison of Numbers, Float Basics, Numbers
 @section Type Predicates for Numbers
 
   The functions in this section test whether the argument is a number or
@@ -213,7 +213,7 @@ if so, @code{nil} otherwise.  The argument must be a number.
 These two forms are equivalent: @code{(zerop x)} @equiv{} @code{(= x 0)}.
 @end defun
 
-@node Comparison of Numbers
+@node Comparison of Numbers, Numeric Conversions, Predicates on Numbers, Numbers
 @section Comparison of Numbers
 @cindex number equality
 
@@ -351,7 +351,7 @@ This function returns the smallest of its arguments.
 @end example
 @end defun
 
-@node Numeric Conversions
+@node Numeric Conversions, Arithmetic Operations, Comparison of Numbers, Numbers
 @section Numeric Conversions
 @cindex rounding in conversions
 
@@ -394,7 +394,7 @@ may choose the integer closer to zero, or it may prefer an even integer,
 depending on your machine.
 @end defun
 
-@node Arithmetic Operations
+@node Arithmetic Operations, Rounding Operations, Numeric Conversions, Numbers
 @section Arithmetic Operations
 
   XEmacs Lisp provides the traditional four arithmetic operations:
@@ -636,7 +636,7 @@ argument is floating point.  For @code{floor}, see @ref{Numeric
 Conversions}.
 @end defun
 
-@node Rounding Operations
+@node Rounding Operations, Bitwise Operations, Arithmetic Operations, Numbers
 @section Rounding Operations
 @cindex rounding without conversion
 
@@ -667,7 +667,7 @@ This function rounds @var{number} to the nearest integral value,
 and returns that value as a floating point number.
 @end defun
 
-@node Bitwise Operations
+@node Bitwise Operations, Math Functions, Rounding Operations, Numbers
 @section Bitwise Operations on Integers
 
   In a computer, an integer is represented as a binary number, a
@@ -972,7 +972,7 @@ bit is one in the result if, and only if, the @var{n}th bit is zero in
 @end example
 @end defun
 
-@node Math Functions
+@node Math Functions, Random Numbers, Bitwise Operations, Numbers
 @section Standard Mathematical Functions
 @cindex transcendental functions
 @cindex mathematical functions
@@ -1054,7 +1054,7 @@ the value is a NaN.
 This returns the cube root of @var{number}.
 @end defun
 
-@node Random Numbers
+@node Random Numbers,  , Math Functions, Numbers
 @section Random Numbers
 @cindex random numbers
 

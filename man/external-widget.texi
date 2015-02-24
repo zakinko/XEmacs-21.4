@@ -4,7 +4,7 @@
 @ifinfo
 @dircategory XEmacs Editor
 @direntry
-* External Widget: (external-widget) External Client Widget.
+* External Widget: (external-widget). External Client Widget.
 @end direntry
 @end ifinfo
 

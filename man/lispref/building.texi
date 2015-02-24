@@ -21,7 +21,7 @@ aspects related to the internals of XEmacs.
 * Garbage Collection::  Reclaiming space for Lisp objects no longer used.
 @end menu
 
-@node Building XEmacs
+@node Building XEmacs, Pure Storage, Building XEmacs and Object Allocation, Building XEmacs and Object Allocation
 @appendixsec Building XEmacs
 @cindex building XEmacs
 @pindex temacs
@@ -178,7 +178,7 @@ The minor version number of Emacs, as an integer.  For XEmacs version
 20.1, the value is 1.
 @end defvar
 
-@node Pure Storage
+@node Pure Storage, Garbage Collection, Building XEmacs, Building XEmacs and Object Allocation
 @appendixsec Pure Storage
 @cindex pure storage
 
@@ -233,7 +233,7 @@ before and after dumping.
 You should not change this flag in a running XEmacs.
 @end defvar
 
-@node Garbage Collection
+@node Garbage Collection,  , Pure Storage, Building XEmacs and Object Allocation
 @appendixsec Garbage Collection
 @cindex garbage collector
 

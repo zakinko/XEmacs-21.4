@@ -100,7 +100,7 @@ window, usually together with some documentation.
                         operations.
 @end menu
 
-@node File Menu
+@node File Menu, Edit Menu, Pull-down Menus, Pull-down Menus
 @subsection The File Menu
 
 @cindex File menu
@@ -425,7 +425,7 @@ equivalent for each of the choices you have when using @kbd{C-h}.
 The Help menu also gives access to UNIX online manual pages via the
 @b{UNIX Manual Page} option.  
 
-@node Menu Customization
+@node Menu Customization, , Help Menu, Pull-down Menus
 @subsection Customizing XEmacs Menus
 
 You can customize any of the pull-down menus by adding or removing menu
