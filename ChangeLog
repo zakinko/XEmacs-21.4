@@ -1,3 +1,7 @@
+2015-03-24 Vin Shelton <acs@xemacs.org>
+
+	* XEmacs 21.4.24 is released
+
 2015-02-23  Vin Shelton  <acs@xemacs.org>
 
 	* configure.in: Add LIBOSSAUDIO as appropriate.  Patch from netbsd
