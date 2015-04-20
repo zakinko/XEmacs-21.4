@@ -193,6 +193,8 @@ void xfree (void *);
 # endif /* GNUC */
 #endif
 
+#if (!defined (__STDC_VERSION__) || __STDC_VERSION__ < 201112L) && \
+    (!defined (__cplusplus) || __cplusplus < 201103L)
 /* No type has a greater alignment requirement than max_align_t.
    (except perhaps for types we don't use, like long double) */
 typedef union
@@ -202,9 +204,14 @@ typedef union
   struct { void (*f)(void); } f;
   struct { double d; } d;
 } max_align_t;
+#endif
 
 #ifndef ALIGNOF
-# if defined (__GNUC__) && (__GNUC__ >= 2)
+# if defined (__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
+#  define ALIGNOF(type) _Alignof(type)
+# elif defined (__cplusplus) && __cplusplus >= 201103L
+#  define ALIGNOF(type) alignof(type)
+# elif defined (__GNUC__) && (__GNUC__ >= 2)
 /* gcc has an extension that gives us exactly what we want. */
 #  define ALIGNOF(type) __alignof__ (type)
 # elif ! defined (__cplusplus)
