@@ -1,3 +1,17 @@
+2021-05-10  Aidan Kehoe  <kehoea@parhasard.net>
+
+	Incorporate my 21.5 change of changeset d5cd82986867 into 21.4, to
+	make it more practical to build a 21.4 XEmacs for the packages.
+
+	* config.h.in:
+	Update the implementation of the INLINE_HEADER macro and,
+	indirectly, the DECLARE_INLINE_HEADER() macro.
+	Add some more documentation and explanation.
+	Rename the confusingly-named DONT_EXTERN_INLINE_HEADER_FUNCTIONS
+	define to FORCE_INLINE_FUNCTION_DEFINITION.
+	* inline.c (FORCE_INLINE_FUNCTION_DEFINITION):
+	Use this new name in this file.
+
 2015-04-20  Jerry James  <james@xemacs.org>
 
 	* lisp.h (max_align_t): Do not define if C11 or C++11, or a later

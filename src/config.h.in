@@ -848,16 +848,31 @@ on various systems. */
 
 /* Use `INLINE_HEADER' to define inline functions in .h files.
    Use `inline static' to define inline functions in .c files.
-   See the Internals manual for examples and more information. */
+   See the Internals manual for examples and more information.
+
+   I've changed this slightly, as part of work to get XEmacs 21.5 building
+   on 64-bit-cygwin; see https://www.greenend.org.uk/rjk/tech/inline.html
+   for an article in support of this approach. Aidan Kehoe, Wed, Mar 18,
+   2020 5:44:20 PM. */
 
 /* Does the keyword `inline' exist?  */
 #undef inline
 
-#if defined (__cplusplus) || ! defined (__GNUC__)
+#ifdef __cplusplus
+  /* We always need the inline keyword for C++, and the implementations have
+     the wit to discard or preserve definitions as necessary. */
+# define INLINE_HEADER inline static 
+#elif defined (FORCE_INLINE_FUNCTION_DEFINITION)
+  /* The current header is being #included from inline.c; force a definition
+     for the function which becomes extern by default, don't use the extern
+     keyword because of the GNU C issues. */
+#  define INLINE_HEADER
+#elif (defined ( __STDC_VERSION__) &&  __STDC_VERSION__ >= 199901L) \
+  || ! defined (__GNUC__) || ! defined(emacs)
+  /* C99 rules. */
 # define INLINE_HEADER inline static
-#elif defined (DONT_EXTERN_INLINE_HEADER_FUNCTIONS)
-# define INLINE_HEADER inline
 #else
+  /* Pre-C99 GNU rules. */
 # define INLINE_HEADER inline extern
 #endif
 

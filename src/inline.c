@@ -38,7 +38,7 @@ Boston, MA 02111-1307, USA.  */
    that use the INLINE macro, either directly, or by using DECLARE_LRECORD.
    i.e. the output of ``grep -l -w 'DECLARE_LRECORD|INLINE_HEADER' *.h'' */
 
-#define DONT_EXTERN_INLINE_HEADER_FUNCTIONS
+#define FORCE_INLINE_FUNCTION_DEFINITION 1
 
 #include <config.h>
 #include "lisp.h"
