@@ -1,5 +1,14 @@
 2021-05-10  Aidan Kehoe  <kehoea@parhasard.net>
 
+	Port my 21.5 change of 1f4ff44e1657 to 21.4.
+	
+	* Makefile.in.in (temacs_link_args):
+	Place $start_flags after $ldflags in this make variable, for that
+	minority of cases where the user has specified LDFLAGS and,
+	e.g. -no-pie in $start_flags is necessary to build.
+
+2021-05-10  Aidan Kehoe  <kehoea@parhasard.net>
+
 	Incorporate my 21.5 change of changeset d5cd82986867 into 21.4, to
 	make it more practical to build a 21.4 XEmacs for the packages.
 

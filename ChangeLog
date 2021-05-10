@@ -1,3 +1,17 @@
+2021-05-10  Aidan Kehoe  <kehoea@parhasard.net>
+
+	Port my 21.5 change of 1f4ff44e1657 to 21.4.
+
+	* configure: Regenerate.
+	* configure.in:
+	Take a more general approach to checking for ASLR; check for the
+	technique itself initially, don't just examine the operating
+	system or the compile-time #defines. Then to work around it try a
+	list of techniques, using the first one that compiles.
+
+	This may bring an end to the XEmacs tradition of a single-line
+	configure.ac commit every time a new Mac OS version is released.
+
 2015-03-24 Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.24 is released

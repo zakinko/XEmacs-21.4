@@ -461,7 +461,7 @@ link_deps=\
 temacs_deps = $(link_deps) ${DUMP_ID}
 
 temacs_link_args=\
- ${start_flags} ${ldflags}\
+ ${ldflags} ${start_flags} \
  -o $@ ${start_files} ${objs} ${otherobjs} ${DUMP_ID} ${LIBES}
 
 ${EXE_TARGET}: $(temacs_deps)
