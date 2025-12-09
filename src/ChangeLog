@@ -1,3 +1,14 @@
+2025-12-09  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* lread.c (vars_of_lread):
+	Initialize load_byte_code_version to 20, and make the dumper aware
+	of it, avoiding problems where it defaulted to zero and #'read
+	calls in the byte compiler (where it was not bound to something
+	sensible by #'load-internal) produced unintended ebolified
+	compiled functions in the compiled functions vector of top-level
+	compiled functions. See #'byte-compile-compiled-obj-to-list.
+	Thank you for the bug report, Hauke Fath!
+
 2021-05-10  Aidan Kehoe  <kehoea@parhasard.net>
 
 	Port my 21.5 change of 1f4ff44e1657 to 21.4.

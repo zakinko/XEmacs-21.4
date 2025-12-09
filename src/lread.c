@@ -3157,6 +3157,9 @@ vars_of_lread (void)
 {
   reinit_vars_of_lread ();
 
+  load_byte_code_version = 20;
+  dump_add_opaque_int (&load_byte_code_version);
+
   DEFVAR_LISP ("values", &Vvalues /*
 List of values of all expressions which were read, evaluated and printed.
 Order is reverse chronological.
