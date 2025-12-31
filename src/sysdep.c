@@ -54,6 +54,7 @@ Boston, MA 02111-1307, USA.  */
 #include "window.h"
 
 #include <setjmp.h>
+#include <string.h>
 #ifdef HAVE_LIBGEN_H            /* Must come before sysfile.h */
 #include <libgen.h>
 #endif
@@ -3522,6 +3523,7 @@ get_random (void)
 }
 
 
+#ifndef HAVE_STRSIGNAL
 /************************************************************************/
 /*               Strings corresponding to defined signals               */
 /************************************************************************/
@@ -3724,6 +3726,15 @@ const char *sys_siglist[NSIG + 1] =
 
 #endif /* ! SYS_SIGLIST_DECLARED && ! HAVE_SYS_SIGLIST */
 
+char *
+strsignal (int signum)
+{
+  if (signum >= 0 && signum < NSIG)
+    return (char *) (sys_siglist[signum]);
+
+  return GETTEXT ("unknown signal");
+}
+#endif
 
 /************************************************************************/
 /*         Directory routines for systems that don't have them          */

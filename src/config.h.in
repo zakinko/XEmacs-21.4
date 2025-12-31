@@ -273,6 +273,11 @@ void *alloca ();
 #undef HAVE_LIBDNET
 #undef HAVE_LIBRESOLV
 
+#undef HAVE_STRSIGNAL
+
+/* If we don't HAVE_STRSIGNAL, is `sys_siglist' declared by <signal.h>? */
+#undef HAVE_DECL_SYS_SIGLIST
+
 /* Is `sys_siglist' declared by <signal.h>? */
 #undef SYS_SIGLIST_DECLARED
 

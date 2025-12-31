@@ -9,6 +9,22 @@
 	compiled functions. See #'byte-compile-compiled-obj-to-list.
 	Thank you for the bug report, Hauke Fath!
 
+2025-12-31  Aidan Kehoe  <kehoea@parhasard.net>
+
+	Port part of my 21.4 change of 2bbae1af16ac to 21.4.
+	* config.h.in:
+	Add entries for HAVE_STRSIGNAL, HAVE_DECL_SYS_SIGLIST here.
+	* process.c (signal_name):
+	Implement this in terms of strsignal().
+	* sysdep.c:
+	* sysdep.c (strsignal):
+	Provide an implementation of this using sys_siglist[] if strsignal
+	was not found.
+	* syssignal.h:
+	Remove a declaration of sys_siglist[] here.
+	* s/linux.h:
+	Remove #define HAVE_SYS_SIGLIST from here.
+
 2021-05-10  Aidan Kehoe  <kehoea@parhasard.net>
 
 	Port my 21.5 change of 1f4ff44e1657 to 21.4.

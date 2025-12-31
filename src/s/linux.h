@@ -107,7 +107,6 @@ Boston, MA 02111-1307, USA.  */
 
 #define NO_SIOCTL_H           /* don't have sioctl.h */
 
-#define HAVE_SYS_SIGLIST
 #define HAVE_WAIT_HEADER
 
 #define POSIX                 /* affects getpagesize.h and systty.h */

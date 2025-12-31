@@ -1310,10 +1310,7 @@ See `set-process-sentinel' for more info on sentinels.
 const char *
 signal_name (int signum)
 {
-  if (signum >= 0 && signum < NSIG)
-    return (const char *) sys_siglist[signum];
-
-  return (const char *) GETTEXT ("unknown signal");
+  return strsignal (signum);
 }
 
 void

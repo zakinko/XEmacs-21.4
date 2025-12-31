@@ -223,13 +223,6 @@ signal_handler_t sys_do_signal (int signal_number, signal_handler_t action);
 # define NSIG (SIGUSR2+1) /* guess how many elements are in sys_siglist... */
 #endif
 
-/* SYS_SIGLIST_DECLARED is determined by configure.  On Linux, it seems,
-   configure incorrectly fails to find it, so s/linux.h defines
-   HAVE_SYS_SIGLIST. */
-#if !defined (SYS_SIGLIST_DECLARED) && !defined (HAVE_SYS_SIGLIST)
-extern const char *sys_siglist[];
-#endif
-
 #ifdef SIGDANGER
 SIGTYPE memory_warning_signal (int sig);
 #endif

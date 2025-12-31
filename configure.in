@@ -2423,7 +2423,7 @@ AC_CHECK_HEADERS(dnl
 AC_HEADER_SYS_WAIT
 AC_HEADER_STDC
 AC_HEADER_TIME
-AC_DECL_SYS_SIGLIST
+AC_CHECK_FUNC(strsignal, AC_DEFINE(HAVE_STRSIGNAL), AC_DECL_SYS_SIGLIST)
 
 
 dnl ----------------------------------------------------------------
