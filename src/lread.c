@@ -734,6 +734,23 @@ encoding detection or end-of-line detection.
     else
       load_byte_code_version = 100; /* no Ebolification needed */
 
+    if (load_byte_code_version > 109)
+      {
+	if (NILP (noerror))
+	  {
+	    signal_error (Qinvalid_byte_code,
+			  list2 (build_string
+				 ("Unsupported byte code version"),
+				 make_int (load_byte_code_version)));
+	  }
+	else
+	  {
+	    NUNGCPRO;
+	    UNGCPRO;
+	    return Qnil;
+	  }
+      }
+
     readevalloop (lispstream, file, Feval, 0);
 #ifdef FILE_CODING
     if (!NILP (used_codesys))

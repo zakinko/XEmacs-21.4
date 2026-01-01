@@ -96,7 +96,7 @@ DECLARE_LRECORD (compiled_function, Lisp_Compiled_Function);
 #define CHECK_COMPILED_FUNCTION(x) CHECK_RECORD (x, compiled_function)
 #define CONCHECK_COMPILED_FUNCTION(x) CONCHECK_RECORD (x, compiled_function)
 
-extern Lisp_Object Qbyte_code;
+extern Lisp_Object Qbyte_code, Qinvalid_byte_code;
 
 /* total 1765 internal 101 doc-and-int 775 doc-only 389 int-only 42 neither 559
  no doc slot, no int slot
