@@ -1,5 +1,18 @@
 2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
 
+	Change from Hauke Fath, <hauke@Espresso.Rhein-Neckar.DE>,
+	maintained in NetBSD pkgsrc tree.
+
+	* Makefile.in.in: 
+	Directly substitute the local value of etcdir (``../etc/'')
+	into src/Makefile.in.in.  This allows for overriding etcdir via
+	INSTALL_MAKE_FLAGS at install-time so that destdir-style installation
+	will work.
+	liboss support
+	SunOS 5 bmake / gmake fixes
+
+2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
+
 	* bytecode.h:
 	Declare Qinvalid_byte_code here.
 	* lread.c (Fload_internal):
