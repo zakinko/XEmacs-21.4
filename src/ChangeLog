@@ -1,5 +1,16 @@
 2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
 
+	Changes from Hauke Fath, <hauke@Espresso.Rhein-Neckar.DE>,
+	maintained in NetBSD pkgsrc tree.
+
+	* unexelf.c:
+	* unexelf.c (unexec):
+	Build on NetBSD/alpha
+	* unexfreebsd.c (copy_relocation_site):
+	Build on NetBSD/arm*
+
+2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
+
 	Change from David Brownlee <abs@NetBSD.org>, maintained in NetBSD
 	pkgsrc tree.
 	* emacs.c (main_1):

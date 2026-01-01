@@ -289,7 +289,7 @@ copy_relocation_site (struct relocation_info *ri,
   /* We can get relocation sites in the bss region, for objects whose
      contents are copied from a shared library.  We don't need or want
      to restore these at present. */
-#ifndef sparc
+#if !defined(sparc) && !defined(__arm__)
   if (ri->r_copy)
     return;
 #else
