@@ -2,6 +2,19 @@
 
 	* configure: Regenerate.
 	* configure.in:
+	Hauke Fath reports:
+	"On progressive Linuxen (Arch here), CPPFLAGS pre-filled with
+	-D_FORTIFY_SOURCE=2 -Werror will make configure tests fail on
+	pre-processor warnings. Make sure we set CPP to something that
+	works."
+	His patch was to configure, not configure.in. This reflects his
+	change but I cannot actually reproduce the problem given such a
+	setting also makes the C compiler fail to create executables.
+
+2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* configure: Regenerate.
+	* configure.in:
 	On Solaris and Linux, #define _XOPEN_SOURCE and _POSIX_C_SOURCE
 	depending on whether the compiler supports C99 or newer. Inspired
 	by a NetBSD change from Hauke Fath. 
