@@ -1,5 +1,13 @@
 2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
 
+	Change from David Brownlee <abs@NetBSD.org>, maintained in NetBSD
+	pkgsrc tree.
+	* emacs.c (main_1):
+	* sound.c (vars_of_sound):
+	Fix build for non HPUX on HP PA platforms
+
+2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
+
 	Change from Hauke Fath, <hauke@Espresso.Rhein-Neckar.DE>,
 	maintained in NetBSD pkgsrc tree.
 

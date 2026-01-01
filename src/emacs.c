@@ -2368,7 +2368,7 @@ main_1 (int argc, char **argv, char **envp, int restart)
 #if defined (WIN32_NATIVE) || defined (CYGWIN)
   init_win32 ();
 #endif
-#if defined (HAVE_NATIVE_SOUND) && defined (hp9000s800)
+#if defined (HAVE_NATIVE_SOUND) && defined (HPUX) && defined (hp9000s800)
   init_hpplay ();
 #endif
 #ifdef HAVE_TTY

@@ -653,7 +653,7 @@ This variable only applies to native sound support.
 */ );
   Vnative_sound_only_on_console = Qt;
 
-#if defined (HAVE_NATIVE_SOUND) && defined (hp9000s800)
+#if defined (HAVE_NATIVE_SOUND) && defined (HPUX) && defined (hp9000s800)
   {
     void vars_of_hpplay (void);
     vars_of_hpplay ();
