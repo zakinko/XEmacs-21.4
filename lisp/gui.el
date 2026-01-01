@@ -117,7 +117,11 @@ When ACTION is called, the buffer containing the button is made current."
 (defun insert-gui-button (button &optional pos buffer)
   "Insert GUI button BUTTON at POS in BUFFER."
   (check-argument-type 'gui-button-p button)
-  (make-annotation (make-glyph button)
-			       pos 'text buffer nil))
+  ;; make-annotation is from xemacs-packages lisp/xemacs-base/annotations.el
+  ;; so not available for standalone, package-less XEmacs
+  (if (fboundp 'make-annotation) 
+      (make-annotation (make-glyph button)
+		       pos 'text buffer nil)
+    (make-glyph button)))
 
 ;;; gui.el ends here
