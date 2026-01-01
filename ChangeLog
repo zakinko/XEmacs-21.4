@@ -1,5 +1,13 @@
 2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
 
+	* configure: Regenerate.
+	* configure.in:
+	On Solaris and Linux, #define _XOPEN_SOURCE and _POSIX_C_SOURCE
+	depending on whether the compiler supports C99 or newer. Inspired
+	by a NetBSD change from Hauke Fath. 
+
+2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
+
 	Change from Hauke Fath, <hauke@Espresso.Rhein-Neckar.DE>,
 	maintained in NetBSD pkgsrc tree.
 

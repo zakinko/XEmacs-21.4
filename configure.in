@@ -1713,13 +1713,38 @@ case "$opsys" in
    AC_DEFINE(__EXTENSIONS__)
    dnl Solaris 2 before 2.5 had some bugs with feature test macro interaction.
    if test "$os_release" -ge 505; then
-     AC_DEFINE(_XOPEN_SOURCE,500)
      AC_DEFINE(_XOPEN_SOURCE_EXTENDED)
+     AC_TRY_RUN([int main () {
+#if __STDC_VERSION__ - 0 >= 199901L
+  return 0;        
+#else
+  return 1;
+#endif
+}], [have_c99=1],[have_c99=0],[])
+     if test "$have_c99" = "1"; then 
+       AC_DEFINE(_XOPEN_SOURCE,600)
+       AC_DEFINE(_POSIX_C_SOURCE,200112L)
+     else
+       AC_DEFINE(_POSIX_C_SOURCE,199506L)
+       AC_DEFINE(_XOPEN_SOURCE,500)
+     fi
    fi ;;
   linux)
-    AC_DEFINE(_POSIX_C_SOURCE,199506L)
-    AC_DEFINE(_XOPEN_SOURCE,500)
     AC_DEFINE(_XOPEN_SOURCE_EXTENDED)
+    AC_TRY_RUN([int main () {
+#if __STDC_VERSION__ - 0 >= 199901L
+  return 0;        
+#else
+  return 1;
+#endif
+}], [have_c99=1],[have_c99=0],[])
+    if test "$have_c99" = "1"; then 
+      AC_DEFINE(_XOPEN_SOURCE,600)
+      AC_DEFINE(_POSIX_C_SOURCE,200112L)
+    else
+      AC_DEFINE(_POSIX_C_SOURCE,199506L)
+      AC_DEFINE(_XOPEN_SOURCE,500)
+    fi
     ;;
 esac
 
