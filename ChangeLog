@@ -1,3 +1,13 @@
+2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
+
+	Change from Hauke Fath, <hauke@Espresso.Rhein-Neckar.DE>,
+	maintained in NetBSD pkgsrc tree.
+
+	* Makefile.in.in:
+	Avoid picking up local config when checking features
+	Install {c,e}tags man pages with xemacs prefix
+	Make TAR settable, to work around shortcomings in base tar(1)
+
 2025-12-31  Aidan Kehoe  <kehoea@parhasard.net>
 
 	Port part of my 21.4 change of 2bbae1af16ac to 21.4.
