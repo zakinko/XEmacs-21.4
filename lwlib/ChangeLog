@@ -1,3 +1,10 @@
+2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
+
+	Change from Hauke Fath, <hauke@Espresso.Rhein-Neckar.DE>,
+	maintained in NetBSD pkgsrc tree.
+	* Makefile.in.in (%.o):
+	SunOS 5 bmake / gmake fixes
+
 2015-03-24 Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.24 is released
