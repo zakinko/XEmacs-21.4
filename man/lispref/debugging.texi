@@ -725,7 +725,7 @@ the old indentation actually fit the intended nesting of parentheses,
 and you have put back those parentheses, @kbd{C-M-q} should not change
 anything.
 
-@node Compilation Errors,  , Syntax Errors, Debugging
+@node Compilation Errors, Edebug , Syntax Errors, Debugging
 @section Debugging Problems in Compilation
 
   When an error happens during byte compilation, it is normally due to

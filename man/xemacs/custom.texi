@@ -35,7 +35,7 @@ file to do the customization in each session.  @xref{Init File}.
                      behavior of XEmacs.
 @end menu
 
-@node Minor Modes, , Customization, Customization
+@node Minor Modes, Variables, Customization, Customization
 @section Minor Modes
 @cindex minor modes
 

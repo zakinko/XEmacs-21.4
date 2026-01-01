@@ -1,3 +1,23 @@
+2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
+
+	Changes from Hauke Fath, <hauke@Espresso.Rhein-Neckar.DE>,
+	maintained in NetBSD pkgsrc tree.
+
+	* xemacs/custom.texi (Customization):
+	Fix makeinfo 4 build errors.
+	* lispref/debugging.texi (Compilation Errors):
+	Fix makeinfo 4 build errors.
+	* lispref/intro.texi:
+	* lispref/intro.texi (Copying):
+	Fix makeinfo 4 build errors.
+	* lispref/intro.texi (Introduction):
+	Fix makeinfo 4 build errors.
+	* lispref/ldap.texi (LDAP Variables):
+	GC non-ascii gremlins that devel/gtexinfo v6.7 objects to.
+	* xemacs-faq.texi (Q1.8.5):
+	* xemacs-faq.texi (Q3.0.6):
+	GC non-ascii gremlins that devel/gtexinfo v6.7 objects to.
+
 2015-03-24 Vin Shelton <acs@xemacs.org>
 
 	* XEmacs 21.4.24 is released
