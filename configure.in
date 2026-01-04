@@ -1684,9 +1684,9 @@ test -n "$NON_GNU_CPP" -a "$GCC" != "yes" -a -z "$CPP" && CPP="$NON_GNU_CPP"
 
 AC_PROG_CPP
 
-if (echo "#warning warning" | $CPP $CPPFLAGS > 9dm64Q.i); then
+if (echo "#warning warning" | $CPP $CPPFLAGS - > 9dm64Q.i); then
   rm 9dm64Q.i;
-elif (echo "#warning warning" | $CPP $CPPFLAGS -Wno-cpp > 9dm64Q.i); then
+elif (echo "#warning warning" | $CPP $CPPFLAGS -Wno-cpp - > 9dm64Q.i); then
   rm 9dm64Q.i;
   CPPFLAGS="$CPPFLAGS -Wno-cpp";
 else

@@ -1,3 +1,9 @@
+2026-01-04  Aidan Kehoe  <kehoea@parhasard.net>
+
+	* configure: Regenerate.
+	* configure.in:
+	Have tested cpp expect input on STDIN. Thank you Hauke Fath.
+
 2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* XEmacs 21.4.25 is released

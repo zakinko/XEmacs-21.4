@@ -2377,9 +2377,9 @@ fi
 echo "$ac_t""$CPP" 1>&6
 
 
-if (echo "#warning warning" | $CPP $CPPFLAGS > 9dm64Q.i); then
+if (echo "#warning warning" | $CPP $CPPFLAGS - > 9dm64Q.i); then
   rm 9dm64Q.i;
-elif (echo "#warning warning" | $CPP $CPPFLAGS -Wno-cpp > 9dm64Q.i); then
+elif (echo "#warning warning" | $CPP $CPPFLAGS -Wno-cpp - > 9dm64Q.i); then
   rm 9dm64Q.i;
   CPPFLAGS="$CPPFLAGS -Wno-cpp";
 else
