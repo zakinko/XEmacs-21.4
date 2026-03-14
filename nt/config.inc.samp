@@ -84,6 +84,10 @@ MAKEINFO=c:\cygwin\bin\makeinfo.exe
 # Set this to enable some debug code that doesn't slow things down.
 DEBUG_XEMACS=1
 
+# Set this to suppress CRT assert/invalid-parameter dialogs that would
+# otherwise halt the build or require manual dismissal.
+MSVC_SUPPRESS_ASSERT_DIALOGS=1
+
 # Set this to speed up building, for development purposes.
 QUICK_BUILD=0
 
