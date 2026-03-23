@@ -229,6 +229,7 @@ typedef int pid_t;
 
 /* Compatibility macros. Some used to be routines in nt.c */
 #define strcasecmp(x,y) _stricmp(x,y)
+#define tzname _tzname
 #define random() (rand() << 15 | rand())
 #define srandom(seed) (srand(seed))
 #define setpgrp(pid,gid)
@@ -348,20 +349,20 @@ gid_t getegid (void);
 #endif
 
 #ifdef HAVE_SCROLLBARS
-/* Ensure the NT 4 mouse definitions in winuser.h are available */
+/* Ensure modern Windows API definitions are available.
+   0x0501 = Windows XP minimum, needed for locale functions etc. */
  #ifndef _WIN32_WINNT
-  #define _WIN32_WINNT 0x0400
+  #define _WIN32_WINNT 0x0501
  #endif
 #endif
 
-/* Force the various NT 4 structures and constants to be included; we're
-   careful not to call (or even link with) functions not in NT 3.51 when
-   running on 3.51, but when running on NT 4 or Win9x, we use the later
-   functions, and need their headers. */
-/* The VC++ (5.0, at least) headers treat WINVER non-existent as 0x0400 */
-#if defined (WINVER) && WINVER < 0x0400
+/* Force the various NT structures and constants to be included. */
+#if defined (WINVER) && WINVER < 0x0501
 # undef WINVER
-# define WINVER 0x0400
+# define WINVER 0x0501
+#endif
+#ifndef WINVER
+# define WINVER 0x0501
 #endif
 
 /* MSVC 6.0 has a mechanism to declare functions which never return */

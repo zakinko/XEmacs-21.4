@@ -82,12 +82,9 @@ Boston, MA 02111-1307, USA.  */
 #ifdef MINGW
 #include <../mingw/process.h>
 #else
-/* <process.h> should not conflict with "process.h", as per ANSI definition.
-   This is not true with visual c though. The trick below works with
-   VC4.2b, 5.0 and 6.0. It assumes that VC is installed in a kind of
-   standard way, so include path ends with /include.
-*/
-#include <../include/process.h>
+/* Include our shim process.h from nt/inc which provides the MSVC CRT
+   process declarations without conflicting with src/process.h. */
+#include <process.h>
 #endif /* MINGW */
 #endif /* WIN32_NATIVE */
 

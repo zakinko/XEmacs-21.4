@@ -186,6 +186,9 @@ HAVE_WIDGETS=1
 !if !defined(DEBUG_XEMACS)
 DEBUG_XEMACS=0
 !endif
+!if !defined(MSVC_SUPPRESS_ASSERT_DIALOGS)
+MSVC_SUPPRESS_ASSERT_DIALOGS=0
+!endif
 !if !defined(QUICK_BUILD)
 QUICK_BUILD=0
 !endif
@@ -221,6 +224,8 @@ USE_CRTDLL=$(USE_PORTABLE_DUMPER)
 OS=Windows_95/98
 EMACS_CONFIGURATION=i586-pc-win32
 !else if "$(PROCESSOR_ARCHITECTURE)" == "x86"
+EMACS_CONFIGURATION=i586-pc-win32
+!else if "$(PROCESSOR_ARCHITECTURE)" == "AMD64"
 EMACS_CONFIGURATION=i586-pc-win32
 !else if "$(PROCESSOR_ARCHITECTURE)" == "MIPS"
 EMACS_CONFIGURATION=mips-pc-win32
@@ -395,10 +400,19 @@ OPT=-Os -arch:ia32
 !if $(USE_CRTDLL)
 !if $(DEBUG_XEMACS)
 C_LIBFLAG=-MDd
+# VS2015+ split the CRT into msvcrt + ucrt + vcruntime
+!if $(MSC_VER) >= 1900
+LIBC_LIB=msvcrtd.lib ucrtd.lib vcruntimed.lib
+!else
 LIBC_LIB=msvcrtd.lib
+!endif
 !else
 C_LIBFLAG=-MD
+!if $(MSC_VER) >= 1900
+LIBC_LIB=msvcrt.lib ucrt.lib vcruntime.lib
+!else
 LIBC_LIB=msvcrt.lib
+!endif
 !endif
 !else
 C_LIBFLAG=-ML
@@ -481,6 +495,10 @@ MULE_DEFINES=-DMULE
 !if $(DEBUG_XEMACS)
 DEBUG_DEFINES=-DDEBUG_XEMACS -D_DEBUG 
 DEBUG_FLAGS=-debug:full
+!endif
+
+!if $(MSVC_SUPPRESS_ASSERT_DIALOGS)
+DEBUG_DEFINES=$(DEBUG_DEFINES) -DMSVC_SUPPRESS_ASSERT_DIALOGS
 !endif
 
 !if $(QUICK_BUILD)
@@ -579,9 +597,9 @@ CONFIG_VALUES = $(LIB_SRC)\config.values
 {$(LIB_SRC)}.c{$(LIB_SRC)}.exe :
 	cd $(LIB_SRC)
 	$(CCV) -I. -I$(XEMACS)/src -I$(XEMACS)/nt/inc $(LIB_SRC_DEFINES) $(CFLAGS) -Fe$@ $** -link -incremental:no setargv.obj
-# If we're using Visual Studio 2005 or greater,
-# embed the manifest into the executable.
-!if $(MSC_VER) >= 1400
+# If we're using Visual Studio 2005 through 2015,
+# embed the manifest into the executable (VS2017+ does this automatically).
+!if $(MSC_VER) >= 1400 && $(MSC_VER) < 1910
 	mt -manifest $@.manifest -outputresource:$@;1
 !endif
 	cd $(NT)
@@ -592,9 +610,8 @@ $(LIB_SRC)/etags.exe : $(LIB_SRC)/etags.c $(ETAGS_DEPS)
 $(LIB_SRC)/movemail.exe: $(LIB_SRC)/movemail.c $(LIB_SRC)/pop.c $(ETAGS_DEPS)
 	cd $(LIB_SRC)
 	$(CCV) -I. -I$(XEMACS)/src -I$(XEMACS)/nt/inc $(LIB_SRC_DEFINES) $(CFLAGS) -Fe$@ $** wsock32.lib -link -incremental:no
-# If we're using Visual Studio 2005 or greater,
-# embed the manifest into the executable.
-!if $(MSC_VER) >= 1400
+# VS2005-2015: embed the manifest (VS2017+ does this automatically).
+!if $(MSC_VER) >= 1400 && $(MSC_VER) < 1910
 	mt -manifest $@.manifest -outputresource:$@;1
 !endif
 	cd $(NT)
@@ -602,18 +619,16 @@ $(LIB_SRC)/movemail.exe: $(LIB_SRC)/movemail.c $(LIB_SRC)/pop.c $(ETAGS_DEPS)
 $(LIB_SRC)/winclient.exe: $(LIB_SRC)/winclient.c
 	cd $(LIB_SRC)
 	$(CCV) -I. -I$(XEMACS)/src -I$(XEMACS)/nt/inc $(LIB_SRC_DEFINES) $(CFLAGS) -Fe$@ $** user32.lib -link -incremental:no
-# If we're using Visual Studio 2005 or greater,
-# embed the manifest into the executable.
-!if $(MSC_VER) >= 1400
+# VS2005-2015: embed the manifest (VS2017+ does this automatically).
+!if $(MSC_VER) >= 1400 && $(MSC_VER) < 1910
 	mt -manifest $@.manifest -outputresource:$@;1
 !endif
 	cd $(NT)
 
 $(LIB_SRC)/minitar.exe : $(NT)/minitar.c
 	$(CCV) $(CFLAGS_NO_LIB) -I"$(ZLIB_DIR)" $(LIB_SRC_DEFINES) -MD -Fe$@ $** $(ZLIB_DIR)\zlib.lib -link -incremental:no
-# If we're using Visual Studio 2005 or greater,
-# embed the manifest into the executable.
-!if $(MSC_VER) >= 1400
+# VS2005-2015: embed the manifest (VS2017+ does this automatically).
+!if $(MSC_VER) >= 1400 && $(MSC_VER) < 1910
 	mt -manifest $@.manifest -outputresource:$@;1
 !endif
 
@@ -916,9 +931,9 @@ TEMACS_LIBS=$(LASTFILE) $(LWLIB) $(X_LIBS) $(MSW_LIBS) \
  shell32.lib wsock32.lib winmm.lib winspool.lib ole32.lib uuid.lib \
  $(INTEL_LIBS) $(LIBC_LIB)
 TEMACS_LFLAGS=-nologo $(LIBRARIES) $(DEBUG_FLAGS) -base:0x1000000\
- -stack:0x800000 $(TEMACS_ENTRYPOINT) -subsystem:windows\
+ -stack:0x800000 $(TEMACS_ENTRYPOINT) -subsystem:console\
  -pdb:$(TEMACS_DIR)\temacs.pdb -map:$(TEMACS_DIR)\temacs.map \
- -heap:0x00100000 -nodefaultlib -incremental:no setargv.obj
+ -heap:0x00100000 -nodefaultlib -incremental:no -dynamicbase:no -nxcompat setargv.obj
 TEMACS_CPP_FLAGS=-c \
  $(CFLAGS) $(INCLUDES) $(DEFINES) $(DEBUG_DEFINES) \
  -DEMACS_MAJOR_VERSION=$(emacs_major_version) \
@@ -1453,15 +1468,14 @@ $(PROGNAME) : $(TEMACS) $(TEMACS_DIR)\NEEDTODUMP
 <<
 # Make the resource section read/write since almost all of it is the dump
 # data which needs to be writable.  This avoids having to copy it.
-	editbin -nologo -stack:0x800000 -section:.rsrc,rw xemacs.exe
-# If we're using Visual Studio 2005 or greater,
-# embed the manifest into the executable.
-!if $(MSC_VER) >= 1400
+	editbin -nologo -stack:0x800000 -section:.rsrc,rw -subsystem:windows xemacs.exe
+# VS2005-2015: embed the manifest (VS2017+ does this automatically).
+!if $(MSC_VER) >= 1400 && $(MSC_VER) < 1910
 	mt -manifest $@.manifest -outputresource:$@;1
 !endif
 	$(DEL) $(TEMACS_DIR)\xemacs.dmp
 !else
-	editbin -nologo -stack:0x800000 xemacs.exe
+	editbin -nologo -stack:0x800000 -subsystem:windows xemacs.exe
 !endif
 	cd $(NT)
 	@if not exist $(TEMACS_DIR)\SATISFIED nmake -nologo -f xemacs.mak $@

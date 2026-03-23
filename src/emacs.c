@@ -166,6 +166,19 @@ version 18.59 released October 31, 1992.
 #include <config.h>
 #include "lisp.h"
 
+#ifdef MSVC_SUPPRESS_ASSERT_DIALOGS
+#include <crtdbg.h>
+#include <stdlib.h>
+/* Suppress debug CRT invalid parameter dialogs and aborts. */
+static void msvc_invalid_parameter_handler(
+  const wchar_t *expression, const wchar_t *function,
+  const wchar_t *file, unsigned int line, uintptr_t reserved)
+{
+  /* Do nothing — just return, allowing the caller to handle the error
+     via errno/return value instead of aborting. */
+}
+#endif
+
 #include "backtrace.h" /* run-emacs-from-temacs needs this */
 #include "buffer.h"
 #include "commands.h"
@@ -2760,6 +2773,16 @@ Do not call this.  It will reinitialize your XEmacs.  You'll be sorry.
 int
 main (int argc, char **argv, char **envp)
 {
+
+#ifdef MSVC_SUPPRESS_ASSERT_DIALOGS
+  /* Suppress debug CRT assertion/error dialogs and invalid parameter
+     aborts that would otherwise halt the build or pop up modal dialogs. */
+  _set_invalid_parameter_handler (msvc_invalid_parameter_handler);
+#ifdef _DEBUG
+  _CrtSetReportMode (_CRT_ASSERT, _CRTDBG_MODE_DEBUG);
+  _CrtSetReportMode (_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+#endif
+#endif
 
 #ifdef _MSC_VER
   /* Under VC++, access violations and the like are not sent through

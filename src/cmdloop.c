@@ -122,8 +122,9 @@ You should almost certainly not be using this.
   Fbacktrace (Qexternal_debugging_output, Qt);
   stderr_out ("*** Killing XEmacs\n");
 #ifdef HAVE_MS_WINDOWS
-  Fmswindows_message_box (build_string ("Initialization error"),
-			  Qnil, Qnil);
+  if (!noninteractive)
+    Fmswindows_message_box (build_string ("Initialization error"),
+			    Qnil, Qnil);
 #endif
   return Fkill_emacs (make_int (-1));
 }
