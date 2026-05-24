@@ -1141,6 +1141,7 @@ case "$canonical" in
   romp-ibm-*       ) machine=ibmrt ;;
   rs6000-ibm-aix*  ) machine=ibmrs6000 ;;
   powerpc-ibm-aix* ) machine=ibmrs6000 ;;
+  ppc*-*-amigaos* | powerpc*-*-amigaos* ) machine=powerpc opsys=amigaos4 ;;
   powerpc*-*       ) machine=powerpc ;;
   hppa-*-*         ) machine=hp800 ;;
   m88k-dg-*        ) machine=aviion ;;
@@ -1559,7 +1560,7 @@ fi
 
 if test -z "$pdump"; then
   case "$opsys" in
-    linux* )  pdump=yes ;;        darwin )  pdump=yes ;;        cygwin* ) pdump=yes ;;        *)        pdump=no ;;
+    linux* )  pdump=yes ;;        darwin )  pdump=yes ;;        cygwin* ) pdump=yes ;;        amigaos4 ) pdump=yes ;;        *)        pdump=no ;;
   esac
 fi
 
@@ -4576,6 +4577,55 @@ fi
 echo $ac_n "checking whether byte ordering is bigendian""... $ac_c" 1>&6
 echo "configure:4578: checking whether byte ordering is bigendian" >&5
 
+if test "$opsys" = "amigaos4"; then
+  # Cross-compilation: PPC is big-endian, pre-set all sizes
+  ac_cv_c_bigendian=yes
+  echo "$ac_t""$ac_cv_c_bigendian (preset for cross-compilation)" 1>&6
+  { test "$extra_verbose" = "yes" && cat << \EOF
+    Defining WORDS_BIGENDIAN
+EOF
+cat >> confdefs.h <<\EOF
+#define WORDS_BIGENDIAN 1
+EOF
+}
+
+  ac_cv_sizeof_short=2
+  echo "checking size of short... $ac_cv_sizeof_short (preset)" 1>&6
+  { cat >> confdefs.h <<EOF
+#define SIZEOF_SHORT $ac_cv_sizeof_short
+EOF
+}
+
+  ac_cv_sizeof_int=4
+  echo "checking size of int... $ac_cv_sizeof_int (preset)" 1>&6
+  { cat >> confdefs.h <<EOF
+#define SIZEOF_INT $ac_cv_sizeof_int
+EOF
+}
+
+  ac_cv_sizeof_long=4
+  echo "checking size of long... $ac_cv_sizeof_long (preset)" 1>&6
+  { cat >> confdefs.h <<EOF
+#define SIZEOF_LONG $ac_cv_sizeof_long
+EOF
+}
+
+  ac_cv_sizeof_long_long=8
+  echo "checking size of long long... $ac_cv_sizeof_long_long (preset)" 1>&6
+  { cat >> confdefs.h <<EOF
+#define SIZEOF_LONG_LONG $ac_cv_sizeof_long_long
+EOF
+}
+
+  ac_cv_sizeof_void_p=4
+  echo "checking size of void *... $ac_cv_sizeof_void_p (preset)" 1>&6
+  { cat >> confdefs.h <<EOF
+#define SIZEOF_VOID_P $ac_cv_sizeof_void_p
+EOF
+}
+
+else
+
 ac_cv_c_bigendian=unknown
 # See if sys/param.h defines the BYTE_ORDER macro.
 cat > conftest.$ac_ext <<EOF
@@ -4852,6 +4902,7 @@ EOF
 }
 
 
+fi # end of amigaos4 cross-compilation preset
 
 case $opsys in
   cygwin* ) cat > conftest.$ac_ext <<EOF
@@ -16109,7 +16160,19 @@ cat > conftest.$ac_ext <<EOF
 #include "confdefs.h"
 int main(int c,char *v[]){return 0;}
 EOF
-if { (eval echo configure:16113: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit $?) 2>&5
+if test "$opsys" = "amigaos4"; then
+  # Cross-compilation: just check that it compiles and links
+  if { (eval echo configure:16113: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest; then
+    :
+  else
+    conftest_rc="$?"
+    echo "configure: failed program was:" >&5
+    cat conftest.$ac_ext >&5
+    rm -fr conftest*
+    echo "*** Cross-compilation link test failed. Check config.log."
+    exit 1
+  fi
+elif { (eval echo configure:16113: \"$ac_link\") 1>&5; (eval $ac_link) 2>&5; } && test -s conftest && (./conftest; exit $?) 2>&5
 then
   :
 else

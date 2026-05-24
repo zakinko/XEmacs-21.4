@@ -88,6 +88,15 @@ find_tty_or_stream_console_from_fd (int fd)
   return 0;
 }
 
+#ifdef AMIGAOS4
+static int amiga_csi_pending = 0;
+
+int amigaos4_csi_input_pending (void)
+{
+  return amiga_csi_pending;
+}
+#endif
+
 int
 read_event_from_tty_or_stream_desc (Lisp_Event *event,
 				    struct console *con, int fd)
@@ -98,6 +107,39 @@ read_event_from_tty_or_stream_desc (Lisp_Event *event,
 
   XSETCONSOLE (console, con);
 
+#ifdef AMIGAOS4
+  /* AmigaOS console sends 8-bit CSI (0x9B) instead of ESC [ for
+     function keys and arrow keys.  Translate to ESC so the existing
+     termcap key sequence parser can handle them.  The [ will come
+     as the next character naturally since Amiga CSI sequences use
+     the same format as ESC [ sequences after the introducer. */
+  {
+    if (amiga_csi_pending)
+      {
+        amiga_csi_pending = 0;
+        ch = '[';
+        character_to_event (ch, event, con, 1, 1);
+        event->channel = console;
+        return 1;
+      }
+    nread = read (fd, &ch, 1);
+    if (nread <= 0)
+      {
+        enqueue_magic_eval_event (io_error_delete_console, console);
+        Fconsole_disable_input (console);
+        return 0;
+      }
+    if (ch == 0x9B)
+      {
+        /* Translate 8-bit CSI to ESC; the [ is synthesized next call */
+        amiga_csi_pending = 1;
+        ch = 0x1B; /* ESC */
+      }
+    character_to_event (ch, event, con, 1, 1);
+    event->channel = console;
+    return 1;
+  }
+#else /* !AMIGAOS4 */
   nread = read (fd, &ch, 1);
   if (nread <= 0)
     {
@@ -114,6 +156,7 @@ read_event_from_tty_or_stream_desc (Lisp_Event *event,
       return 1;
     }
   return 0;
+#endif /* AMIGAOS4 */
 }
 
 void
@@ -342,6 +385,13 @@ init_event_unixoid (void)
 {
   /* Do this first; the init_event_*_late() functions
      pay attention to it. */
+#ifdef AMIGAOS4
+  /* On AmigaOS, we have no real async signals, so the signal-event pipe
+     is unnecessary.  Skip it to avoid select() issues with non-socket fds. */
+  signal_event_pipe[0] = -1;
+  signal_event_pipe[1] = -1;
+  signal_event_pipe_initialized = 0;
+#else
   if (pipe (signal_event_pipe) < 0)
     {
       perror ("XEmacs: can't open pipe");
@@ -356,6 +406,7 @@ init_event_unixoid (void)
      hang in case a long time passes between times when
      we drain the pipe. */
   set_descriptor_non_blocking (signal_event_pipe[1]);
+#endif
 
   /* WARNING: In order for the signal-event pipe to work correctly
      and not cause lockups, the following need to be followed:
@@ -368,5 +419,7 @@ init_event_unixoid (void)
   FD_ZERO (&process_only_mask);
   FD_ZERO (&tty_only_mask);
 
+#ifndef AMIGAOS4
   FD_SET (signal_event_pipe[0], &input_wait_mask);
+#endif
 }

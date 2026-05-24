@@ -186,8 +186,15 @@ signal_handler_t sys_do_signal (int signal_number, signal_handler_t action);
 /* Old USG systems don't really have signal blocking.
    We indicate this by not defining EMACS_BLOCK_SIGNAL or
    EMACS_WAIT_FOR_SIGNAL. */
+#ifdef AMIGAOS4
+/* AmigaOS has no signal blocking; define as no-ops so callers compile. */
+#define EMACS_BLOCK_SIGNAL(sig) 0
+#endif
 #define EMACS_UNBLOCK_SIGNAL(sig) 0
 #define EMACS_UNBLOCK_ALL_SIGNALS() 0
+#ifdef AMIGAOS4
+#define EMACS_WAIT_FOR_SIGNAL(sig) pause ()
+#endif
 #define EMACS_REESTABLISH_SIGNAL(sig, handler) do	\
 {							\
   int old_errno = errno;				\

@@ -34,6 +34,10 @@ Boston, MA 02111-1307, USA.  */
 
 Lisp_Object Vinternal_doc_file_name;
 
+#ifdef AMIGAOS4
+extern Lisp_Object Vinvocation_directory;
+#endif
+
 Lisp_Object QSsubstitute;
 
 /* Read and return doc string from open file descriptor FD
@@ -435,6 +439,27 @@ when doc strings are referred to in the dumped Emacs.
 			      + 1);
       strcpy (name, (char *) XSTRING_DATA (Vdoc_directory));
     }
+#ifdef AMIGAOS4
+  else if (STRINGP (Vinvocation_directory))
+    {
+      /* On AmigaOS, "../lib-src/" doesn't work because AmigaOS doesn't
+	 understand "..".  Construct the path from invocation-directory
+	 (e.g., "Volume:path/src/" -> "Volume:path/lib-src/"). */
+      const char *invdir = (const char *) XSTRING_DATA (Vinvocation_directory);
+      int invlen = XSTRING_LENGTH (Vinvocation_directory);
+      /* Strip trailing slash and last component (e.g., "src") */
+      int i = invlen;
+      if (i > 0 && (invdir[i-1] == '/' || invdir[i-1] == ':'))
+	i--;
+      while (i > 0 && invdir[i-1] != '/' && invdir[i-1] != ':')
+	i--;
+      name = (char *) alloca (i + sizeof ("lib-src/")
+			      + XSTRING_LENGTH (filename));
+      memcpy (name, invdir, i);
+      strcpy (name + i, "lib-src/");
+      /* name will have filename appended below */
+    }
+#endif /* AMIGAOS4 */
   else
 #endif /* CANNOT_DUMP */
     {

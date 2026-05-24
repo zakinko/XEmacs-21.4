@@ -375,7 +375,41 @@ tgetent (bp, name)
     indirect = (char *) 0;
 
   if (!tem)
+#ifdef AMIGAOS4
+    /* On AmigaOS, construct termcap path from invocation directory.
+       invocation-directory is "Volume:path/src/", we need
+       "Volume:path/etc/termcap". */
+    {
+      extern Lisp_Object Vinvocation_directory;
+      if (STRINGP (Vinvocation_directory))
+        {
+          const char *invdir =
+            (const char *) XSTRING_DATA (Vinvocation_directory);
+          int invlen = XSTRING_LENGTH (Vinvocation_directory);
+          /* Strip trailing slash and last component (e.g., "src") */
+          int i = invlen;
+          if (i > 0 && (invdir[i-1] == '/' || invdir[i-1] == ':'))
+            i--;
+          while (i > 0 && invdir[i-1] != '/' && invdir[i-1] != ':')
+            i--;
+          {
+            static char amiga_termcap[1024];
+            if (i + 12 < (int) sizeof (amiga_termcap))
+              {
+                memcpy (amiga_termcap, invdir, i);
+                strcpy (amiga_termcap + i, "etc/termcap");
+                tem = amiga_termcap;
+              }
+            else
+              tem = "PROGDIR:/etc/termcap";
+          }
+        }
+      else
+        tem = "PROGDIR:/etc/termcap";
+    }
+#else
     tem = "/etc/termcap";
+#endif
 
   /* Here we know we must search a file and tem has its name.  */
 

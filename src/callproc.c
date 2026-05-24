@@ -912,7 +912,11 @@ init_callproc (void)
     if (!shell) shell = (GetVersion () & 0x80000000 ? "command" : "cmd");
 #else /* not WIN32_NATIVE */
     const char *shell = egetenv ("SHELL");
+#ifdef AMIGAOS4
+    if (!shell) shell = "C:Shell";
+#else
     if (!shell) shell = "/bin/sh";
+#endif
 #endif
 
 #if 0 /* defined (WIN32_NATIVE) */

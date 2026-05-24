@@ -1093,6 +1093,7 @@ case "$canonical" in
   romp-ibm-*       ) machine=ibmrt ;;
   rs6000-ibm-aix*  ) machine=ibmrs6000 ;;
   powerpc-ibm-aix* ) machine=ibmrs6000 ;;
+  ppc*-*-amigaos* | powerpc*-*-amigaos* ) machine=powerpc opsys=amigaos4 ;;
   powerpc*-*       ) machine=powerpc ;;
   hppa-*-*         ) machine=hp800 ;;
   m88k-dg-*        ) machine=aviion ;;
@@ -1589,10 +1590,11 @@ dnl --------------------------------------------------------------
 
 if test -z "$pdump"; then
   case "$opsys" in
-    linux* )  pdump=yes ;;    dnl glibc 2.3.1 seems to hose unexec
-    darwin )  pdump=yes ;;    dnl No "native" working dumper available
-    cygwin* ) pdump=yes ;;    dnl unexec is broken
-    *)        pdump=no ;;
+    linux* )     pdump=yes ;;    dnl glibc 2.3.1 seems to hose unexec
+    darwin )     pdump=yes ;;    dnl No "native" working dumper available
+    cygwin* )    pdump=yes ;;    dnl unexec is broken
+    amigaos4 )   pdump=yes ;;    dnl No unexec support on AmigaOS 4
+    *)           pdump=no ;;
   esac
 fi
 
@@ -2530,20 +2532,40 @@ dnl check for Make feature
 AC_PROG_MAKE_SET
 
 dnl check byte order
-AC_C_BIGENDIAN
+dnl For cross-compilation targets, we must pre-set values that require
+dnl running test programs on the target.
+case "$opsys" in
+  amigaos4 )
+    ac_cv_c_bigendian=yes
+    AC_DEFINE(WORDS_BIGENDIAN)
+    ac_cv_sizeof_short=2
+    AC_DEFINE(SIZEOF_SHORT, 2)
+    ac_cv_sizeof_int=4
+    AC_DEFINE(SIZEOF_INT, 4)
+    ac_cv_sizeof_long=4
+    AC_DEFINE(SIZEOF_LONG, 4)
+    ac_cv_sizeof_long_long=8
+    AC_DEFINE(SIZEOF_LONG_LONG, 8)
+    ac_cv_sizeof_void_p=4
+    AC_DEFINE(SIZEOF_VOID_P, 4)
+    ;;
+  * )
+    AC_C_BIGENDIAN
 
-dnl define SIZEOF_TYPE
-AC_CHECK_SIZEOF(short)
-if test "$ac_cv_sizeof_short" = 0; then
-  echo ""
-  echo "*** PANIC *** Configure tests are not working - compiler is broken."
-  echo "*** PANIC *** Please examine config.log for compilation errors."
-  exit 1
-fi
-AC_CHECK_SIZEOF(int)
-AC_CHECK_SIZEOF(long)
-AC_CHECK_SIZEOF(long long)
-AC_CHECK_SIZEOF(void *)
+    dnl define SIZEOF_TYPE
+    AC_CHECK_SIZEOF(short)
+    if test "$ac_cv_sizeof_short" = 0; then
+      echo ""
+      echo "*** PANIC *** Configure tests are not working - compiler is broken."
+      echo "*** PANIC *** Please examine config.log for compilation errors."
+      exit 1
+    fi
+    AC_CHECK_SIZEOF(int)
+    AC_CHECK_SIZEOF(long)
+    AC_CHECK_SIZEOF(long long)
+    AC_CHECK_SIZEOF(void *)
+    ;;
+esac
 
 dnl Cygwin from 1003022 has intptr_t, uintptr_t in <cygwin/types.h>
 case $opsys in

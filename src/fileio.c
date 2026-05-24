@@ -861,6 +861,9 @@ See also the function `substitute-in-file-name'.
 	 Windows).  */
       && ! (IS_DIRECTORY_SEP (o[0]))
 #endif /* not WIN32_NATIVE */
+#ifdef AMIGAOS4
+      && ! IS_AMIGAOS_ABSOLUTE (o)
+#endif
       )
 
     default_directory = Fexpand_file_name (default_directory, Qnil);
@@ -921,6 +924,9 @@ See also the function `substitute-in-file-name'.
      a new string if name is already fully expanded.  */
   if (
       IS_DIRECTORY_SEP (nm[0])
+#ifdef AMIGAOS4
+      || IS_AMIGAOS_ABSOLUTE (nm)
+#endif
 #ifdef WIN32_NATIVE
       && (drive || IS_DIRECTORY_SEP (nm[1]))
 #endif
@@ -1099,6 +1105,9 @@ See also the function `substitute-in-file-name'.
 #ifndef WIN32_NATIVE
       /* /... alone is not absolute on DOS and Windows. */
       && !IS_DIRECTORY_SEP (nm[0])
+#endif
+#ifdef AMIGAOS4
+      && !IS_AMIGAOS_ABSOLUTE (nm)
 #endif
 #ifdef WIN32_FILENAMES
       && !(IS_DIRECTORY_SEP (nm[0]) && IS_DIRECTORY_SEP (nm[1]))
@@ -2247,6 +2256,9 @@ On Unix, this is a name starting with a `/' or a `~'.
   CHECK_STRING (filename);
   ptr = XSTRING_DATA (filename);
   return (IS_DIRECTORY_SEP (*ptr) || *ptr == '~'
+#ifdef AMIGAOS4
+	  || IS_AMIGAOS_ABSOLUTE (ptr)
+#endif
 #ifdef WIN32_FILENAMES
 	  || (IS_DRIVE (*ptr) && ptr[1] == ':' && IS_DIRECTORY_SEP (ptr[2]))
 #endif
@@ -2441,14 +2453,14 @@ See also `file-exists-p' and `file-attributes'.
   if (!NILP (handler))
     RETURN_UNGCPRO (call2 (handler, Qfile_readable_p, abspath));
 
-#if defined(WIN32_FILENAMES)
-  /* Under MS-DOS and Windows, open does not work for directories.  */
+#if defined(WIN32_FILENAMES) || defined(AMIGAOS4)
+  /* Under MS-DOS, Windows, and AmigaOS, open does not work for directories. */
   UNGCPRO;
   if (access (XSTRING_DATA (abspath), 0) == 0)
     return Qt;
   else
     return Qnil;
-#else /* not WIN32_FILENAMES */
+#else /* not WIN32_FILENAMES or AMIGAOS4 */
   {
     int desc = interruptible_open ((char *) XSTRING_DATA (abspath), O_RDONLY | OPEN_BINARY, 0);
     UNGCPRO;

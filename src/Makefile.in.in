@@ -146,6 +146,10 @@ win32_objs=win32.o xemacs_res.o
 profile_objs=profile.o
 #endif
 
+#ifdef AMIGAOS4
+amigaos4_objs=amigaos4-stubs.o amigaos4-dos.o
+#endif
+
 ## -Demacs is needed to make some files produce the correct version
 ## for use in Emacs.
 
@@ -207,7 +211,7 @@ objs=\
  rangetab.o redisplay.o redisplay-output.o regex.o\
  search.o select.o $(sheap_objs) signal.o sound.o\
  specifier.o strftime.o symbols.o syntax.o sysdep.o\
- undo.o $(x_objs) widget.o window.o $(win32_objs)
+ undo.o $(x_objs) widget.o window.o $(win32_objs) $(amigaos4_objs)
 
 obj_rtl = $(objs:.o=.c.rtl)
 
@@ -569,6 +573,13 @@ TransientEmacsShell.c.rtl : ${srcdir}/EmacsShell-sub.c TopLevelEmacsShell.o conf
 ## The above rules are subject to a race condition if using a parallel make.
 TransientEmacsShell.o : TopLevelEmacsShell.o
 TransientEmacsShell.c.rtl : TopLevelEmacsShell.c.rtl
+
+#ifdef AMIGAOS4
+## amigaos4-dos.c is compiled without -Demacs and -DHAVE_CONFIG_H to avoid
+## header conflicts between the AmigaOS SDK and XEmacs internals.
+amigaos4-dos.o : ${srcdir}/amigaos4-dos.c
+	$(CC) -c $(CFLAGS) -DAMIGAOS4 ${srcdir}/amigaos4-dos.c
+#endif
 
 ## Position-independent code for shared library creation
 #if USE_GCC

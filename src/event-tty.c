@@ -35,6 +35,11 @@ Boston, MA 02111-1307, USA.  */
 #include "syswait.h"
 #include "systime.h"
 
+#ifdef AMIGAOS4
+/* Wrappers in amigaos4-stubs.c to avoid header conflicts */
+extern int amigaos4_wait_for_char (long timeout_usecs);
+#endif
+
 /* Mask of bits indicating the descriptors that we wait for input on */
 extern SELECT_TYPE input_wait_mask, non_fake_input_wait_mask;
 extern SELECT_TYPE process_only_mask, tty_only_mask;
@@ -90,8 +95,19 @@ emacs_tty_event_pending_p (int user_p)
 	return 1;
     }
 
+#ifdef AMIGAOS4
+  /* Check for pending synthetic character from CSI translation,
+     or use WaitForChar with zero timeout to poll for input. */
+  {
+    extern int amigaos4_csi_input_pending (void);
+    if (amigaos4_csi_input_pending ())
+      return 1;
+  }
+  return amigaos4_wait_for_char (0) ? 1 : 0;
+#else
   return poll_fds_for_input (user_p ? tty_only_mask :
-			     non_fake_input_wait_mask);
+                             non_fake_input_wait_mask);
+#endif
 }
 
 struct console *
@@ -116,6 +132,52 @@ emacs_tty_next_event (Lisp_Event *emacs_event)
 {
   while (1)
     {
+#ifdef AMIGAOS4
+      /* AmigaOS select() doesn't work on console file descriptors.
+         Use WaitForChar() from the DOS library instead.
+         Note: only TTY input on fd 0 is handled; subprocess/process
+         events are not yet supported on AmigaOS. */
+      EMACS_TIME time_to_block;
+      long wait_usecs;
+      int has_timeout;
+      extern int amigaos4_csi_input_pending (void);
+
+      has_timeout = get_low_level_timeout_interval (tty_timer_queue,
+                                                    &time_to_block);
+      if (!has_timeout)
+        /* No timer events; block for up to 1 second at a time so we
+           can re-check for timers periodically. */
+        wait_usecs = 1000000;
+      else
+        {
+          wait_usecs = EMACS_SECS (time_to_block) * 1000000
+            + EMACS_USECS (time_to_block);
+          if (wait_usecs <= 0)
+            {
+              tty_timeout_to_emacs_event (emacs_event);
+              return;
+            }
+        }
+
+      if (amigaos4_csi_input_pending ()
+          || amigaos4_wait_for_char (wait_usecs))
+        {
+          struct console *c = find_tty_or_stream_console_from_fd (0);
+          if (c && read_event_from_tty_or_stream_desc (emacs_event, c, 0))
+            return;
+        }
+      else if (has_timeout)
+        {
+          EMACS_TIME now;
+          EMACS_GET_TIME (now);
+          if (tty_timer_queue &&
+              EMACS_TIME_EQUAL_OR_GREATER (now, tty_timer_queue->time))
+            {
+              tty_timeout_to_emacs_event (emacs_event);
+              return;
+            }
+        }
+#else /* !AMIGAOS4 */
       int ndesc;
       int i;
       SELECT_TYPE temp_mask = input_wait_mask;
@@ -183,6 +245,7 @@ emacs_tty_next_event (Lisp_Event *emacs_event)
 	  tty_timeout_to_emacs_event (emacs_event);
 	  return;
 	}
+#endif /* AMIGAOS4 */
     }
 }
 

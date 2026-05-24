@@ -1530,6 +1530,13 @@ tty_init_sys_modes_on_device (struct device *d)
 #if defined (HAVE_TERMIO) || defined (HAVE_TERMIOS)
   /* after all those years... */
   con->tty_erase_char = make_char (tty.main.c_cc[VERASE]);
+#ifdef AMIGAOS4
+  /* AmigaOS newlib provides tcgetattr as a thin emulation layer that
+     does not reflect actual console behavior.  VERASE may report 127
+     (DEL) regardless of stty settings, but the Amiga console hardware
+     sends BS (8) for the Backspace key.  Force it here. */
+  con->tty_erase_char = make_char (8);
+#endif
 #ifdef DGUX
   /* This allows meta to be sent on 8th bit.  */
   tty.main.c_iflag &= ~INPCK;	/* don't check input for parity */
@@ -1733,7 +1740,6 @@ tty_init_sys_modes_on_device (struct device *d)
 #endif
   set_tty_modes (con);
 }
-
 #endif /* HAVE_TTY */
 
 void
@@ -1842,8 +1848,19 @@ get_tty_device_size (struct device *d, int *widthp, int *heightp)
   }
 #else /* system doesn't know size */
 
+#ifdef AMIGAOS4
+  /* AmigaOS doesn't support TIOCGWINSZ.
+     Use COLUMNS/LINES environment variables, or default to 80x25. */
+  {
+    char *cols = getenv ("COLUMNS");
+    char *rows = getenv ("LINES");
+    *widthp = cols ? atoi (cols) : 80;
+    *heightp = rows ? atoi (rows) : 25;
+  }
+#else
   *widthp = 0;
   *heightp = 0;
+#endif
 
 #endif /* not !TIOCGWINSZ */
 }
