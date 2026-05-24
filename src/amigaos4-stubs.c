@@ -38,51 +38,18 @@ Boston, MA 02111-1307, USA.  */
 /* ==================== Early initialization ==================== */
 
 /* Sanitize the PATH environment variable.
-   Keep only absolute AmigaOS paths (those containing ':').
-   This filters out Unix-style paths (e.g., /Cygnix/bin) from Cygnix
-   and any relative paths, which can trigger "Please insert volume"
-   requesters when accessed via newlib.  PATH entries are separated
-   by ';' (SEPCHAR) on AmigaOS since ':' is used in volume names. */
+   AmigaOS 4 systems with Cygnix installed have a Unix-style PATH
+   using ':' as separator (e.g., "/Cygnix/bin:/C:").  These paths
+   trigger "Please insert volume" requesters when accessed via
+   newlib.  If PATH starts with '/', it is Cygnix-corrupted and
+   we replace it entirely with "C:" (the system command directory).
+   A properly configured AmigaOS PATH uses ';' as separator and
+   contains only absolute volume paths like "C:;SYS:Utilities". */
 void amigaos4_early_init (void)
 {
   const char *path = getenv ("PATH");
-  if (path)
-    {
-      /* Allocate buffer for filtered path (can't be longer than original) */
-      int len = strlen (path);
-      char *filtered = (char *) malloc (len + 1);
-      char *out = filtered;
-      const char *p = path;
-
-      if (!filtered)
-        return;
-
-      while (*p)
-        {
-          const char *entry = p;
-          const char *sep = strchr (p, ';');
-          int entry_len = sep ? (int)(sep - p) : (int)strlen (p);
-          int has_colon = (memchr (entry, ':', entry_len) != NULL);
-
-          if (has_colon && entry_len > 0)
-            {
-              if (out > filtered)
-                *out++ = ';';
-              memcpy (out, entry, entry_len);
-              out += entry_len;
-            }
-          p = sep ? sep + 1 : entry + entry_len;
-        }
-      *out = '\0';
-
-      /* If nothing survived, default to C: */
-      if (out == filtered)
-        setenv ("PATH", "C:", 1);
-      else
-        setenv ("PATH", filtered, 1);
-
-      free (filtered);
-    }
+  if (path && path[0] == '/')
+    setenv ("PATH", "C:", 1);
 }
 
 /* ==================== Process stubs ==================== */

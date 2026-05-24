@@ -2419,6 +2419,14 @@ main_1 (int argc, char **argv, char **envp, int restart)
     if (NILP (Vinvocation_directory))
       Vinvocation_directory = Vinvocation_name;
 
+#ifdef AMIGAOS4
+    /* On AmigaOS, argv[0] is typically a bare name even when running
+       from the current directory.  Expand relative to cwd so that
+       Ffile_name_directory below returns a useful path. */
+    if (NILP (Ffile_name_directory (Vinvocation_directory)))
+      Vinvocation_directory = Fexpand_file_name (Vinvocation_directory, Qnil);
+#endif
+
     Vinvocation_name = Ffile_name_nondirectory (Vinvocation_directory);
     Vinvocation_directory = Ffile_name_directory (Vinvocation_directory);
   }
