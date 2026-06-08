@@ -307,8 +307,10 @@
 ;; For machines with CANNOT_DUMP defined in config.h,
 ;; this file must be loaded each time Emacs is run.
 ;; So run the startup code now.
+;; With PDUMP, dump-emacs is available but we still need to start
+;; the event loop when not explicitly dumping.
 
-(when (not (fboundp 'dump-emacs))
+(when (not (member "dump" command-line-args))
   ;; Avoid loading loadup.el a second time!
   (setq command-line-args (cdr (cdr command-line-args)))
   (eval top-level))

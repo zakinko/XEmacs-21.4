@@ -3165,7 +3165,7 @@ shut_down_emacs (int sig, Lisp_Object stuff, int no_auto_save)
 }
 
 
-#ifndef CANNOT_DUMP
+#if !defined(CANNOT_DUMP) || defined(PDUMP)
 
 #if !defined(PDUMP) || !defined(SYSTEM_MALLOC)
 extern char my_edata[];
@@ -3269,7 +3269,7 @@ and announce itself normally when it is run.
   return Qnil;
 }
 
-#endif /* not CANNOT_DUMP */
+#endif /* !CANNOT_DUMP || PDUMP */
 
 
 /* Split STRING into a list of substrings.  The substrings are the
@@ -3494,9 +3494,9 @@ Clear all Quantify data.
 void
 syms_of_emacs (void)
 {
-#ifndef CANNOT_DUMP
+#if !defined(CANNOT_DUMP) || defined(PDUMP)
   DEFSUBR (Fdump_emacs);
-#endif /* !CANNOT_DUMP */
+#endif /* !CANNOT_DUMP || PDUMP */
 
   DEFSUBR (Frun_emacs_from_temacs);
   DEFSUBR (Frunning_temacs_p);

@@ -94,5 +94,8 @@ int finish_marking_weak_hash_tables (void);
 void prune_weak_hash_tables (void);
 
 void pdump_reorganize_hash_table (Lisp_Object);
+#ifdef AMIGAOS4
+void pdump_fixup_hash_table_pointers (Lisp_Object, EMACS_INT);
+#endif
 
 #endif /* INCLUDED_elhash_h_ */

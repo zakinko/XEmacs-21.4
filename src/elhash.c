@@ -949,6 +949,25 @@ resize_hash_table (Lisp_Hash_Table *ht, size_t new_size)
 /* After a hash table has been saved to disk and later restored by the
    portable dumper, it contains the same objects, but their addresses
    and thus their HASH_CODEs have changed. */
+
+#ifdef AMIGAOS4
+/* Fix stale function pointers in hash tables after pdump load.
+   hash_function and test_function are .text pointers not covered by
+   the hash_table_description (which only describes size, hentries,
+   next_weak). */
+void
+pdump_fixup_hash_table_pointers (Lisp_Object hash_table, EMACS_INT text_delta)
+{
+  Lisp_Hash_Table *ht = XHASH_TABLE (hash_table);
+  if (ht->hash_function)
+    ht->hash_function = (hash_table_hash_function_t)
+      ((char *) ht->hash_function + text_delta);
+  if (ht->test_function)
+    ht->test_function = (hash_table_test_function_t)
+      ((char *) ht->test_function + text_delta);
+}
+#endif
+
 void
 pdump_reorganize_hash_table (Lisp_Object hash_table)
 {

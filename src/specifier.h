@@ -84,6 +84,7 @@ Boston, MA 02111-1307, USA.  */
 */
 
 extern const struct struct_description specifier_methods_description;
+extern const struct struct_description specifier_caching_description;
 
 struct specifier_methods
 {

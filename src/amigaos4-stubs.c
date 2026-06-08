@@ -35,6 +35,15 @@ Boston, MA 02111-1307, USA.  */
 #include <unistd.h>
 #include <sys/types.h>
 
+/* Request a large stack from the AmigaOS process loader.
+   The portable dumper (pdump) traverses the entire Lisp object graph
+   recursively and can easily exceed the default 64KB-256KB stack.
+   8MB should be more than sufficient. */
+#ifdef __GNUC__
+static const char __attribute__((used)) stackcookie[] = "$STACK:8388608";
+#endif
+unsigned long __stack = 8388608;  /* newlib stack request (8 MB) */
+
 /* ==================== Early initialization ==================== */
 
 /* Sanitize the PATH environment variable.

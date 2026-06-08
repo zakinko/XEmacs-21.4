@@ -2397,6 +2397,10 @@ staticpro_nodump (Lisp_Object *varaddress)
 /* Mark reference to a Lisp_Object.  If the object referred to has not been
    seen yet, recursively mark all the references contained in it. */
 
+#if defined (AMIGAOS4) && defined (__GNUC__)
+void mark_object (Lisp_Object obj) __attribute__((noinline, noclone, optimize("O1")));
+#endif
+
 void
 mark_object (Lisp_Object obj)
 {
@@ -2406,6 +2410,26 @@ mark_object (Lisp_Object obj)
   /* if (EQ (obj, Qnull_pointer)) return; */
   /* if (!POINTER_TYPE_P (XGCTYPE (obj))) return; */
   /* if (PURIFIED (XPNTR (obj))) return; */
+
+#ifdef AMIGAOS4
+  /* Guard against invalid Lisp_Object values reaching GC mark phase.
+     On AmigaOS4 without MMU, bad pointers crash instead of segfaulting.
+     Only check Record-type objects (tag 0) since those are pointers.
+     Use volatile to prevent GCC from optimizing away the check. */
+  {
+    volatile EMACS_UINT val = (EMACS_UINT) obj;
+    if (! val)
+      return;
+    if ((val & 3) == 0)  /* Lisp_Type_Record tag check without macro */
+      {
+	/* Valid AmigaOS4 user heap is 0x60000000-0x7FFFFFFF */
+	if (val < 0x60000000 || val > 0x7FFFFFFF)
+	  {
+	    *(volatile int *)0 = 0xBAD0BAD0;
+	  }
+      }
+  }
+#endif
 
   if (XTYPE (obj) == Lisp_Type_Record)
     {

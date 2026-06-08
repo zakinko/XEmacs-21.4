@@ -3094,6 +3094,67 @@ and `list-directory-verbose-switches'."
 ;;   		 dired-insert-headerline
 ;;   		 dired-after-subdir-garbage (defines what a "total" line is)
 ;;   - variable dired-subdir-regexp
+
+(defun amigaos4-format-time (time)
+  "Format a file time (high low) pair for ls-style output."
+  (condition-case nil
+      (format-time-string "%b %e %H:%M" time)
+    (error "Jan  1  1970")))
+
+(defun amigaos4-insert-directory (file switches &optional wildcard full-directory-p)
+  "Insert directory listing for FILE using pure Lisp on AmigaOS4.
+Produces output compatible with dired's expected ls -l format."
+  (let* ((dir (if full-directory-p
+		  (file-name-as-directory (expand-file-name file))
+		(expand-file-name file)))
+	 (all (and (stringp switches) (string-match "a" switches)))
+	 (total-size 0)
+	 entries)
+    (if (and full-directory-p (file-directory-p dir))
+	(let ((files (directory-files dir nil
+				      (if all nil "^[^.]")))
+	      attrs name)
+	  ;; Collect entries
+	  (while files
+	    (setq name (car files)
+		  files (cdr files))
+	    (setq attrs (file-attributes (expand-file-name name dir)))
+	    (when attrs
+	      (setq total-size (+ total-size (or (nth 7 attrs) 0)))
+	      (setq entries (cons (cons name attrs) entries))))
+	  (setq entries (nreverse entries))
+	  ;; Insert total line
+	  (insert (format "  total %d\n" (/ (+ total-size 1023) 1024)))
+	  ;; Insert each entry
+	  (let (entry name attrs type modes nlinks uid gid size mtime)
+	    (while entries
+	      (setq entry (car entries)
+		    entries (cdr entries)
+		    name (car entry)
+		    attrs (cdr entry)
+		    type (nth 0 attrs)
+		    nlinks (or (nth 1 attrs) 1)
+		    uid (or (nth 2 attrs) 0)
+		    gid (or (nth 3 attrs) 0)
+		    mtime (nth 5 attrs)
+		    size (or (nth 7 attrs) 0)
+		    modes (or (nth 8 attrs) "----------"))
+	      (insert (format "%s %3d %5d %5d %8d %s %s\n"
+			      modes nlinks uid gid size
+			      (amigaos4-format-time mtime)
+			      name)))))
+      ;; Single file (not full directory listing)
+      (let ((attrs (file-attributes dir)))
+	(when attrs
+	  (insert (format "%s %3d %5d %5d %8d %s %s\n"
+			  (or (nth 8 attrs) "----------")
+			  (or (nth 1 attrs) 1)
+			  (or (nth 2 attrs) 0)
+			  (or (nth 3 attrs) 0)
+			  (or (nth 7 attrs) 0)
+			  (amigaos4-format-time (nth 5 attrs))
+			  (file-name-nondirectory dir))))))))
+
 (defun insert-directory (file switches &optional wildcard full-directory-p)
   "Insert directory listing for FILE, formatted according to SWITCHES.
 Leaves point after the inserted text.
@@ -3118,6 +3179,8 @@ If WILDCARD, it also runs the shell specified by `shell-file-name'."
        ((and (fboundp 'mswindows-insert-directory)
 	     (eq system-type 'windows-nt))
 	(mswindows-insert-directory file switches wildcard full-directory-p))
+       ((eq system-type 'amigaos4)
+	(amigaos4-insert-directory file switches wildcard full-directory-p))
        (t
 	(if wildcard
 	    ;; Run ls in the directory of the file pattern we asked for.

@@ -25,6 +25,11 @@ Boston, MA 02111-1307, USA.  */
 #define AMIGAOS4
 #endif
 
+/* Disable small data sections (.sdata/.sbss) so that all global variables
+   reside in .data/.bss and are relocated uniformly by the ELF loader.
+   This is required for PDUMP's data_delta relocation to work correctly. */
+#define C_SWITCH_SYSTEM "-msdata=none"
+
 /* SYSTEM_TYPE should indicate the kind of system you are using.
    It sets the Lisp variable system-type.  */
 #define SYSTEM_TYPE "amigaos4"
@@ -67,6 +72,13 @@ Boston, MA 02111-1307, USA.  */
    The path separator within a path is '/'.  For the executable search
    path, we use ';' since ':' is used in volume names. */
 #define SEPCHAR ';'
+
+/* ':' acts as a device separator in AmigaOS paths (e.g., "Work:path").
+   IS_ANY_SEP recognizes both '/' and ':' so that path-scanning code
+   (like pdump_load) correctly handles volume-qualified paths. */
+#define DEVICE_SEP ':'
+#define IS_DIRECTORY_SEP(c) ((c) == '/')
+#define IS_ANY_SEP(c) (IS_DIRECTORY_SEP (c) || ((c) == DEVICE_SEP))
 
 /* Recognize AmigaOS volume-qualified paths as absolute.
    A path like "Work:foo/bar" or "SYS:" is absolute on AmigaOS. */

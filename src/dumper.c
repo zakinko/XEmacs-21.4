@@ -25,6 +25,9 @@ Boston, MA 02111-1307, USA.  */
 #include "lisp.h"
 
 #include "specifier.h"
+#ifdef AMIGAOS4
+#include "glyphs.h"
+#endif
 #include "elhash.h"
 #include "sysfile.h"
 #include "console-stream.h"
@@ -135,7 +138,16 @@ pdump_align_stream (FILE *stream, size_t alignment)
   long offset = ftell (stream);
   long adjustment = ALIGN_SIZE (offset, alignment) - offset;
   if (adjustment)
-    fseek (stream, adjustment, SEEK_CUR);
+    {
+#ifdef AMIGAOS4
+      /* fseek on fdopen'd streams is broken on AmigaOS 4 newlib;
+	 write zero padding instead. */
+      static const char zeros[16] = {0};
+      fwrite (zeros, 1, adjustment, stream);
+#else
+      fseek (stream, adjustment, SEEK_CUR);
+#endif
+    }
 }
 
 #define PDUMP_ALIGN_OUTPUT(type) pdump_align_stream (pdump_out, ALIGNOF (type))
@@ -212,11 +224,26 @@ typedef struct
   EMACS_UINT reloc_address;
   int nb_root_struct_ptrs;
   int nb_opaques;
+#ifdef AMIGAOS4
+  EMACS_UINT reloc_data_base; /* address of dump_id at dump time for relocation */
+  EMACS_UINT reloc_rodata_base; /* address of rodata anchor at dump time */
+  EMACS_UINT reloc_text_base; /* address of text anchor at dump time */
+#endif
 } pdump_header;
 
 char *pdump_start;
 char *pdump_end;
 static size_t pdump_length;
+
+#ifdef AMIGAOS4
+/* Anchor variable in .rodata — used to compute relocation delta for
+   const pointers (lrecord_description tables) stored in the dump. */
+static const int pdump_rodata_anchor = 0x50444D50; /* "PDMP" */
+
+/* Anchor function in .text — used to compute relocation delta for
+   function pointers stored in the dump. */
+static void pdump_text_anchor_fn (void) { }
+#endif
 
 #ifdef WIN32_NATIVE
 /* Handle for the dump file */
@@ -226,6 +253,15 @@ static HANDLE pdump_hMap = INVALID_HANDLE_VALUE;
 #endif
 
 static void (*pdump_free) (void);
+
+#ifdef AMIGAOS4
+/* Relocation deltas for binary-resident pointers stored in the dump.
+   Set during pdump_load_finish and used by pdump_reloc_one. */
+static EMACS_INT pdump_rodata_delta;
+static EMACS_INT pdump_text_delta;
+static EMACS_INT pdump_data_delta;
+static EMACS_UINT pdump_saved_rodata_base; /* old .rodata anchor address */
+#endif
 
 static unsigned char pdump_align_table[] =
 {
@@ -740,6 +776,23 @@ pdump_reloc_one (void *data, EMACS_INT delta,
 	case XD_SPECIFIER_END:
 	  pos = 0;
 	  desc = ((const Lisp_Specifier *)data)->methods->extra_description;
+#ifdef AMIGAOS4
+	  /* extra_description is a .rodata pointer stored in the dump.
+	     Multiple specifiers share the same methods struct, so only
+	     patch if it hasn't been patched yet (still in old range). */
+	  {
+	    EMACS_INT dist_old = labs ((EMACS_INT)((char *) desc
+			- (char *) pdump_saved_rodata_base));
+	    EMACS_INT dist_new = labs ((EMACS_INT)((char *) desc
+			- (char *) &pdump_rodata_anchor));
+	    if (dist_old < dist_new)
+	      {
+		desc = (const struct lrecord_description *)
+		  ((char *) desc + pdump_rodata_delta);
+		((Lisp_Specifier *)data)->methods->extra_description = desc;
+	      }
+	  }
+#endif
 	  goto restart;
 	case XD_SIZE_T:
 	case XD_INT:
@@ -1037,6 +1090,11 @@ pdump (void)
   memcpy (header.signature, PDUMP_SIGNATURE, PDUMP_SIGNATURE_LEN);
   header.id = dump_id;
   header.reloc_address = 0;
+#ifdef AMIGAOS4
+  header.reloc_data_base = (EMACS_UINT) &dump_id;
+  header.reloc_rodata_base = (EMACS_UINT) &pdump_rodata_anchor;
+  header.reloc_text_base = (EMACS_UINT) &pdump_text_anchor_fn;
+#endif
   header.nb_root_struct_ptrs = Dynarr_length (pdump_root_struct_ptrs);
   header.nb_opaques = Dynarr_length (pdump_opaques);
 
@@ -1052,14 +1110,39 @@ pdump (void)
 #undef open
   pdump_fd = open (EMACS_PROGNAME ".dmp",
 		   O_WRONLY | O_CREAT | O_TRUNC | OPEN_BINARY, 0666);
+#ifdef AMIGAOS4
+  pdump_out = fdopen (pdump_fd, "wb");
+#else
   pdump_out = fdopen (pdump_fd, "w");
+#endif
 
   fwrite (&header, sizeof (header), 1, pdump_out);
   PDUMP_ALIGN_OUTPUT (max_align_t);
 
   pdump_scan_by_alignment (pdump_dump_data);
 
+#ifdef AMIGAOS4
+  /* On AmigaOS 4, fseek(SEEK_SET) on fdopen'd streams is broken.
+     Since stab_offset >= current position (it's aligned up from data end),
+     pad forward with zero bytes instead of seeking. */
+  {
+    long cur_pos = ftell (pdump_out);
+    long target = (long) header.stab_offset;
+    if (cur_pos < target)
+      {
+	static const char zeros[16] = {0};
+	long gap = target - cur_pos;
+	while (gap > 0)
+	  {
+	    long chunk = gap > 16 ? 16 : gap;
+	    fwrite (zeros, 1, chunk, pdump_out);
+	    gap -= chunk;
+	  }
+      }
+  }
+#else
   fseek (pdump_out, header.stab_offset, SEEK_SET);
+#endif
 
   pdump_dump_root_struct_ptrs ();
   pdump_dump_opaques ();
@@ -1087,6 +1170,287 @@ pdump_load_check (void)
 	  && ((pdump_header *)pdump_start)->id == dump_id);
 }
 
+#ifdef AMIGAOS4
+/*----------------------------------------------------------------------*/
+/*		AmigaOS4 multi-segment relocation helpers		*/
+/*----------------------------------------------------------------------*/
+
+/* Fix lrecord_implementations_table (.rodata pointers) and
+   lrecord_markers (.text function pointers).  These are dumped as
+   opaques and contain absolute addresses from dump time. */
+static void
+pdump_amigaos4_fixup_lrecord_tables (EMACS_INT rodata_delta,
+				     EMACS_INT text_delta)
+{
+  int j;
+  for (j = 0; j < lrecord_type_count; j++)
+    {
+      if (lrecord_implementations_table[j])
+	lrecord_implementations_table[j] =
+	  (const struct lrecord_implementation *)
+	  ((char *) lrecord_implementations_table[j] + rodata_delta);
+      if (lrecord_markers[j])
+	lrecord_markers[j] =
+	  (Lisp_Object (*)(Lisp_Object))
+	  ((char *) lrecord_markers[j] + text_delta);
+    }
+}
+
+/* Patch pdump_reloc_table.desc pointers in-place.  These point to
+   const lrecord_description tables in .rodata, which is in a separate
+   ELF LOAD segment that may relocate by a different delta than .data.
+   We patch in-place so that pdump_objects_unmark() (called during GC)
+   also sees the correct addresses. */
+static void
+pdump_amigaos4_patch_reloc_descs (EMACS_INT rodata_delta)
+{
+  char *pp = pdump_rt_list;
+  int sections = 2;
+  for (;;)
+    {
+      pdump_reloc_table *rt_patch;
+      pp = (char *) ALIGN_PTR (pp, ALIGNOF (pdump_reloc_table));
+      rt_patch = (pdump_reloc_table *) pp;
+      pp += sizeof (pdump_reloc_table);
+      if (rt_patch->desc)
+	{
+	  rt_patch->desc = (const struct lrecord_description *)
+	    ((char *) rt_patch->desc + rodata_delta);
+	  pp = (char *) ALIGN_PTR (pp, ALIGNOF (char *));
+	  pp += rt_patch->count * sizeof (char *);
+	}
+      else
+	{
+	  if (!(--sections))
+	    break;
+	}
+    }
+}
+
+/* Fix stale binary pointers in dumped Lisp_Subr and symbol_value_magic
+   objects.  On AmigaOS 4, the ELF loader places .text and .rodata at
+   new addresses each boot, but Subr fields (subr_fn, name, prompt) and
+   symbol_value_magic fields (value, magicfun) point directly into those
+   segments and are not covered by description-based relocation. */
+static void
+pdump_amigaos4_fixup_subrs_and_magics (EMACS_INT data_delta,
+				       EMACS_INT rodata_delta,
+				       EMACS_INT text_delta)
+{
+  char *sp = pdump_rt_list;
+  int subr_sections_remaining = 2;
+  int in_section_1 = 1;
+  for (;;)
+    {
+      pdump_reloc_table rt_sub = PDUMP_READ_ALIGNED (sp, pdump_reloc_table);
+      sp = (char *) ALIGN_PTR (sp, ALIGNOF (char *));
+      if (rt_sub.desc)
+	{
+	  char **sub_reloc = (char **) sp;
+	  if (rt_sub.count > 0 && in_section_1)
+	    {
+	      struct lrecord_header *lh =
+		(struct lrecord_header *) sub_reloc[0];
+	      if (lh->type == lrecord_type_subr)
+		{
+		  size_t si;
+		  for (si = 0; si < rt_sub.count; si++)
+		    {
+		      Lisp_Subr *subr = (Lisp_Subr *) sub_reloc[si];
+		      if (subr->subr_fn)
+			subr->subr_fn = (lisp_fn_t)
+			  ((char *) subr->subr_fn + text_delta);
+		      if (subr->name)
+			subr->name = (const char *)
+			  ((char *) subr->name + rodata_delta);
+		      if (subr->prompt)
+			subr->prompt = (const char *)
+			  ((char *) subr->prompt + rodata_delta);
+		    }
+		}
+	      else if (lh->type >= lrecord_type_symbol_value_forward
+		       && lh->type <= lrecord_type_max_symbol_value_magic)
+		{
+		  size_t si;
+		  for (si = 0; si < rt_sub.count; si++)
+		    {
+		      struct symbol_value_magic *magic =
+			(struct symbol_value_magic *) sub_reloc[si];
+		      if (magic->value)
+			magic->value = (void *)
+			  ((char *) magic->value + data_delta);
+		      if (magic->lcheader.lheader.type
+			  == lrecord_type_symbol_value_forward)
+			{
+			  struct symbol_value_forward *fwd =
+			    (struct symbol_value_forward *) magic;
+			  if (fwd->magicfun)
+			    fwd->magicfun = (int (*)(Lisp_Object,
+						     Lisp_Object *,
+						     Lisp_Object, int))
+			      ((char *) fwd->magicfun + text_delta);
+			}
+		    }
+		}
+	    }
+	  sp += rt_sub.count * sizeof (char *);
+	}
+      else
+	{
+	  in_section_1 = 0;
+	  if (!(--subr_sections_remaining))
+	    break;
+	}
+    }
+}
+
+/* Fix stale binary pointers in section 2 objects (root_struct_ptrs).
+   These are method structs (console_methods, specifier_methods,
+   image_instantiator_methods, etc.) whose function pointers (.text)
+   and name/description pointers (.rodata) are stale.
+
+   We scan each section 2 object for pointer-aligned values that fall
+   within the old binary segment ranges and adjust them.  This is safe
+   because after pdump_reloc_one, all described fields point into the
+   dump buffer, and integer fields are small values that won't match
+   the old binary address ranges.
+
+   IMPORTANT: We must not scan past the actual struct size, or we'll
+   corrupt adjacent objects in the dump buffer.  For known types we
+   use sizeof(); for unknown types we skip them entirely. */
+static void
+pdump_amigaos4_fixup_section2_ptrs (EMACS_INT data_delta,
+				    EMACS_INT rodata_delta,
+				    EMACS_INT text_delta,
+				    pdump_header *header)
+{
+  char *s2p = pdump_rt_list;
+  int sect2_pass = 0;
+  EMACS_UINT saved_text = (EMACS_UINT) header->reloc_text_base;
+  EMACS_UINT saved_rodata = (EMACS_UINT) header->reloc_rodata_base;
+  EMACS_UINT saved_data = (EMACS_UINT) header->reloc_data_base;
+
+  for (;;)
+    {
+      pdump_reloc_table rt2 = PDUMP_READ_ALIGNED (s2p, pdump_reloc_table);
+      s2p = (char *) ALIGN_PTR (s2p, ALIGNOF (char *));
+      if (rt2.desc)
+	{
+	  if (sect2_pass)
+	    {
+	      char **s2_reloc = (char **) s2p;
+	      size_t obj_size = 0;
+	      size_t si2;
+	      int known_type = 0;
+	      int known_has_rodata = 0;
+
+	      if (rt2.desc == console_methods_description.description)
+		{
+		  obj_size = sizeof (struct console_methods);
+		  known_type = 1;
+		  known_has_rodata = 1;
+		}
+	      else if (rt2.desc == specifier_methods_description.description)
+		{
+		  obj_size = sizeof (struct specifier_methods);
+		  known_type = 1;
+		  known_has_rodata = 1;
+		}
+	      else if (rt2.desc == iim_description.description)
+		{
+		  obj_size = sizeof (struct image_instantiator_methods);
+		  known_type = 1;
+		}
+	      else if (rt2.desc == specifier_caching_description.description)
+		{
+		  obj_size = sizeof (struct specifier_caching);
+		  known_type = 1;
+		}
+
+	      if (known_type && obj_size >= sizeof (void *))
+		{
+		  for (si2 = 0; si2 < rt2.count; si2++)
+		    {
+		      char *obj = s2_reloc[si2];
+		      char *obj_limit = obj + obj_size;
+		      size_t off;
+		      if (obj_limit > pdump_end)
+			obj_limit = pdump_end;
+		      for (off = 0; obj + off + sizeof (void *) <= obj_limit;
+			   off += sizeof (void *))
+			{
+			  EMACS_UINT *wp = (EMACS_UINT *)(obj + off);
+			  EMACS_UINT val = *wp;
+			  EMACS_INT text_dist;
+			  if (val == 0)
+			    continue;
+			  if ((char *) val >= pdump_start &&
+			      (char *) val < pdump_end)
+			    continue;
+			  text_dist = (EMACS_INT)(val - saved_text);
+			  if (text_dist > -0x80000 && text_dist < 0x100000)
+			    {
+			      *wp = val + text_delta;
+			      continue;
+			    }
+			  if (known_has_rodata)
+			    {
+			      EMACS_INT rodata_dist =
+				(EMACS_INT)(val - saved_rodata);
+			      if (rodata_dist > -0x20000 &&
+				  rodata_dist < 0x20000)
+				{
+				  *wp = val + rodata_delta;
+				  continue;
+				}
+			    }
+			  if (known_has_rodata)
+			    {
+			      EMACS_INT data_dist =
+				(EMACS_INT)(val - saved_data);
+			      if (data_dist > -0x10000 &&
+				  data_dist < 0x100000)
+				{
+				  *wp = val + data_delta;
+				  continue;
+				}
+			    }
+			}
+		    }
+		}
+	    }
+	  s2p += rt2.count * sizeof (char *);
+	}
+      else
+	{
+	  sect2_pass++;
+	  if (sect2_pass >= 2)
+	    break;
+	}
+    }
+}
+
+/* Fix up the staticpros dynarr contents.  Each entry is a Lisp_Object *
+   pointing to a C variable in .data/.bss.  The pdump description for
+   staticpros marks elements as opaque (XD_END), so they don't get
+   relocated.  We must add data_delta to each entry. */
+static void
+pdump_amigaos4_fixup_staticpros (EMACS_INT data_delta)
+{
+  extern Lisp_Object_ptr_dynarr *staticpros;
+  int sp_count = Dynarr_length (staticpros);
+  int i;
+  for (i = 0; i < sp_count; i++)
+    {
+      Lisp_Object **entry = &Dynarr_at (staticpros, i);
+      if (*entry)
+	{
+	  *entry = (Lisp_Object *) ((char *) *entry + data_delta);
+	}
+    }
+}
+#endif /* AMIGAOS4 */
+
 /*----------------------------------------------------------------------*/
 /*			Reading the dump file				*/
 /*----------------------------------------------------------------------*/
@@ -1098,10 +1462,31 @@ pdump_load_finish (void)
   EMACS_INT delta;
   EMACS_INT count;
   pdump_header *header = (pdump_header *)pdump_start;
+#ifdef AMIGAOS4
+  EMACS_INT data_delta;
+  EMACS_INT rodata_delta;
+  EMACS_INT text_delta;
+#endif
 
   pdump_end = pdump_start + pdump_length;
 
   delta = ((EMACS_INT)pdump_start) - header->reloc_address;
+
+#ifdef AMIGAOS4
+  /* Compute relocation delta for the binary's data/BSS segment.
+     On AmigaOS 4 the ELF loader may place the binary at a different
+     address each run, so absolute addresses of C global variables
+     stored in the dump must be adjusted. */
+  data_delta = ((EMACS_INT) &dump_id) - (EMACS_INT) header->reloc_data_base;
+  rodata_delta = ((EMACS_INT) &pdump_rodata_anchor) - (EMACS_INT) header->reloc_rodata_base;
+  text_delta = ((EMACS_INT) &pdump_text_anchor_fn) - (EMACS_INT) header->reloc_text_base;
+  /* Store in file-scope statics for use by pdump_reloc_one */
+  pdump_data_delta = data_delta;
+  pdump_rodata_delta = rodata_delta;
+  pdump_text_delta = text_delta;
+  pdump_saved_rodata_base = header->reloc_rodata_base;
+#endif
+
   p = pdump_start + header->stab_offset;
 
   /* Put back the pdump_root_struct_ptrs */
@@ -1109,6 +1494,9 @@ pdump_load_finish (void)
   for (i=0; i<header->nb_root_struct_ptrs; i++)
     {
       pdump_static_pointer ptr = PDUMP_READ (p, pdump_static_pointer);
+#ifdef AMIGAOS4
+      ptr.address = (char **) ((char *) ptr.address + data_delta);
+#endif
       (* ptr.address) = ptr.value + delta;
     }
 
@@ -1116,12 +1504,24 @@ pdump_load_finish (void)
   for (i=0; i<header->nb_opaques; i++)
     {
       pdump_opaque info = PDUMP_READ_ALIGNED (p, pdump_opaque);
+#ifdef AMIGAOS4
+      info.varaddress = (void *) ((char *) info.varaddress + data_delta);
+#endif
       memcpy (info.varaddress, p, info.size);
       p += info.size;
     }
 
+#ifdef AMIGAOS4
+  pdump_amigaos4_fixup_lrecord_tables (rodata_delta, text_delta);
+#endif
+
   /* Do the relocations */
   pdump_rt_list = p;
+
+#ifdef AMIGAOS4
+  pdump_amigaos4_patch_reloc_descs (rodata_delta);
+#endif
+
   count = 2;
   for (;;)
     {
@@ -1141,6 +1541,12 @@ pdump_load_finish (void)
 	    break;
     }
 
+#ifdef AMIGAOS4
+  pdump_amigaos4_fixup_subrs_and_magics (data_delta, rodata_delta, text_delta);
+  pdump_amigaos4_fixup_section2_ptrs (data_delta, rodata_delta, text_delta,
+				      header);
+#endif
+
   /* Put the pdump_root_objects variables in place */
   i = PDUMP_READ_ALIGNED (p, size_t);
   p = (char *) ALIGN_PTR (p, ALIGNOF (pdump_static_Lisp_Object));
@@ -1148,11 +1554,19 @@ pdump_load_finish (void)
     {
       pdump_static_Lisp_Object obj = PDUMP_READ (p, pdump_static_Lisp_Object);
 
+#ifdef AMIGAOS4
+      obj.address = (Lisp_Object *) ((char *) obj.address + data_delta);
+#endif
+
       if (POINTER_TYPE_P (XTYPE (obj.value)))
 	obj.value = wrap_object ((char *) XPNTR (obj.value) + delta);
 
       (* obj.address) = obj.value;
     }
+
+#ifdef AMIGAOS4
+  pdump_amigaos4_fixup_staticpros (data_delta);
+#endif
 
   /* Final cleanups */
   /*   reorganize hash tables */
@@ -1165,6 +1579,16 @@ pdump_load_finish (void)
 	break;
       if (rt.desc == hash_table_description)
 	{
+#ifdef AMIGAOS4
+	  /* Fix hash_function/test_function .text pointers before
+	     reorganize uses them via HASH_CODE */
+	  {
+	    char *hp = p;
+	    for (i=0; i < rt.count; i++)
+	      pdump_fixup_hash_table_pointers (PDUMP_READ (hp, Lisp_Object),
+					       text_delta);
+	  }
+#endif
 	  for (i=0; i < rt.count; i++)
 	    pdump_reorganize_hash_table (PDUMP_READ (p, Lisp_Object));
 	  break;
@@ -1372,8 +1796,10 @@ pdump_load (const char *argv0)
   /* #### urk, needed for xrealpath() below */
   Vdirectory_sep_char = make_char ('\\');
 #else /* !WIN32_NATIVE */
-  char *w;
   const char *dir, *p;
+#ifndef AMIGAOS4
+  char *w;
+#endif
 
   dir = argv0;
   if (dir[0] == '-')
@@ -1391,7 +1817,24 @@ pdump_load (const char *argv0)
 	 is relative to cwd, not $PATH */
       strcpy (exe_path, dir);
     }
+#ifdef AMIGAOS4
   else
+    {
+      /* On AmigaOS, argv[0] is a bare name (no "./" prefix).
+	 Expand relative to cwd. */
+      if (getcwd (exe_path, PATH_MAX))
+	{
+	  int len = strlen (exe_path);
+	  if (len > 0 && exe_path[len - 1] != '/' && exe_path[len - 1] != ':')
+	    exe_path[len++] = '/';
+	  strcpy (exe_path + len, dir);
+	}
+      else
+	{
+	  strcpy (exe_path, dir);
+	}
+    }
+#else /* !AMIGAOS4 */
     {
       const char *path = getenv ("PATH");
       const char *name = p;
@@ -1436,6 +1879,7 @@ pdump_load (const char *argv0)
 	  path = p+1;
 	}
     }
+#endif /* !AMIGAOS4 */
 #endif /* WIN32_NATIVE */
 
   /* Save exe_path because pdump_file_try() modifies it */

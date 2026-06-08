@@ -385,7 +385,7 @@ static const struct lrecord_description specifier_caching_description_1[] = {
   { XD_END }
 };
 
-static const struct struct_description specifier_caching_description = {
+const struct struct_description specifier_caching_description = {
   sizeof (struct specifier_caching),
   specifier_caching_description_1
 };
