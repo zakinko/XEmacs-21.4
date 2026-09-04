@@ -31,6 +31,11 @@ Boston, MA 02111-1307, USA.  */
 #include "buffer.h"
 #include "lstream.h"
 
+/* Sizes up to this come off the stack with alloca(); anything larger is
+   taken from the heap, so that a huge field width in the format string
+   cannot overflow the stack.  */
+#define DOPRNT_STACK_MAX 4096
+
 static const char * const valid_flags = "-+ #0";
 static const char * const valid_converters = "dic" "ouxX" "feEgG" "sS";
 static const char * const int_converters = "dic";
@@ -595,12 +600,22 @@ emacs_doprnt_1 (Lisp_Object stream, const Bufbyte *format_nonreloc,
 	    {
 	      /* ASCII Decimal representation uses 2.4 times as many
 		 bits as machine binary.  */
+	      EMACS_INT text_size =
+		32 + max (spec->minwidth,
+			  (EMACS_INT)
+			   max (sizeof (double), sizeof (long)) * 3 +
+			  max (spec->precision, 0));
+	      /* The field width and the precision come out of the format
+		 string, and nothing bounds them: (format "%3000000d" 1)
+		 asked for three megabytes here and died with SIGSEGV,
+		 because alloca() has no way of saying no.  Only take the
+		 small sizes -- which is all of them, in practice -- from
+		 the stack.  */
+	      int text_on_stack = text_size <= DOPRNT_STACK_MAX;
 	      char *text_to_print =
-		alloca_array (char, 32 +
-			      max (spec->minwidth,
-				   (EMACS_INT)
-				    max (sizeof (double), sizeof (long)) * 3 +
-				   max (spec->precision, 0)));
+		(text_on_stack
+		 ? alloca_array (char, text_size)
+		 : (char *) xmalloc (text_size));
 	      char constructed_spec[100];
 	      char *p = constructed_spec;
 
@@ -642,6 +657,11 @@ emacs_doprnt_1 (Lisp_Object stream, const Bufbyte *format_nonreloc,
 
 	      doprnt_1 (stream, (Bufbyte *) text_to_print,
 			strlen (text_to_print), 0, -1, 0, 0);
+
+	      /* #### will not get freed if doprnt_1() signals, in the
+		 same way the Dynarrs below will not. */
+	      if (!text_on_stack)
+		xfree (text_to_print);
 	    }
 	}
     }

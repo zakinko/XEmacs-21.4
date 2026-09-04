@@ -1,3 +1,19 @@
+2026-09-05  Showta Ishizaki  <zakinko@snowrabbit.org>
+
+	* doprnt.c (DOPRNT_STACK_MAX):
+	* doprnt.c (emacs_doprnt_1):
+	The field width and the precision come out of the format string and
+	are not bounded, so alloca()ing a buffer of that size dies with
+	SIGSEGV: (format "%3000000d" 1) killed XEmacs.  Take sizes above
+	DOPRNT_STACK_MAX from the heap instead.
+	* print.c (write_string_to_stdio_stream):
+	Same thing with LEN, which is however much the caller is printing:
+	(princ (make-string 3000000 ?x)) killed XEmacs with no format
+	involved.  Copy the large ones to the heap, and convert them with
+	MALLOC rather than ALLOCA, which would put the converted text on the
+	stack as well.  print_internal() below already draws this line at
+	65536, and that value is reused here.
+
 2026-01-01  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* XEmacs 21.4.25 is released

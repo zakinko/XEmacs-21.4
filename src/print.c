@@ -255,17 +255,37 @@ write_string_to_stdio_stream (FILE *stream, struct console *con,
 {
   Extcount extlen;
   const Extbyte *extptr;
+  /* LEN is the length of whatever is being printed, so it is as large as
+     the caller likes: (princ (make-string 3000000 ?x)) alloca()ed three
+     megabytes below and died with SIGSEGV.  Take the small sizes from the
+     stack as before, and the large ones from the heap; a heap copy keeps
+     the data away from a relocating GC just as well.  print_internal()
+     further down draws the line at the same place, for the same reason.  */
+  int large = len >= 65536;
+  Bufbyte *puta = NULL;
+  Extbyte *extmalloc = NULL;
 
   /* #### yuck! sometimes this function is called with string data,
      and the following call may gc. */
   {
-    Bufbyte *puta = (Bufbyte *) alloca (len);
+    puta = (large ? (Bufbyte *) xmalloc (len) : (Bufbyte *) alloca (len));
     memcpy (puta, str + offset, len);
 
     if (initialized && !inhibit_non_essential_printing_operations)
-    TO_EXTERNAL_FORMAT (DATA, (puta, len),
-			ALLOCA, (extptr, extlen),
-			coding_system);
+      {
+	if (large)
+	  {
+	    /* ALLOCA would put the converted text on the stack too. */
+	    TO_EXTERNAL_FORMAT (DATA, (puta, len),
+				MALLOC, (extmalloc, extlen),
+				coding_system);
+	    extptr = extmalloc;
+	  }
+	else
+	  TO_EXTERNAL_FORMAT (DATA, (puta, len),
+			      ALLOCA, (extptr, extlen),
+			      coding_system);
+      }
     else
       {
 	extptr = (Extbyte *) puta;
@@ -283,6 +303,12 @@ write_string_to_stdio_stream (FILE *stream, struct console *con,
 			       extptr, extlen,
 			       CONSOLE_TTY_DATA (con)->is_stdio, must_flush);
     }
+
+  /* extptr may still be pointing into puta, so both go after the write. */
+  if (extmalloc)
+    xfree (extmalloc);
+  if (large)
+    xfree (puta);
 }
 
 /* Write a string to the output location specified in FUNCTION.
