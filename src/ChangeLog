@@ -1,5 +1,14 @@
 2026-09-05  Showta Ishizaki  <zakinko@snowrabbit.org>
 
+	* editfns.c (Fformat_time_string):
+	The size of the buffer is derived from the length of FORMAT-STRING,
+	which is Lisp data, so alloca()ing it dies with SIGSEGV:
+	(format-time-string (make-string 500000 ?a)) killed XEmacs.  The
+	loop asked for more on each pass without giving the earlier
+	attempts back, too.  Take it from the heap instead.
+
+2026-09-05  Showta Ishizaki  <zakinko@snowrabbit.org>
+
 	* doprnt.c (DOPRNT_STACK_MAX):
 	* doprnt.c (emacs_doprnt_1):
 	The field width and the precision come out of the format string and

@@ -1120,18 +1120,31 @@ characters appearing in the day and month names may be incorrect.
   /* This is probably enough.  */
   size = XSTRING_LENGTH (format_string) * 6 + 50;
 
-  while (1)
-    {
-      char *buf = (char *) alloca (size);
-      *buf = 1;
-      if (emacs_strftime (buf, size,
-			  (const char *) XSTRING_DATA (format_string),
-			  tm)
-	  || !*buf)
-	return build_ext_string (buf, Qbinary);
-      /* If buffer was too small, make it bigger.  */
-      size *= 2;
-    }
+  /* FORMAT_STRING is Lisp data, so SIZE is however large the caller cares
+     to make it: (format-time-string (make-string 500000 ?a)) alloca()ed
+     three megabytes here and died with SIGSEGV.  The loop below asks for
+     more each time round, too, and the stack never got the earlier
+     attempts back.  Take it from the heap.  */
+  {
+    char *buf = (char *) xmalloc (size);
+
+    while (1)
+      {
+	*buf = 1;
+	if (emacs_strftime (buf, size,
+			    (const char *) XSTRING_DATA (format_string),
+			    tm)
+	    || !*buf)
+	  {
+	    Lisp_Object retval = build_ext_string (buf, Qbinary);
+	    xfree (buf);
+	    return retval;
+	  }
+	/* If buffer was too small, make it bigger.  */
+	size *= 2;
+	buf = (char *) xrealloc (buf, size);
+      }
+  }
 }
 
 DEFUN ("decode-time", Fdecode_time, 0, 1, 0, /*
