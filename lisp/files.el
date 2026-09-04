@@ -565,6 +565,82 @@ unlike `file-truename'."
 	(setq newname (expand-file-name tem (file-name-directory newname)))
 	(setq count (1- count))))
     newname))
+
+(defun make-temp-file (prefix &optional dir-flag suffix)
+  "Create a temporary file.
+The returned file name (created by appending some random characters at the
+end of PREFIX, and expanding against the return value of `temp-directory' if
+necessary), is guaranteed to point to a newly created empty file.  You can
+then use `write-region' to write new data into the file.
+
+If DIR-FLAG is non-nil, create a new empty directory instead of a file.
+
+If SUFFIX is non-nil, add that at the end of the file name.
+
+This function is analogous to mkstemp(3) under POSIX, avoiding the race
+condition between testing for the existence of the generated filename (under
+POSIX with mktemp(3), under Emacs Lisp with `make-temp-name') and creating
+it."
+  (let ((prefix (expand-file-name prefix (temp-directory)))
+	(umask (default-file-modes)))
+    (unwind-protect
+	(progn
+	  ;; Create with strict access rights.  They are easy to loosen
+	  ;; afterwards, and impossible to close the window in which they
+	  ;; were loose.
+	  (set-default-file-modes #o700)
+	  (if dir-flag
+	      ;; mkdir(2) fails when the name exists, so nobody can take the
+	      ;; name between our choosing it and our creating it.
+	      (let (dir)
+		(while (condition-case ()
+			   (progn
+			     (setq dir (make-temp-name prefix))
+			     (if suffix
+				 (setq dir (concat dir suffix)))
+			     (make-directory dir)
+			     nil)
+			 (file-already-exists t)))
+		(set-file-modes dir #o700)
+		dir)
+	    ;; `write-region' has no way of refusing an existing file here, so
+	    ;; a file cannot be created atomically under its final name.  Make
+	    ;; it inside a directory of our own, where nobody else can
+	    ;; substitute anything, and link(2) it into place:
+	    ;; `add-name-to-file' fails when the new name exists, which gives
+	    ;; the guarantee `write-region' cannot.  This is the approach
+	    ;; APEL's poe.el takes on XEmacs, for the same reason.
+	    (let (tempdir tempfile file)
+	      (unwind-protect
+		  (progn
+		    (while (condition-case ()
+			       (progn
+				 (setq tempdir
+				       (make-temp-name
+					(concat (file-name-directory prefix)
+						"DIR")))
+				 (make-directory tempdir)
+				 nil)
+			     (file-already-exists t)))
+		    (set-file-modes tempdir #o700)
+		    (setq tempfile (make-temp-name
+				    (expand-file-name "F" tempdir)))
+		    (write-region "" nil tempfile nil 'silent)
+		    (set-file-modes tempfile #o600)
+		    (while (condition-case ()
+			       (progn
+				 (setq file (make-temp-name prefix))
+				 (if suffix
+				     (setq file (concat file suffix)))
+				 (add-name-to-file tempfile file)
+				 nil)
+			     (file-already-exists t)))
+		    file)
+		(and tempfile (file-exists-p tempfile) (delete-file tempfile))
+		(and tempdir (file-directory-p tempdir)
+		     (delete-directory tempdir))))))
+      ;; Reset the umask.
+      (set-default-file-modes umask))))
 
 (defun switch-to-other-buffer (arg)
   "Switch to the previous buffer.  With a numeric arg, n, switch to the nth

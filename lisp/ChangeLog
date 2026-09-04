@@ -1,3 +1,13 @@
+2026-09-05  Showta Ishizaki  <zakinko@snowrabbit.org>
+
+	* files.el (make-temp-file):
+	New in 21.4, taken in spirit from 21.5.  21.5 writes the file with
+	write-region's MUSTBENEW argument, which this branch's write-region
+	does not have, so create the file inside a directory of our own and
+	link(2) it into place instead; mkdir(2) and link(2) both fail when
+	the name exists, which is the guarantee needed.  This is the
+	approach APEL's poe.el takes on XEmacs.
+
 2026-04-06  Aidan Kehoe  <kehoea@parhasard.net>
 
 	* regexp-opt.el:
