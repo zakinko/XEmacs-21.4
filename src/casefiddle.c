@@ -27,6 +27,10 @@ Boston, MA 02111-1307, USA.  */
 #include "insdel.h"
 #include "syntax.h"
 
+/* Sizes up to this come off the stack with alloca(); larger ones are taken
+   from the heap, so that a huge argument cannot overflow the stack.  */
+#define CASEFIDDLE_STACK_MAX 65536
+
 enum case_action {CASE_UP, CASE_DOWN, CASE_CAPITALIZE, CASE_CAPITALIZE_UP};
 
 static Lisp_Object
@@ -49,8 +53,15 @@ casify_object (enum case_action flag, Lisp_Object string_or_char,
   if (STRINGP (string_or_char))
     {
       Lisp_Char_Table *syntax_table = XCHAR_TABLE (buf->mirror_syntax_table);
-      Bufbyte *storage =
-	alloca_array (Bufbyte, XSTRING_LENGTH (string_or_char) * MAX_EMCHAR_LEN);
+      /* The string is the caller's, so this size is too, and alloca() has
+	 no way of refusing it: (upcase (make-string 3000000 ?x)) died with
+	 SIGSEGV.  Take the large ones from the heap.  */
+      Bytecount storage_size =
+	XSTRING_LENGTH (string_or_char) * MAX_EMCHAR_LEN;
+      int storage_on_stack = storage_size <= CASEFIDDLE_STACK_MAX;
+      Bufbyte *storage = (storage_on_stack
+			  ? alloca_array (Bufbyte, storage_size)
+			  : (Bufbyte *) xmalloc (storage_size));
       Bufbyte *newp = storage;
       Bufbyte *oldp = XSTRING_DATA (string_or_char);
       int wordp = 0, wordp_prev;
@@ -85,7 +96,12 @@ casify_object (enum case_action flag, Lisp_Object string_or_char,
 	  INC_CHARPTR (oldp);
 	}
 
-      return make_string (storage, newp - storage);
+      {
+	Lisp_Object retval = make_string (storage, newp - storage);
+	if (!storage_on_stack)
+	  xfree (storage);
+	return retval;
+      }
     }
 
   string_or_char = wrong_type_argument (Qchar_or_string_p, string_or_char);

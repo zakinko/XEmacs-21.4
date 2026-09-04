@@ -46,6 +46,10 @@ Boston, MA 02111-1307, USA.  */
 
 #define REGEXP_CACHE_SIZE 20
 
+/* Sizes up to this come off the stack with alloca(); larger ones are taken
+   from the heap, so that a huge argument cannot overflow the stack.  */
+#define SEARCH_STACK_MAX 65536
+
 /* If the regexp is non-nil, then the buffer contains the compiled form
    of that regexp, suitable for searching.  */
 struct regexp_cache
@@ -2993,11 +2997,20 @@ Return a regexp string which matches exactly STRING and nothing else.
        (string))
 {
   REGISTER Bufbyte *in, *out, *end;
+  Bytecount temp_size;
+  int temp_on_stack;
   REGISTER Bufbyte *temp;
 
   CHECK_STRING (string);
 
-  temp = (Bufbyte *) alloca (XSTRING_LENGTH (string) * 2);
+  /* STRING is Lisp data, so this size is the caller's to choose and
+     alloca() cannot refuse it: (regexp-quote (make-string 3000000 ?x))
+     died with SIGSEGV.  Take the large ones from the heap.  */
+  temp_size = XSTRING_LENGTH (string) * 2;
+  temp_on_stack = temp_size <= SEARCH_STACK_MAX;
+  temp = (temp_on_stack
+	  ? (Bufbyte *) alloca (temp_size)
+	  : (Bufbyte *) xmalloc (temp_size));
 
   /* Now copy the data into the new string, inserting escapes. */
 
@@ -3018,7 +3031,12 @@ Return a regexp string which matches exactly STRING and nothing else.
       INC_CHARPTR (in);
     }
 
-  return make_string (temp, out - temp);
+  {
+    Lisp_Object retval = make_string (temp, out - temp);
+    if (!temp_on_stack)
+      xfree (temp);
+    return retval;
+  }
 }
 
 DEFUN ("set-word-regexp", Fset_word_regexp, 1, 1, 0, /*

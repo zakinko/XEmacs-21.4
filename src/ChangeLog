@@ -1,5 +1,16 @@
 2026-09-05  Showta Ishizaki  <zakinko@snowrabbit.org>
 
+	* search.c (SEARCH_STACK_MAX):
+	* search.c (Fregexp_quote):
+	* casefiddle.c (CASEFIDDLE_STACK_MAX):
+	* casefiddle.c (casify_string):
+	Both alloca()d a buffer sized from the argument string, so both died
+	with SIGSEGV on a few megabytes: (regexp-quote (make-string 3000000
+	?x)) and (upcase (make-string 3000000 ?x)).  Take the large ones from
+	the heap, as doprnt.c, print.c and editfns.c now do.
+
+2026-09-05  Showta Ishizaki  <zakinko@snowrabbit.org>
+
 	* editfns.c (Fformat_time_string):
 	The size of the buffer is derived from the length of FORMAT-STRING,
 	which is Lisp data, so alloca()ing it dies with SIGSEGV:
